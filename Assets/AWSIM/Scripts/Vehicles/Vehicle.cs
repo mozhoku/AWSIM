@@ -6,7 +6,7 @@ using UnityEngine;
 namespace AWSIM
 {
     /// <summary>
-    /// The Vehicle class.
+    /// The Vehicle base class.
     /// </summary>
     // ----- VEHICLE DYNAMICS CONCEPT -----
     // This vehicle model was created for Autoware simulation,
