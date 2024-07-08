@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/AWSIM-Labs/main/Components/Vehicle/EgoVehicle/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/AWSIM-Labs/main/Components/Vehicle/DynamicSensorPlacement/">
       
       
-        <link rel="prev" href="../../Clock/ClockPublisher/">
+        <link rel="prev" href="../URDFAndSensors/">
       
       
-        <link rel="next" href="../URDFAndSensors/">
+        <link rel="next" href="../AddNewVehicle/AddAVehicle/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Ego Vehicle - AWSIM Labs Documentation</title>
+        <title>Dynamic Sensor Placement - AWSIM Labs Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#introduction" class="md-skip">
+        <a href="#dynamic-sensor-placement" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ego Vehicle
+              Dynamic Sensor Placement
             
           </span>
         </div>
@@ -805,28 +805,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Ego Vehicle
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../EgoVehicle/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -835,207 +817,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Introduction">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#supported-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Supported features
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lexus-rx450h-2015-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Lexus RX450h 2015 parameters
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefab-and-fbx" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prefab and Fbx
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#visual-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Visual elements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#link-in-the-default-scene" class="md-nav__link">
-    <span class="md-ellipsis">
-      Link in the default Scene
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#components" class="md-nav__link">
-    <span class="md-ellipsis">
-      Components
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      Architecture
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#com" class="md-nav__link">
-    <span class="md-ellipsis">
-      CoM
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#colliders" class="md-nav__link">
-    <span class="md-ellipsis">
-      Colliders
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Colliders">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bodycollider" class="md-nav__link">
-    <span class="md-ellipsis">
-      BodyCollider
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#wheels-colliders" class="md-nav__link">
-    <span class="md-ellipsis">
-      Wheels Colliders
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rigidbody" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rigidbody
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reflection-probe" class="md-nav__link">
-    <span class="md-ellipsis">
-      Reflection Probe
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#urdf-and-sensors" class="md-nav__link">
-    <span class="md-ellipsis">
-      URDF and Sensors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle (script)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-ros-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle Ros (script)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-keyboard-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle Keyboard (script)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-visual-effect-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle Visual Effect (script)
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1066,10 +847,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../DynamicSensorPlacement/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Dynamic Sensor Placement
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1078,6 +879,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#follow-the-steps-to-generate-the-urdf-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Follow the steps to generate the urdf file:
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-dynamic-sensor-placement-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Dynamic Sensor Placement tool:
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#note" class="md-nav__link">
+    <span class="md-ellipsis">
+      Note
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2584,6 +2432,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2592,183 +2442,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
+  <a href="#follow-the-steps-to-generate-the-urdf-file" class="md-nav__link">
     <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Introduction">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#supported-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Supported features
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lexus-rx450h-2015-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Lexus RX450h 2015 parameters
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#prefab-and-fbx" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prefab and Fbx
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#visual-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Visual elements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#link-in-the-default-scene" class="md-nav__link">
-    <span class="md-ellipsis">
-      Link in the default Scene
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#components" class="md-nav__link">
-    <span class="md-ellipsis">
-      Components
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      Architecture
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#com" class="md-nav__link">
-    <span class="md-ellipsis">
-      CoM
+      Follow the steps to generate the urdf file:
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#colliders" class="md-nav__link">
+  <a href="#using-the-dynamic-sensor-placement-tool" class="md-nav__link">
     <span class="md-ellipsis">
-      Colliders
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Colliders">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bodycollider" class="md-nav__link">
-    <span class="md-ellipsis">
-      BodyCollider
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#wheels-colliders" class="md-nav__link">
-    <span class="md-ellipsis">
-      Wheels Colliders
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rigidbody" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rigidbody
+      Using the Dynamic Sensor Placement tool:
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#reflection-probe" class="md-nav__link">
+  <a href="#note" class="md-nav__link">
     <span class="md-ellipsis">
-      Reflection Probe
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#urdf-and-sensors" class="md-nav__link">
-    <span class="md-ellipsis">
-      URDF and Sensors
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle (script)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-ros-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle Ros (script)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-keyboard-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle Keyboard (script)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vehicle-visual-effect-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vehicle Visual Effect (script)
+      Note
     </span>
   </a>
   
@@ -2792,529 +2486,74 @@
   
 
 
-  <h1>Ego Vehicle</h1>
+<div><h1 id="dynamic-sensor-placement">Dynamic Sensor Placement<a class="headerlink" href="#dynamic-sensor-placement" title="Permanent link">#</a></h1>
+<p>This tool allows you to dynamically place sensors on a car using positions and rotations specified in a URDF file.</p>
+<h2 id="follow-the-steps-to-generate-the-urdf-file">Follow the steps to generate the urdf file:<a class="headerlink" href="#follow-the-steps-to-generate-the-urdf-file" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Build Autoware by following the instruction in https://autowarefoundation.github.io/autoware-documentation/main/installation/autoware/source-installation/.</p>
+</li>
+<li>
+<p>Modify L3-4 in
+    <code>$HOME/autoware/src/universe/autoware.universe/launch/tier4_vehicle_launch/urdf/vehicle.xacro</code>
+    as the following,</p>
+<div class="codehilite"><pre><span></span><code>    &lt;xacro:arg name="vehicle_model" default="sample_vehicle"/&gt;
+    &lt;xacro:arg name="sensor_model" default="awsim_sensor_kit"/&gt;
+</code></pre></div>
 
-<div><h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
-<p><code>EgoVehicle</code> is a playable object that simulates a vehicle that can autonomously move around the scene.
-It has components (scripts) that make it possible to control it by keyboard or by <em>Autoware</em> (using <em>ROS2</em> communication). Moreover, it provides sensory data needed for self-localization in space and detection of objects in the surrounding environment.</p>
-<p>The default prefab <code>EgoVehicle</code> was developed using a <em>Lexus RX450h 2015</em> vehicle model with a configured sample sensor kit.</p>
-<p><img alt="vehicle" src="vehicle.png"></p>
-<div class="admonition tip">
-<p class="admonition-title">Own EgoVehicle prefab</p>
-<p>If you would like to develop your own  <code>EgoVehicle</code> prefab, we encourage you to read this <a href="../../../Components/Vehicle/AddNewVehicle/AddAVehicle/">tutorial</a>.</p>
-</div>
-<h3 id="supported-features">Supported features<a class="headerlink" href="#supported-features" title="Permanent link">#</a></h3>
-<p>This vehicle model was created for <em>Autoware</em> simulation, and assuming that <a href="https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-architecture/vehicle/"><em>Autoware</em></a> has already created a gas pedal map,
-this vehicle model uses acceleration as an input value.
-It has the following features:</p>
-<ul>
-<li>Longitudinal control by acceleration (<span class="arithmatex">\(\frac{m}{s^2}\)</span>).</li>
-<li>Lateral control by two-wheel model.</li>
-<li>Yaw, roll and pitch controlled by <a href="https://docs.unity3d.com/Manual/PhysicsSection.html"><em>Physics</em></a> engine.</li>
-<li>Mass-spring-damper suspension model (<a href="#wheels-colliders"><code>WheelColliders</code></a>).</li>
-<li>Logical, not mechanical, automatic gears change.</li>
-<li>3D <em>Mesh</em> (<code>*.fbx</code>) as road surface for vehicle driving, gradient resistance.</li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">AutowareSimulation</p>
-<p>If you would like to see how <code>EgoVehicle</code> works or run some tests, we encourage you to familiarize yourself with the <code>AutowareSimulation</code> scene described in this <a href="../../../ProjectGuide/Scenes/#autowaresimulation">section</a>.</p>
-</div>
-<h3 id="lexus-rx450h-2015-parameters"><em>Lexus RX450h 2015</em> parameters<a class="headerlink" href="#lexus-rx450h-2015-parameters" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th align="center">Parameter</th>
-<th align="left">Value</th>
-<th align="left">Unit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center"><em>Mass</em></td>
-<td align="left"><span class="arithmatex">\(1500\)</span></td>
-<td align="left"><span class="arithmatex">\(kg\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Wheel base</em></td>
-<td align="left"><span class="arithmatex">\(2.5\)</span></td>
-<td align="left"><span class="arithmatex">\(m\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Tread width</em></td>
-<td align="left"><span class="arithmatex">\(Ft = 1.8; Rr = 1.8\)</span></td>
-<td align="left"><span class="arithmatex">\(m\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Center of Mass position</em></td>
-<td align="left"><span class="arithmatex">\(x = 0; y = 0.5; z = 0\)</span></td>
-<td align="left"><span class="arithmatex">\(m\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Moment of inertia</em></td>
-<td align="left"><span class="arithmatex">\(\mathrm{yaw} = 2000; \mathrm{roll} = 2000; \mathrm{pitch} = 700\)</span></td>
-<td align="left"><span class="arithmatex">\(kg \cdot m^2\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Spring rate</em></td>
-<td align="left"><span class="arithmatex">\(Ft = 55000; Rr = 48000\)</span></td>
-<td align="left"><span class="arithmatex">\(N\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Damper rate</em></td>
-<td align="left"><span class="arithmatex">\(Ft = 3000; Rr = 2500\)</span></td>
-<td align="left"><span class="arithmatex">\(\frac{N}{s}\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Suspension stroke</em></td>
-<td align="left"><span class="arithmatex">\(Ft = 0.2; Rr = 0.2\)</span></td>
-<td align="left"><span class="arithmatex">\(m\)</span></td>
-</tr>
-<tr>
-<td align="center"><em>Wheel radius</em></td>
-<td align="left"><span class="arithmatex">\(0.365\)</span></td>
-<td align="left"><span class="arithmatex">\(m\)</span></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition info">
-<p class="admonition-title">Vehicle inertia</p>
-<p>In general, measuring the moment of inertia is not easy, and past papers published by <em>NHTSA</em> are helpful.<br>
-<a href="https://www.researchgate.net/publication/228945609_Measured_Vehicle_Inertial_Parameters-NHTSA">Measured Vehicle Inertial Parameters - NHTSA 1998</a></p>
-</div>
-<h3 id="prefab-and-fbx">Prefab and Fbx<a class="headerlink" href="#prefab-and-fbx" title="Permanent link">#</a></h3>
-<p>Prefab can be found under the following path:</p>
-<div class="highlight"><pre><span></span><code>Assets/AWSIM/Prefabs/NPCs/Vehicles/Lexus RX450h 2015 Sample Sensor.prefab
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">EgoVehicle name</p>
-<p>In order to standardize the documentation, the name <code>EgoVehicle</code> will be used in this section as the equivalent of the prefab named <code>Lexus RX450h 2015 2015 Sample Sensor</code>.</p>
-</div>
-<p><code>EgoVehicle</code> prefab has the following content:</p>
-<p><img alt="prefab_link" src="prefab_link.png"></p>
-<p>As you can see, it consists of 3 parents for <em>GameObjects</em>:</p>
-<ul>
-<li><code>Models</code> - aggregating visual elements,</li>
-<li><code>Colliders</code> - aggregating colliders,</li>
-<li><code>URDF</code> - aggregating sensors,</li>
-<li>and 2 single <em>GameObjects</em>: <code>CoM</code> and <code>Reflection Probe</code>.</li>
-</ul>
-<p>All objects are described in the sections below.</p>
-<h3 id="visual-elements">Visual elements<a class="headerlink" href="#visual-elements" title="Permanent link">#</a></h3>
-<p>Prefab is developed using models available in the form of <code>*.fbx</code> files.
-The visuals elements have been loaded from the appropriate <code>*.fbx</code> file and are aggregated and added in object <code>Models</code>.</p>
-<p><code>*.fbx</code> file for <em>Lexus RX450h 2015</em> is located under the following path:</p>
-<div class="highlight"><pre><span></span><code>Assets/AWSIM/Models/Vehicles/Lexus RX450h 2015.fbx
-</code></pre></div>
-<p><code>Models</code> object has the following content:</p>
-<p><img alt="models_link" src="models_link.png"></p>
-<p>As you can see, the additional visual element is <code>XX1 Sensor Kit</code>.</p>
-<p><img alt="sensor_kit" src="sensor_kit.png"></p>
-<p>It was also loaded from the <code>*.fbx</code> file which can be found under the following path:</p>
-<div class="highlight"><pre><span></span><code>Assets/AWSIM/Models/Sensors/XX1 Sensor Kit.fbx
-</code></pre></div>
-<div class="admonition example">
-<p class="admonition-title">Lexus RX450h 2015.fbx</p>
-<p>The content of a sample <code>*.fbx</code> file is presented below, all elements except <code>Collider</code> have been added to the prefab as visual elements of the vehicle.
-<code>Collider</code> is used as the <em>Mesh</em> source for the <code>Mesh Collider</code> in the <code>BodyCollider</code> object.</p>
-<p><img alt="fbx" src="fbx.png"></p>
-</div>
-<h3 id="link-in-the-default-scene">Link in the default Scene<a class="headerlink" href="#link-in-the-default-scene" title="Permanent link">#</a></h3>
-<p>The default scene contains a single <code>Lexus RX450h 2015 Sample Sensor</code> prefab that is added as a child of the <code>EgoVehicle</code> <em>GameObject</em>.</p>
-<p><img alt="scene_link" src="scene_link.png"></p>
-<p>In <code>EgoVehicle</code> prefab, the local coordinate system of the vehicle (main prefab link) should be defined in the axis of the rear wheels projected onto the ground - in the middle of the distance between them.
-This aspect holds significance when characterizing the dynamics of the object, as it provides convenience in terms of describing its motion and control.</p>
-<p><img src="link_2.png" width="500px">
-<img src="link.png" width="500px"></p>
-<h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">#</a></h3>
-<p><img alt="prefab" src="prefab.png"></p>
-<p>There are several components responsible for the full functionality of <code>Vehicle</code>:</p>
-<ul>
-<li><em><a href="https://docs.unity3d.com/ScriptReference/Rigidbody.html">Rigidbody</a></em> - ensures that the object is controlled by the physics engine in <em>Unity</em> - e.g. pulled downward by gravity.</li>
-<li><a href="#vehicle-script"><em>Vehicle</em> (script)</a> - provides the ability to set the acceleration of the vehicle and the steering angle of its wheels.</li>
-<li><a href="#vehicle-keyboard-script"><em>Vehicle Keyboard Input</em> (script)</a> - provides the ability to set inputs in the <em>Vehicle</em> (script) via the keyboard.</li>
-<li><a href="#vehicle-ros-script"><em>Vehicle Ros Input</em> (script)</a> - provides the ability to set inputs in the <em>Vehicle</em> (script) via subscribed <em>ROS2</em> topics (outputs from <em>Autoware</em>).</li>
-<li><a href="#vehicle-visual-effect-script"><em>Vehicle Visual Effect</em></a> - provides the ability to simulate vehicle lights, such as turn signals, brake lights, and hazard light.</li>
-</ul>
-<p>Scripts can be found under the following path:</p>
-<div class="highlight"><pre><span></span><code>Assets/AWSIM/Scripts/Vehicles/*
-</code></pre></div>
-<h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">#</a></h3>
-<p>The <code>EgoVehicle</code> architecture - with dependencies - is presented on the following diagram.</p>
-<p><img alt="ego vehicle structure diagram" src="../../../Introduction/AWSIM/egovehicle.png"></p>
-<p>The communication between <code>EgoVehicle</code> components is presented on two different diagrams - a flow diagram and a sequence diagram.</p>
-<p>The flow diagram presents a flow of information between the <code>EgoVehicle</code> components.</p>
-<p><img alt="ego vehicle flow diagram" src="ego_vehicle_flow.png"></p>
-<p>The sequence diagram provides a deeper insight in how the communication is structured and what are the steps taken by each component.
-Some tasks performed by the elements are presented for clarification.</p>
-<p><img alt="ego vehicle sequence diagram" src="ego_vehicle_sequence.png"></p>
-<div class="admonition info">
-<p class="admonition-title">Sequence diagram</p>
-<p>Please keep in mind, that <em>Autoware</em> message callbacks and the update loop present on the sequence diagram are executed independently and concurrently.
-One thing they have in common are resources - the <em>Vehicle</em> (script).</p>
-</div>
-<h2 id="com">CoM<a class="headerlink" href="#com" title="Permanent link">#</a></h2>
-<p><code>CoM</code> (<em>Center of Mass</em>) is an additional link that is defined to set the center of mass in the <code>Rigidbody</code>.
-The <em>Vehicle</em> (script) is responsible for its assignment.
-This measure should be defined in accordance with reality.
-Most often, the center of mass of the vehicle is located in its center, at the height of its wheel axis - as shown below.</p>
-<p><img src="com_2.png" width="500px">
-<img src="com.png" width="500px"></p>
-<h2 id="colliders">Colliders<a class="headerlink" href="#colliders" title="Permanent link">#</a></h2>
-<p><em>Colliders</em> are used to ensure collision between objects.
-In <code>EgoVehicle</code>, the main <code>Collider</code> collider and colliders in <code>Wheels</code> <code>GameObject</code> for each wheel were added.</p>
-<p><code>Colliders</code> object has the following content:</p>
-<p><img alt="colliders_link" src="colliders_link.png"></p>
-<h3 id="bodycollider">BodyCollider<a class="headerlink" href="#bodycollider" title="Permanent link">#</a></h3>
-<p><img alt="collider" src="collider.png"></p>
-<p><code>Collider</code> is a vehicle object responsible for ensuring collision with other objects.
-Additionally, it can be used to detect these collisions.
-The <code>MeshCollider</code> takes a <em>Mesh</em> of object and builds its <code>Collider</code> based on it.
-The <em>Mesh</em> for the <code>Collider</code> was also loaded from the <code>*.fbx</code> file similarly to the visual elements.</p>
-<p><img alt="collider_example" src="collider_example.png"></p>
-<h3 id="wheels-colliders">Wheels Colliders<a class="headerlink" href="#wheels-colliders" title="Permanent link">#</a></h3>
-<p><img alt="wheel_collider" src="wheel_collider.png"></p>
-<p><code>WheelsColliders</code> are an essential elements from the point of view of driving vehicles on the road.
-They are the only ones that have contact with the roads and it is important that they are properly configured.
-Each vehicle, apart from the visual elements related to the wheels, should also have 4 colliders - one for each wheel.</p>
-<p><em>Wheel</em> (script) provides a reference to the collider and visual object for the particular wheel.
-Thanks to this, the <a href="#vehicle-script"><em>Vehicle</em> (script)</a> has the ability to perform certain actions on each of the wheels, such as:</p>
-<ul>
-<li>update the steering angle in <code>WheelCollider</code>,</li>
-</ul>
-<ul>
-<li>update the visual part of the wheel depending on the speed and angle of the turn,</li>
-</ul>
-<ul>
-<li>update the wheel contact information stored in the <a href="https://docs.unity3d.com/ScriptReference/WheelHit.html"><code>WheelHit</code></a> object,</li>
-</ul>
-<ul>
-<li>update the force exerted by the tire forward and sideways depending on the acceleration (including cancellation of skidding),</li>
-</ul>
-<ul>
-<li>ensure setting the tire sleep (it is impossible to put <code>Rigidbody</code> to sleep, but putting all wheels to sleep allows to get closer to this effect).</li>
-</ul>
-<p><em>Wheel Collider Config</em> (script) has been developed to prevent inspector entry for <code>WheelCollider</code> which ensures that friction is set to 0 and only wheel suspension and collisions are enabled.</p>
-<p><img alt="wheel_collider_example" src="wheel_collider_example.png"></p>
-<div class="admonition tip">
-<p class="admonition-title">Wheel Collider Config</p>
-<p>For a better understanding of the meaning of <code>WheelCollider</code> we encourage you to read <a href="https://docs.unity3d.com/Manual/class-WheelCollider.html">this manual</a>.</p>
-</div>
-<h2 id="rigidbody">Rigidbody<a class="headerlink" href="#rigidbody" title="Permanent link">#</a></h2>
-<p><img alt="rigidbody" src="rigidbody.png"></p>
-<p><code>Rigidbody</code> ensures that the object is controlled by the physics engine.
-The <code>Mass</code> of the vehicle should approximate its actual weight.
-In order for the vehicle to physically interact with other objects - react to collisions, <code>Is Kinematic</code> must be turned off.
-The <code>Use Gravity</code> should be turned on - to ensure the correct behavior of the body during movement.
-In addition, <code>Interpolate</code> should be turned on to ensure the physics engine's effects are smoothed out.</p>
-<h2 id="reflection-probe">Reflection Probe<a class="headerlink" href="#reflection-probe" title="Permanent link">#</a></h2>
-<p><img alt="reflection" src="reflection.png"></p>
-<p><a href="https://docs.unity3d.com/Manual/class-ReflectionProbe.html"><code>Reflection Probe</code></a> is added to <code>EgoVehicle</code> prefab to simulate realistic reflections in a scene.
-It is a component that captures and stores information about the surrounding environment and uses that information to generate accurate reflections on objects in real-time.
-The values in the component are set as default.</p>
-<p><em>HD Additional Reflection Data</em> (script) is additional component used to store settings for <a href="https://unity.com/srp/High-Definition-Render-Pipeline"><em>HDRP's</em></a> reflection probes and is added automatically.</p>
-<h2 id="urdf-and-sensors">URDF and Sensors<a class="headerlink" href="#urdf-and-sensors" title="Permanent link">#</a></h2>
-<p><img alt="urdf_link" src="urdf_link.png"></p>
-<p><code>URDF</code> (<em>Unified Robot Description Format</em>) is equivalent to the simplified <a href="https://docs.ros.org/en/humble/Tutorials/Intermediate/URDF/URDF-Main.html"><code>URDF</code></a> format used in <em>ROS2</em>.
-This format allows to define the positions of all sensors of the vehicle in relation to its local coordinate system.
-<code>URDF</code> is built using multiple <em>GameObjects</em> as children appropriately transformed with relation to its parent.</p>
-<p>A detailed description of the <code>URDF</code> structure and sensors added to prefab <code>Lexus RX450h 2015</code> is available in this <a href="../../../Components/Vehicle/URDFAndSensors/">section</a>.</p>
-<h2 id="vehicle-script">Vehicle (script)<a class="headerlink" href="#vehicle-script" title="Permanent link">#</a></h2>
-<p><img alt="script" src="script.png"></p>
-<p><em>Vehicle</em> (script) provides an inputs that allows the <code>EgoVehicle</code> to move.
-Script inputs provides the ability to set the acceleration of the vehicle and the steering angle of its wheels, taking into account the effects of suspension and gravity.
-It also provides an input to set the gear in the gearbox and to control the turn signals.
-Script inputs can be set by one of the following scripts: <a href="#vehicle-ros-script"><em>Vehicle Ros Input</em> (script)</a> or <a href="#vehicle-keyboard-script"><em>Vehicle Keyboard Input</em> (script)</a>.</p>
-<p>The script performs several steps periodically:</p>
-<ul>
-<li>checks whether the current inputs meet the set limits and adjusts them within them,</li>
-<li>calculates the current linear velocity, angular velocity vector and local acceleration vector,</li>
-<li>set the current steering angle in the script for each wheel and perform their updates,</li>
-<li>if the current gear is <code>PARKING</code> and the vehicle is stopped (its speed and acceleration are below the set thresholds), it puts the vehicle (<a href="https://docs.unity3d.com/ScriptReference/Rigidbody.Sleep.html"><code>Rigidbody</code></a>) and its wheels (<a href="#wheels-colliders"><em>Wheel</em> (script)</a>) to sleep,</li>
-<li>if the vehicle has not been put to sleep, it sets the current acceleration to each with the appropriate sign depending on the <code>DRIVE</code> and <code>REVERSE</code> gear.</li>
-</ul>
-<h4 id="elements-configurable-from-the-editor-level">Elements configurable from the editor level<a class="headerlink" href="#elements-configurable-from-the-editor-level" title="Permanent link">#</a></h4>
-<p>The script uses the <a href="#com"><code>CoM</code></a> link reference to assign the center of mass of the vehicle to the <code>Rigidbody</code>.
-In addiction, <code>Use inertia</code> allows to define the <a href="https://docs.unity3d.com/ScriptReference/Rigidbody-inertiaTensor.html"><code>inertia</code></a> tensor for component <code>Rigidbody</code> - by default it is disabled.</p>
-<p><code>Physics Settings</code> - allows to set values used to control vehicle physics:</p>
-<ul>
-<li><code>Sleep Velocity Threshold</code> - velocity threshold used to put vehicle to sleep,</li>
-<li><code>Sleep Time Threshold</code> - time threshold for which the vehicle must not exceed the <code>Sleep Velocity Threshold</code>, have contact with the ground and a set acceleration input equal to zero,</li>
-<li><code>Skidding Cancel Rate</code> - coefficient that determines the rate at which skidding is canceled, affects the anti-skid force of the wheels - the higher the value, the faster the cancellation of the skid.</li>
-</ul>
-<p><code>Axles Settings</code> contains references to (<a href="#wheels-colliders"><em>Wheel</em> (script)</a>) scripts to control each wheel.
-Thanks to them, the <em>Vehicle</em> (script) is able to set their steering angle and accelerations.</p>
-<p><code>Input Settings</code> - allows to set limits for values on script input:</p>
-<ul>
-<li><code>Max Steer Angle Input</code> - maximum value of acceleration set by the script (also negative),</li>
-<li><code>Max Acceleration Input</code> -  maximum steering angle of the wheels set by the script (also negative).</li>
-</ul>
-<p><code>Inputs</code> - are only used as a preview of the currently set values in the script input:</p>
-<p><img alt="input" src="input.gif"></p>
-<h4 id="input-data">Input Data<a class="headerlink" href="#input-data" title="Permanent link">#</a></h4>
-<table>
-<thead>
-<tr>
-<th align="left">Category</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><em>AccelerationInput</em></td>
-<td align="left">float</td>
-<td align="left">Acceleration input (m/s^2). On the plane, output the force that will result in this acceleration. On a slope, it is affected by the slope resistance, so it does not match the input.</td>
-</tr>
-<tr>
-<td align="left"><em>SteerAngleInput</em></td>
-<td align="left">float</td>
-<td align="left">Vehicle steering input (degree). Negative steers left, positive right</td>
-</tr>
-<tr>
-<td align="left"><em>AutomaticShiftInput</em></td>
-<td align="left">enumeration</td>
-<td align="left">Vehicle gear shift input (AT).<br>Values: <code>PARKING</code>, <code>REVERSE</code>, <code>NEUTRAL</code>, <code>DRIVE</code>.</td>
-</tr>
-<tr>
-<td align="left"><em>SignalInput</em></td>
-<td align="left">enumeration</td>
-<td align="left">Vehicle turn signal input.<br>Values: <code>NONE</code>, <code>LEFT</code>, <code>RIGHT</code>, <code>HAZARD</code>.</td>
-</tr>
-</tbody>
-</table>
-<h4 id="output-data">Output data<a class="headerlink" href="#output-data" title="Permanent link">#</a></h4>
-<table>
-<thead>
-<tr>
-<th align="left">Category</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><em>LocalAcceleration</em></td>
-<td align="left">Vector3</td>
-<td align="left">Acceleration(m/s^2) in the local coordinate system of the vehicle</td>
-</tr>
-<tr>
-<td align="left"><em>Speed</em></td>
-<td align="left">float</td>
-<td align="left">Vehicle speed (m/s).</td>
-</tr>
-<tr>
-<td align="left"><em>SteerAngle</em></td>
-<td align="left">float</td>
-<td align="left">Vehicle steering angle (degree).</td>
-</tr>
-<tr>
-<td align="left"><em>Signal</em></td>
-<td align="left">enumeration</td>
-<td align="left">Vehicle turn signal.</td>
-</tr>
-<tr>
-<td align="left"><em>Velocity</em></td>
-<td align="left">Vector3</td>
-<td align="left">Vehicle velocity (m/s)</td>
-</tr>
-<tr>
-<td align="left"><em>LocalVelocity</em></td>
-<td align="left">Vector3</td>
-<td align="left">Vehicle local velocity (m/s)</td>
-</tr>
-<tr>
-<td align="left"><em>AngularVelocity</em></td>
-<td align="left">Vector3</td>
-<td align="left">Vehicle angular velocity (rad/s)</td>
-</tr>
-</tbody>
-</table>
-<p>The acceleration or deceleration of the vehicle is determined by <code>AutomaticShiftInput</code> and <code>AccelerationInput</code>.
-The vehicle will not move in the opposite direction of the (<code>DRIVE</code> or <code>REVERSE</code>) input.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p>Sample vehicle behaves:</p>
-<ul>
-<li>
-<p><em>Sample 1</em> - vehicle will accelerate with input values (gradient resistance is received).</p>
-<div class="highlight"><pre><span></span><code>AutomaticShiftInput = DRIVE
-Speed = Any value
-AccelerationInput &gt; 0
-</code></pre></div>
 </li>
-</ul>
-<ul>
 <li>
-<p><em>Sample 2</em> - vehicle will decelerate (like a brake).</p>
-<div class="highlight"><pre><span></span><code>AutomaticShiftInput = DRIVE
-Speed &gt; 0
-AccelerationInput &lt; 0
+<p>Run the following commands:</p>
+<div class="codehilite"><pre><span></span><code>source $HOME/autoware/install/setup.bash
+
+ros2 run xacro xacro -o awsim_vehicle.urdf $HOME/autoware/src/universe/autoware.universe/launch/tier4_vehicle_launch/urdf/vehicle.xacro
 </code></pre></div>
+
 </li>
-</ul>
-<ul>
 <li>
-<p><em>Sample 3</em> - vehicle will continuously stop.</p>
-<div class="highlight"><pre><span></span><code>AutomaticShiftInput = DRIVE
-Speed &lt;= 0
-AccelerationInput &lt; 0
-</code></pre></div>
+<p>You should now have a URDF file named <code>awsim_vehicle.urdf</code>.</p>
 </li>
-</ul>
-</div>
-<h2 id="vehicle-ros-script">Vehicle Ros (script)<a class="headerlink" href="#vehicle-ros-script" title="Permanent link">#</a></h2>
-<p><img alt="script_ros" src="script_ros.png"></p>
-<p><em>Vehicle Ros</em> (script) is responsible for subscribing to messages that are vehicle control commands.
-The values read from the message are set on the inputs of the <a href="#vehicle-script"><em>Vehicle</em> (script)</a> script.</p>
-<p>The concept for vehicle dynamics is suitable for <em>Autoware's</em> <a href="https://github.com/autowarefoundation/autoware_msgs/blob/main/autoware_control_msgs/msg/Control.msg"><code>autoware_control_msgs/Control</code></a> and <a href="https://github.com/autowarefoundation/autoware_msgs/blob/main/autoware_vehicle_msgs/msg/GearCommand.msg"><code>autoware_vehicle_msgs/GearCommand</code></a> messages interface usage.
-The script sets gear, steering angle of wheels and acceleration of the vehicle (read from the aforementioned messages) to the <em>Vehicle</em> (script) input.
-In the case of <em>VehicleEmergencyStamped</em> message it sets the absolute acceleration equal to 0.
-In addition, also through <em>Vehicle</em> (script), the appropriate lights are turned on and off depending on <em>TurnIndicatorsCommand</em> and <em>HazardLightsCommand</em>  messages.</p>
-<h4 id="elements-configurable-from-the-editor-level_1">Elements configurable from the editor level<a class="headerlink" href="#elements-configurable-from-the-editor-level_1" title="Permanent link">#</a></h4>
-<ul>
-<li><code>* Command Topic</code> - topic on which suitable type of information is subscribed (default: listed in the table below)</li>
-<li><code>QoS</code>- Quality of service profile used in the publication (default assumed as <a href="https://docs.ros.org/en/humble/Concepts/About-Quality-of-Service-Settings.html"><code>"system_default"</code></a>: <code>Reliable</code>, <code>TransientLocal</code>, <code>Keep last/1</code>)</li>
-<li><code>Vehicle</code> - reference to a script in the vehicle object where the subscribed values are to be set (default: <code>None</code>)</li>
-</ul>
-<h4 id="subscribed-topics">Subscribed Topics<a class="headerlink" href="#subscribed-topics" title="Permanent link">#</a></h4>
-<ul>
-<li>QoS: <code>Reliable</code>, <code>TransientLocal</code>, <code>KeepLast/1</code></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th align="left">Category</th>
-<th align="left">Topic</th>
-<th align="left">Message type</th>
-<th align="center">Frequency (<em>Autoware</em> dependent)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><em>TurnIndicatorsCommand</em></td>
-<td align="left"><code>/control/command/turn_indicators_cmd</code></td>
-<td align="left"><code>autoware_vehicle_msgs/TurnIndicatorsCommand</code></td>
-<td align="center"><code>10</code></td>
-</tr>
-<tr>
-<td align="left"><em>HazardLightsCommand</em></td>
-<td align="left"><code>/control/command/hazard_lights_cmd</code></td>
-<td align="left"><code>autoware_vehicle_msgs/HazardLightsCommand</code></td>
-<td align="center"><code>10</code></td>
-</tr>
-<tr>
-<td align="left"><em>AckermannControlCommand</em></td>
-<td align="left"><code>/control/command/control_cmd</code></td>
-<td align="left"><code>autoware_control_msgs/Control</code></td>
-<td align="center"><code>60</code></td>
-</tr>
-<tr>
-<td align="left"><em>GearCommand</em></td>
-<td align="left"><code>/control/command/gear_cmd</code></td>
-<td align="left"><code>autoware_vehicle_msgs/GearCommand</code></td>
-<td align="center"><code>10</code></td>
-</tr>
-<tr>
-<td align="left"><em>VehicleEmergencyStamped</em></td>
-<td align="left"><code>/control/command/emergency_cmd</code></td>
-<td align="left"><code>tier4_vehicle_msgs/msg/VehicleEmergencyStamped</code></td>
-<td align="center"><code>60</code></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">ROS2 Topics</p>
-<p>If you would like to know all the topics used in communication <em>Autoware</em> with <em>AWSIM</em>, we encourage you to familiarize yourself with this <a href="../../../Components/ROS2/ROS2TopicList/">section</a></p>
-</div>
-<h2 id="vehicle-keyboard-script">Vehicle Keyboard (script)<a class="headerlink" href="#vehicle-keyboard-script" title="Permanent link">#</a></h2>
-<p><img alt="script_keyboard" src="script_keyboard.png"></p>
-<p><em>Vehicle Keyboard</em> (script) allows <code>EgoVehicle</code> to be controlled by the keyboard.
-Thanks to this, it is possible to switch on the appropriate gear of the gearbox, turn the lights on/off, set the acceleration and steering of the wheels.
-It's all set in the <em>Vehicle</em> (script) of the object assigned in the <code>Vehicle</code> field.
-The table below shows the available control options.</p>
-<table>
-<thead>
-<tr>
-<th align="center">Button</th>
-<th align="left">Option</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center"><code>d</code></td>
-<td align="left">Switch to move forward (drive gear)</td>
-</tr>
-<tr>
-<td align="center"><code>r</code></td>
-<td align="left">Switch to move backwards (reverse gear)</td>
-</tr>
-<tr>
-<td align="center"><code>n</code></td>
-<td align="left">Switch to neutral</td>
-</tr>
-<tr>
-<td align="center"><code>p</code></td>
-<td align="left">Switch to parking gear</td>
-</tr>
-<tr>
-<td align="center"><code>UP ARROW</code></td>
-<td align="left">Forward acceleration</td>
-</tr>
-<tr>
-<td align="center"><code>DOWN ARROW</code></td>
-<td align="left">Reverse acceleration (decelerate)</td>
-</tr>
-<tr>
-<td align="center"><code>LEFT/RIGHT ARROW</code></td>
-<td align="left">Turning</td>
-</tr>
-<tr>
-<td align="center"><code>1</code></td>
-<td align="left">Turn left blinker on (right off)</td>
-</tr>
-<tr>
-<td align="center"><code>2</code></td>
-<td align="left">Turn right blinker on (left off)</td>
-</tr>
-<tr>
-<td align="center"><code>3</code></td>
-<td align="left">Turn on hazard lights</td>
-</tr>
-<tr>
-<td align="center"><code>4</code></td>
-<td align="left">Turn off blinker or hazard lights</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">WASD</p>
-<p>Controlling the movement of the vehicle with <code>WASD</code> as the equivalent of arrow keys is acceptable, but remember that the <code>d</code> button engages the drive gear.</p>
-</div>
-<h4 id="elements-configurable-from-the-editor-level_2">Elements configurable from the editor level<a class="headerlink" href="#elements-configurable-from-the-editor-level_2" title="Permanent link">#</a></h4>
-<ul>
-<li><code>Max Acceleration</code>- maximum value of acceleration set by the script (also negative)</li>
-<li><code>Max Steer Angle</code> - maximum steering angle of the wheels set by the script (also negative)</li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Value limits</p>
-<p><code>Max Acceleration</code> and <code>Max Steer Angle</code> values greater than those set in the <em>Vehicle</em> (script) are limited by the script itself - they will not be exceeded.</p>
-</div>
-<h2 id="vehicle-visual-effect-script">Vehicle Visual Effect (script)<a class="headerlink" href="#vehicle-visual-effect-script" title="Permanent link">#</a></h2>
-<p><img alt="script_visual" src="script_visual.png"></p>
-<p>This part of the settings is related to the configuration of the emission of materials when a specific lighting is activated.
-There are 4 types of lights: <code>Brake</code>, <code>Left Turn Signal</code>, <code>Right Turn Signal</code> and <code>Reverse</code>.
-Each of the lights has its visual equivalent in the form of a <em>Mesh</em>.
-In the case of <code>EgoVehicle</code>, each light type has its own <em>GameObject</em> which contains the <em>Mesh</em> assigned.</p>
-<p><img alt="material" src="material.png"></p>
-<p>For each type of light, the appropriate <code>Material Index</code> (equivalent of element index in mesh) and <code>Lighting Color</code> are assigned - yellow for <code>Turn Signals</code>, red for <code>Break</code> and white for <code>Reverse</code>.</p>
-<p><code>Lighting Intensity</code> values are also configured - the greater the value, the more light will be emitted.
-This value is related to <code>Lighting Exposure Weight</code> parameter that is a exposure weight - the lower the value, the more light is emitted.</p>
-<p>All types of lighting are switched on and off depending on the values obtained from the <em>Vehicle</em> (script) of the vehicle, which is assigned in the <code>Vehicle</code> field.</p>
-<h4 id="elements-configurable-from-the-editor-level_3">Elements configurable from the editor level<a class="headerlink" href="#elements-configurable-from-the-editor-level_3" title="Permanent link">#</a></h4>
-<ul>
-<li><code>Turn Signal Timer Interval Sec</code> - time interval for flashing lights - value <span class="arithmatex">\(0.5\)</span> means that the light will be on for <span class="arithmatex">\(0.5s\)</span>, then it will be turned off for <span class="arithmatex">\(0.5s\)</span> and turned on again.<br>
-(default: <code>0.5</code>)</li>
-</ul></div>
+</ol>
+<h2 id="using-the-dynamic-sensor-placement-tool">Using the Dynamic Sensor Placement tool:<a class="headerlink" href="#using-the-dynamic-sensor-placement-tool" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Open up AWSIM and place the generated <code>awsim_vehicle.urdf</code> in the Externals folder so the path will be <code>./Assets/AWSIM/Externals/awsim_vehicle.urdf</code>.</p>
+<p><img alt="alt text" src="image.png"></p>
+</li>
+<li>
+<p>Now, under open up the <code>Dynamic sensor placement</code> tool under AWSIM menu.</p>
+<p><img alt="alt text" src="menu.gif"></p>
+</li>
+<li>
+<p>Enter the path to the URDF file</p>
+<p><img alt="alt text" src="image-1.png"></p>
+</li>
+<li>
+<p>Click "Place sensors". All the sensors should be automatically placed on the car.</p>
+</li>
+</ol>
+<h2 id="note">Note<a class="headerlink" href="#note" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Only the game object named sensor_kit_base_link and its direct children will be assigned transforms if they are mentioned in the URDF file as children of sensor_kit_base_link. You will need to manually place the base_link game object.</p>
+<p><img alt="alt text" src="image-2.png"></p>
+</li>
+<li>
+<p>Ensure the names of the game objects are exactly the same as those mentioned in the URDF file. Look for the name of the child of sensor_kit_base_link in the URDF file under the <code>&lt;joint&gt;</code> tag.</p>
+<p>For example:</p>
+<div class="codehilite"><pre><span></span><code>&lt;joint name="velodyne_top_base_mount_joint" type="fixed"&gt;
+    &lt;origin rpy="0.0 0.0 1.575" xyz="0.0 0.0 0.0"/&gt;
+    &lt;parent link="sensor_kit_base_link"/&gt;
+    &lt;child link="velodyne_top_base_link"/&gt;
+&lt;/joint&gt;
+</code></pre></div>
+
+</li>
+<li>
+<p>Finally, ensure that all the direct children of the sensor game objects have their rotations and positions set to zero.</p>
+<p><img alt="alt text" src="image-3.png"></p>
+</li>
+</ol></div>
 
 
 
@@ -3352,7 +2591,7 @@ This value is related to <code>Lighting Exposure Weight</code> parameter that is
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../Clock/ClockPublisher/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Clock Publisher">
+          <a href="../URDFAndSensors/" class="md-footer__link md-footer__link--prev" aria-label="Previous: URDF And Sensors">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -3362,20 +2601,20 @@ This value is related to <code>Lighting Exposure Weight</code> parameter that is
                 Previous
               </span>
               <div class="md-ellipsis">
-                Clock Publisher
+                URDF And Sensors
               </div>
             </div>
           </a>
         
         
           
-          <a href="../URDFAndSensors/" class="md-footer__link md-footer__link--next" aria-label="Next: URDF And Sensors">
+          <a href="../AddNewVehicle/AddAVehicle/" class="md-footer__link md-footer__link--next" aria-label="Next: Add Vehicle">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                URDF And Sensors
+                Add Vehicle
               </div>
             </div>
             <div class="md-footer__button md-icon">
