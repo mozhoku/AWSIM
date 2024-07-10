@@ -2652,45 +2652,39 @@
 <h3 id="unity-installation">Unity installation<a class="headerlink" href="#unity-installation" title="Permanent link">#</a></h3>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>AWSIM's Unity version is currently <strong>2022.3.21f1</strong></p>
+<p>AWSIM's Unity version is currently <strong>2022.3.36f1</strong></p>
 </div>
 <p>Follow the steps below to install Unity on your machine:</p>
+<h4 id="install-unityhub">Install UnityHub:<a class="headerlink" href="#install-unityhub" title="Permanent link">#</a></h4>
 <ol>
-<li>Install UnityHub to manage Unity projects. Please go to <a href="https://unity3d.com/get-unity/download">Unity download page</a> and download latest <code>UnityHub.AppImage</code>.
-<img alt="" src="image_1.png"></li>
-<li>
-<p>Install Unity 2022.3.21f1 via UnityHub.</p>
-<ul>
+<li>Install UnityHub to manage Unity projects. Please go to <a href="https://unity3d.com/get-unity/download">Unity download page</a> and download latest <code>UnityHub.AppImage</code>.</li>
+<li>Install Unity 2022.3.36f1 via UnityHub:<ul>
 <li>Open new terminal, navigate to directory where <code>UnityHub.AppImage</code> is download and execute the following command:
 <div class="highlight"><pre><span></span><code>./UnityHub.AppImage
 </code></pre></div></li>
-<li>To install Unity Editor please proceed as shown on the images below
-<img alt="" src="image_2.png">
-<img alt="" src="image_3.png">
-<img alt="" src="image_4.png"></li>
-<li>
-<p>At this point, your Unity installation process should have started.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked id="__tabbed_3_1" name="__tabbed_3" type="radio"><div class="tabbed-labels"><label for="__tabbed_3_1">Ubuntu 22</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block"></div>
-</div>
-</div>
-<ul>
-<li>*NOTE: If the installation process has not started after clicking the green button (image above), please copy the hyperlink (by rightclicking the button and selecting <code>Copy link address</code>) and add it as a argument for Unity Hub app. An example command:
-<div class="highlight"><pre><span></span><code>./UnityHub.AppImage unityhub://2022.3.21f1/d91830b65d9b
-</code></pre></div></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li>After successful installation the version will be available under the <code>Installs</code> tab in Unity Hub.
-<img alt="" src="image_5.png"></li>
-</ul>
+</ol>
+<h4 id="install-unity-editor">Install Unity Editor:<a class="headerlink" href="#install-unity-editor" title="Permanent link">#</a></h4>
+<ol>
+<li>Click <code>Installs</code> from the left menu and then click the <code>Install Editor</code> button from the top right.</li>
+<li>From the new window click the <code>Official releases</code> tab and check for the current version of Unity.
+   - If you can't find the version, click to <code>Archive</code> and search for the version in the Unity archives page. It will direct you to <a href="https://unity3d.com/get-unity/download/archive">Unity Archive</a>.</li>
+<li>
+<p>After finding the version, click the download/install button to start the installation process.
+   - At this point, your Unity installation process should have started.</p>
+<p>=== "Ubuntu 22"
+   - *NOTE: If the installation process has not started after clicking the download/install button, please copy the hyperlink (by right clicking the button and selecting <code>Copy link address</code>) and add it as an argument for Unity Hub app. An example command:
+   </p><div class="highlight"><pre><span></span><code>./UnityHub.AppImage unityhub://2022.3.21f1/d91830b65d9b
+</code></pre></div>
+</li>
+<li>
+<p>After successful installation the version will be available in the <code>Installs</code> tab in Unity Hub.</p>
 </li>
 </ol>
 <h3 id="open-awsim-project">Open AWSIM project<a class="headerlink" href="#open-awsim-project" title="Permanent link">#</a></h3>
 <p>To open the Unity AWSIM project in Unity Editor:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked id="__tabbed_4_1" name="__tabbed_4" type="radio"><input id="__tabbed_4_2" name="__tabbed_4" type="radio"><div class="tabbed-labels"><label for="__tabbed_4_1">Using Unity Hub</label><label for="__tabbed_4_2">Using Terminal</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked id="__tabbed_3_1" name="__tabbed_3" type="radio"><input id="__tabbed_3_2" name="__tabbed_3" type="radio"><div class="tabbed-labels"><label for="__tabbed_3_1">Using Unity Hub</label><label for="__tabbed_3_2">Using Terminal</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ol>
@@ -2711,20 +2705,11 @@
 <li>
 <p>Open the project in UnityHub</p>
 <ul>
-<li>Click the <code>Open</code> button
-<img alt="" src="image_6.png"></li>
-</ul>
-<ul>
-<li>Navigate the directory where the AWSIM repository was cloned to
-<img alt="" src="image_7.png"></li>
-</ul>
-<ul>
-<li>The project should be added to <code>Projects</code> tab in Unity Hub. To launch the project in Unity Editor simply click the <code>AWSIM</code> item
-<img alt="" src="image_8.png"></li>
-</ul>
-<ul>
-<li>The project is now ready to use
-<img alt="" src="image_9.png"></li>
+<li>Click the <code>Open</code> button from the <code>Projects</code> tab,</li>
+<li>Navigate the directory where the AWSIM repository was cloned to and select the directory,</li>
+<li>The project should be added to <code>Projects</code> tab in Unity Hub. To launch the project in Unity Editor simply click the <code>AWSIM</code> project.</li>
+<li>The project is now ready to use.</li>
+<li>The project can be opened by double clicking on the project name or selecting it from the list then clicking the <code>Open</code> button on the top right.</li>
 </ul>
 </li>
 </ol>
@@ -2738,11 +2723,12 @@
 </li>
 <li>
 <p>If your Unity Editor is in default location, run the project using the editor command.
-    </p><div class="highlight"><pre><span></span><code>~/Unity/Hub/Editor/2022.3.21f1/Editor/Unity -projectPath .
+    </p><div class="highlight"><pre><span></span><code>~/Unity/Hub/Editor/[your_editor_version]/Editor/Unity -projectPath .
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>If your Unity Editor is installed in different location, please adjust the path accordingly.</p>
+<p>Please specify your Unity Editor version in the path.
+If your Unity Editor is installed in different location, please adjust the path accordingly.</p>
 </div>
 </li>
 </ol>
@@ -2767,12 +2753,10 @@
 <p><a class="md-button md-button--primary" href="https://drive.google.com/drive/folders/1Q6PolpCIwiVRdPNMjSBAQ5t2TcCoY-KZ">Download Map Package</a></p>
 </li>
 <li>
-<p>In Unity Editor, from the menu bar at the top, select <code>Assets -&gt; Import Package -&gt; Custom Package...</code> and navigate the <code>Nishishinjuku_URP.unitypackage</code> file.
-<img alt="" src="image_10.png">
-<img alt="" src="image_11.png"></p>
+<p>In Unity Editor, from the menu bar at the top, select <code>Assets -&gt; Import Package -&gt; Custom Package...</code> and navigate the <code>Nishishinjuku_URP.unitypackage</code> file you've downloaded and open.</p>
 </li>
-<li><code>Nishishinjuku</code> package has been successfully imported under <code>Assets/AWSIM/Externals/</code>directory.
-<img alt="" src="image_12.png"></li>
+<li>Click <code>Import</code> button in the popup window to import the package.</li>
+<li><code>Nishishinjuku</code> package should be successfully imported under <code>Assets/AWSIM/Externals/</code>directory. You can access the directory from the <code>Project</code> window in Unity Editor.</li>
 </ol>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
@@ -2784,10 +2768,10 @@
 <p>The following steps describe how to run the demo in Unity Editor:</p>
 <ol>
 <li>Open the <code>AutowareSimulation.unity</code> scene placed under <code>Assets/AWSIM/Scenes/Main</code> directory</li>
-<li>Run the simulation by clicking <code>Play</code> button placed at the top section of Editor.
-<img alt="" src="image_13.png">
-<br><br><br><br></li>
-</ol></div>
+<li>Run the simulation by clicking <code>Play</code> button placed at the top section of Editor.</li>
+<li>Now you should see the simulation running in the Editor.</li>
+</ol>
+<p>If you encounter any issues while running the simulation, please refer to the <a href="../../DeveloperGuide/TroubleShooting">Troubleshooting</a> section or open an issue in the <a href="https://github.com/autowarefoundation/AWSIM-Labs/issues">AWSIM Labs GitHub</a>.</p></div>
 
 
 
