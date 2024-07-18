@@ -9,7 +9,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 autoware_vehicle_msgs.msg.GearReport.NONE or autoware_vehicle_msgs.msg.GearReport.PARK => 1,
                 autoware_vehicle_msgs.msg.GearReport.REVERSE => 2,
                 autoware_vehicle_msgs.msg.GearReport.NEUTRAL => 3,
-                autoware_vehicle_msgs.msg.GearReport.DRIVE or autoware_vehicle_msgs.msg.GearReport.LOW => 8,
+                autoware_vehicle_msgs.msg.GearReport.DRIVE or autoware_vehicle_msgs.msg.GearReport.LOW => 4,
                 _ => 1
             };
         }
