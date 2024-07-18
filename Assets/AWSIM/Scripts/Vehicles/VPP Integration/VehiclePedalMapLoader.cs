@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,68 +10,145 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
     {
         public TextAsset accelMapCsv;
         public TextAsset brakeMapCsv;
-        private Dictionary<float, List<float>> _accelMap;
-        private Dictionary<float, List<float>> _brakeMap;
 
-        void Start()
+        public Dictionary<float, List<float>> AccelMap;
+        public Dictionary<float, List<float>> AccelMapVertical;
+        [NonSerialized] public List<float> AccelMapHeaders = new();
+
+        public Dictionary<float, List<float>> BrakeMap;
+        public Dictionary<float, List<float>> BrakeMapVertical;
+        [NonSerialized] public List<float> BrakeMapHeaders = new();
+
+        private void Start()
         {
-            _accelMap = LoadMap(accelMapCsv);
-            _brakeMap = LoadMap(brakeMapCsv);
+            // Load the acceleration map
+            AccelMap = LoadMap(accelMapCsv);
+            AccelMapHeaders = LoadHeaders(accelMapCsv);
+            AccelMapVertical = VerticalDict(AccelMap, AccelMapHeaders);
+
+            // Load the brake map
+            BrakeMap = LoadMap(brakeMapCsv);
+            BrakeMapHeaders = LoadHeaders(brakeMapCsv);
+            BrakeMapVertical = VerticalDict(BrakeMap, BrakeMapHeaders);
         }
 
-        private static Dictionary<float, List<float>> LoadMap(TextAsset csv)
+        private Dictionary<float, List<float>> LoadMap(TextAsset csv)
         {
             Dictionary<float, List<float>> map = new Dictionary<float, List<float>>();
             StringReader reader = new StringReader(csv.text);
-
-            // Read the header line
             string line = reader.ReadLine();
-            string[] headers = line.Split(',');
-
             while ((line = reader.ReadLine()) != null)
             {
                 string[] values = line.Split(',');
                 float key = float.Parse(values[0], CultureInfo.InvariantCulture);
                 List<float> data = new List<float>();
-
                 for (int i = 1; i < values.Length; i++)
                 {
                     data.Add(float.Parse(values[i], CultureInfo.InvariantCulture));
                 }
 
-                map[key] = data;
+                map.Add(key, data);
             }
 
             return map;
         }
 
-        public float GetAccelValue(float input)
+        // return adjusted headers for indexing etc.
+        private List<float> LoadHeaders(TextAsset csv)
         {
-            // Implement interpolation or lookup logic based on accelMap
-            return InterpolateMap(_accelMap, input);
-        }
+            List<float> headerList = new List<float>();
+            StringReader reader = new StringReader(csv.text);
 
-        public float GetBrakeValue(float input)
-        {
-            // Implement interpolation or lookup logic based on brakeMap
-            return InterpolateMap(_brakeMap, input);
-        }
+            string line = reader.ReadLine();
+            string[] headers = line.Split(',');
 
-        private static float InterpolateMap(Dictionary<float, List<float>> map, float input)
-        {
-            // Implement your interpolation logic here
-            // For simplicity, let's just return the closest value for now
-            float closestKey = float.MaxValue;
-            foreach (var key in map.Keys)
+            foreach (var s in headers)
             {
-                if (Mathf.Abs(key - input) < Mathf.Abs(closestKey - input))
+                if (float.TryParse(s, out float result))
                 {
-                    closestKey = key;
+                    headerList.Add(result);
                 }
             }
 
-            // Assuming we use the first column's values for this example
-            return map[closestKey][0];
+            return headerList;
+        }
+
+        public float GetPedalPercent(Dictionary<float, List<float>> map, Dictionary<float, List<float>> vertMap,
+            List<float> headers, float targetAccel, float currentSpeed)
+        {
+            // Get the closest speed value from the headers
+            var closestSpeed = GetClosestValueFromList(headers, currentSpeed);
+
+            // Get the closest acceleration value from the map
+            vertMap.TryGetValue(closestSpeed, out List<float> valueList);
+            var closestAccel = GetClosestValueFromList(valueList, targetAccel);
+            // get index of accel from the header list
+            var closestAccelIndex = headers.IndexOf(closestSpeed);
+
+            // Debug.Log("Target Accel: " + targetAccel);
+            // Debug.Log("Closest Accel: " + closestAccel);
+            foreach (var pair in map)
+            {
+                if (Mathf.Approximately(pair.Value[closestAccelIndex], closestAccel))
+                {
+                    // Debug.Log("Pedal value: " + pair.Key);
+                    return pair.Key; // return the pedal value
+                }
+            }
+
+            return 0; // return 0 if no matches found which is unlikely
+        }
+
+        // build vertical dictionary for speed & acceleration
+        private static Dictionary<float, List<float>> VerticalDict(Dictionary<float, List<float>> map,
+            List<float> headers)
+        {
+            var verticalDict = new Dictionary<float, List<float>>();
+            // vertical groups
+            foreach (var header in headers)
+            {
+                var verticalGroup = new List<float>();
+                var headerIndex = headers.IndexOf(header);
+                foreach (var pair in map)
+                {
+                    verticalGroup.Add(pair.Value[headerIndex]);
+                }
+
+                verticalDict.Add(header, verticalGroup);
+            }
+
+            return verticalDict;
+        }
+
+        // Get the closest value from a list (helper function, can be moved to a utility class)
+        private static float GetClosestValueFromList(List<float> list, float value)
+        {
+            // check for null
+            if (list == null || list.Count == 0)
+            {
+                throw new ArgumentException("List cannot be null or empty.");
+            }
+
+            // early return if the value is in the list
+            if (list.Contains(value))
+            {
+                return value;
+            }
+
+            float closestValue = list[0];
+            float smallestDifference = Math.Abs(value - closestValue);
+
+            foreach (var listValue in list)
+            {
+                float currentDifference = Math.Abs(value - listValue);
+                if (currentDifference < smallestDifference)
+                {
+                    closestValue = listValue;
+                    smallestDifference = currentDifference;
+                }
+            }
+
+            return closestValue;
         }
     }
 }

@@ -21,6 +21,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         [SerializeField] float sleepTimeThreshold;
 
+        [SerializeField] private VPWheelCollider _frontWheelCollider1;
+        [SerializeField] private VPWheelCollider _frontWheelCollider2;
+
         // Inputs
 
         // Initial Position Inputs from Rviz
@@ -28,11 +31,13 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [NonSerialized] public Quaternion RotationInput;
         [NonSerialized] public bool WillUpdatePositionInput;
 
-        //Gear commands from Autoware
-        //gear
+        //Gear command from Autoware
         [NonSerialized] public int AutomaticShiftInput;
 
-        // Control commands from Autoware
+        ////////////////////////////////////
+        // Control commands from Autoware //
+        ////////////////////////////////////
+
         //longitudinal
         [NonSerialized] public float VelocityInput;
         [NonSerialized] public bool IsAccelerationDefinedInput;
@@ -57,41 +62,35 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [NonSerialized] public int VPTurnIndicatorsReport;
         [NonSerialized] public int VPHazardLightsReport;
 
-
         private VPVehicleController _vehicleController;
-        private Rigidbody _rigidbody;
 
         // private VPVisualEffects _visualEffects;
         private VPVehicleToolkit _toolkit;
+        private Rigidbody _rigidbody;
+        private VehiclePedalMapLoader _pedalMap;
+
+        private float previousAcceleration;
+        private float currentJerk;
 
         private void Start()
         {
             _vehicleController = GetComponent<VPVehicleController>();
             _rigidbody = GetComponent<Rigidbody>();
-
-            // Set vehicle to parking gear
-            // _vehicleController.data.Set(Channel.Settings, InputData.GearShift, 1);
-            // _visualEffects = GetComponent<VPVisualEffects>();
+            _pedalMap = GetComponent<VehiclePedalMapLoader>();
+            _vehicleController = GetComponent<VPVehicleController>();
         }
-
-        //// VPP INPUT DATA
-        // public struct InputData
-        // {
-        //     public const int Steer = 0;
-        //     public const int Throttle = 1;
-        //     public const int Brake = 2;
-        //     public const int Handbrake = 3;
-        //     public const int Clutch = 4;
-        //     public const int ManualGear = 5;
-        //     public const int AutomaticGear = 6;
-        //     public const int GearShift = 7;
-        //     public const int Retarder = 8;
-        //     public const int Key = 9;
-        //     public const int Max = 10;
-        // }
 
         private void FixedUpdate()
         {
+            ////////////////////////////////
+            // Debugs for Autoware Inputs //
+            ////////////////////////////////
+            // Debug.Log("AutomaticShiftInput: " + AutomaticShiftInput);
+            Debug.Log("Input accel: " + AccelerationInput);
+            Debug.Log("Input velo: " + VelocityInput);
+            // Debug.Log("JerkInput: " + JerkInput);
+
+
             // Update the ego position depending on RViz Input.
             if (WillUpdatePositionInput)
             {
@@ -99,62 +98,63 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 WillUpdatePositionInput = false;
             }
 
-            Debug.Log("AutomaticShiftInput: " + AutomaticShiftInput);
-            // Update vehicle with ros2 input
+            // store current values
+            float currentSpeed = _vehicleController.speed;
+            // jerk
+            if (IsJerkDefinedInput)
+            {
+                float currentAcceleration = _vehicleController.localAcceleration.magnitude;
+                currentJerk = (currentAcceleration - previousAcceleration) / Time.fixedDeltaTime;
+                previousAcceleration = currentAcceleration;
+            }
+
+            // set gear
             _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = AutomaticShiftInput;
 
-            Debug.Log("AccelerationInput: " + AccelerationInput);
-
-            // temporary input handling for acceleration
-
-            if (AccelerationInput > 0 && _vehicleController.data.bus[Channel.Vehicle][VehicleData.Speed] > 0)
+            // set accel
+            if (AccelerationInput > 0 || VelocityInput > 0)
             {
-                _vehicleController.data.bus[Channel.Input][InputData.Throttle] += 2500; // + throttle
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] = 0; // 0 brake
+                var throttlePercent = _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _pedalMap.AccelMapVertical,
+                    _pedalMap.AccelMapHeaders, AccelerationInput, currentSpeed);
+                // Debug.Log("Throttle %: " + throttlePercent);
+                throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
+                _vehicleController.data.Set(Channel.Input, InputData.Throttle, (int)throttlePercent);
             }
-            else if (AccelerationInput > 0 && _vehicleController.data.bus[Channel.Vehicle][VehicleData.Speed] < 0)
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] += 1000; // + brake
-            else if (AccelerationInput < 0 && _vehicleController.data.bus[Channel.Vehicle][VehicleData.Speed] > 0)
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] += 1000; // + brake
-            else if (AccelerationInput < 0 && _vehicleController.data.bus[Channel.Vehicle][VehicleData.Speed] < 0)
-            {
-                _vehicleController.data.bus[Channel.Input][InputData.Throttle] += 2500; // + throttle
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] = 0; // 0 brake
-            }
-            else if (AccelerationInput == 0)
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] += 2000; // + brake
 
+            if (AccelerationInput < 0 || VelocityInput < 0)
+            {
+                var brakePercent = _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _pedalMap.BrakeMapVertical,
+                    _pedalMap.BrakeMapHeaders, AccelerationInput, currentSpeed);
+                // Debug.Log("Brake %: " + brakePercent);
+                brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
+                _vehicleController.data.Set(Channel.Input, InputData.Brake, (int)brakePercent);
+            }
+
+            // directly set wheel angles for now (will simulate steering wheel input later on)
             Debug.Log("SteerAngleInput: " + SteerAngleInput);
-            // temporary input handling for steering
-            switch (SteerAngleInput)
-            {
-                case > 1:
-                    _vehicleController.data.bus[Channel.Input][InputData.Steer] += 1000;
-                    break;
-                case < -1:
-                    _vehicleController.data.bus[Channel.Input][InputData.Steer] -= 1000;
-                    break;
-                default:
-                    _vehicleController.data.bus[Channel.Input][InputData.Steer] = 0;
-                    break;
-            }
-
-            // _vehicleController.data.bus[Channel.Input][InputData.] = (int)SignalInput;
-
+            _frontWheelCollider1.steerAngle = SteerAngleInput;
+            _frontWheelCollider2.steerAngle = SteerAngleInput;
 
             // Update values sent to the ros2 publisher
             VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
-            Debug.Log("VPGearReport: " + VPGearReport);
-
-            // taken from rigidbody
             VPVelocityReport = _rigidbody.velocity;
             VPAngularVelocityReport = _rigidbody.angularVelocity;
-            Debug.Log("VPVelocityReport: " + VPVelocityReport);
-            Debug.Log("VPAngularVelocityReport: " + VPAngularVelocityReport);
-
-            // return wheel angle for now
-            VPSteeringReport = (int)_vehicleController.wheelState[0].steerAngle;
+            VPSteeringReport = (int)_frontWheelCollider1.steerAngle;
             Debug.Log("VPSteeringReport: " + VPSteeringReport);
+
+            // not handled atm
+            VPHazardLightsReport = (int)SignalInput;
+            VPTurnIndicatorsReport = (int)SignalInput;
+        }
+
+        private static float RemapValue(float value, float from1, float to1, float from2, float to2)
+        {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+        }
+
+        private static int RemapValue(float value, float from1, float to1, int from2, int to2)
+        {
+            return (int)((value - from1) / (to1 - from1) * (to2 - from2) + from2);
         }
 
         private void UpdateEgoPosition()

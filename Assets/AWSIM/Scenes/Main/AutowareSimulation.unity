@@ -250,7 +250,7 @@ PrefabInstance:
     - target: {fileID: 9027057600357292013, guid: 58d73df60b244d146bdf5f5896f78355,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9027057600502630240, guid: 58d73df60b244d146bdf5f5896f78355,
         type: 3}
@@ -1260,8 +1260,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardTopBarButton: {fileID: 1875037353}
   _barChevronRect: {fileID: 1795778249}
-  _chevronExpandedDegrees: 90
-  _chevronCollapsedDegrees: 0
   _isCardOpen: 1
   ElementHeight: 30
   ElementSpacing: 5
@@ -1392,23 +1390,31 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1416174297}
     m_Modifications:
-    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
+    - target: {fileID: 609743776972327103, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+      propertyPath: steering.maxSteerAngle
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1469440915397572680, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+      propertyPath: _frontWheelCollider1
+      value: 
+      objectReference: {fileID: 1588777540}
+    - target: {fileID: 1469440915397572680, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+      propertyPath: _frontWheelCollider2
+      value: 
+      objectReference: {fileID: 356748908}
+    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
       propertyPath: m_Name
       value: Lexus RX450h 2015 Sample Sensor
       objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 4981081891045692865, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+      propertyPath: m_CenterOfMass.x
+      value: 0.000008165836
       objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692866, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 4981081891045692865, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+      propertyPath: m_CenterOfMass.z
+      value: 1.1850014
       objectReference: {fileID: 0}
-    - target: {fileID: 5650763240072318842, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
+    - target: {fileID: 5650763240072318842, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 220.64
       objectReference: {fileID: 0}
@@ -1457,8 +1463,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8996813226046187441, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+      propertyPath: cameraOutputCanvas
+      value: 
+      objectReference: {fileID: 939690763}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2963107000851346597, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
@@ -2351,6 +2362,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 356081318}
   m_CullTransparentMesh: 1
+--- !u!114 &356748908 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 718712847548543310, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+  m_PrefabInstance: {fileID: 161822142}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1445780741, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &366975341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5621238221860094233, guid: e312a43ad62d38a40b798203047bfe57,
@@ -3018,7 +3040,7 @@ PrefabInstance:
         type: 3}
       propertyPath: vehicle
       value: 
-      objectReference: {fileID: 1602010127}
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3932027664973163071, guid: 72652f08acec776488e01c42ef2e9ab1, type: 3}
     m_RemovedGameObjects: []
@@ -3094,7 +3116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trafficManager: {fileID: 2002688059}
-  egoTransform: {fileID: 543450653627441687}
+  egoTransform: {fileID: 1222839950}
   timeSourceSelector: {fileID: 1259688278}
   targetFramerate: 60
   commandLineConfigParam: --json_path
@@ -3995,7 +4017,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &785201352
 Transform:
   m_ObjectHideFlags: 0
@@ -6486,8 +6508,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardTopBarButton: {fileID: 788042817}
   _barChevronRect: {fileID: 572910616}
-  _chevronExpandedDegrees: 90
-  _chevronCollapsedDegrees: 0
   _isCardOpen: 1
   ElementHeight: 30
   ElementSpacing: 5
@@ -7653,8 +7673,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardTopBarButton: {fileID: 1021800943}
   _barChevronRect: {fileID: 1757667091}
-  _chevronExpandedDegrees: 90
-  _chevronCollapsedDegrees: 0
   _isCardOpen: 1
   ElementHeight: 30
   ElementSpacing: 5
@@ -8295,16 +8313,15 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579461353}
   m_CullTransparentMesh: 1
---- !u!114 &1602010127 stripped
+--- !u!114 &1588777540 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4981081891045692866, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 5429697449238222761, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
   m_PrefabInstance: {fileID: 161822142}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80ebb0e40b62ca443ba1d8ccf61fcbda, type: 3}
+  m_Script: {fileID: 1445780741, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1613072385 stripped
@@ -9081,8 +9098,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardTopBarButton: {fileID: 594280525}
   _barChevronRect: {fileID: 1826199771}
-  _chevronExpandedDegrees: 90
-  _chevronCollapsedDegrees: 0
   _isCardOpen: 1
   ElementHeight: 30
   ElementSpacing: 5
@@ -12405,14 +12420,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149101803693}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ca678817e2c893b797f2e68f1cd5d67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turnIndicatorsCommandTopic: /control/command/turn_indicators_cmd
   hazardLightsCommandTopic: /control/command/hazard_lights_cmd
-  ackermannControlCommandTopic: /control/command/control_cmd
+  controlCommandTopic: /control/command/control_cmd
   gearCommandTopic: /control/command/gear_cmd
   vehicleEmergencyStampedTopic: /control/command/emergency_cmd
   positionTopic: /initialpose
@@ -12434,13 +12449,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149101803693}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0dbceea492288af5a9a663c606ad86a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sleepVelocityThreshold: 0
   sleepTimeThreshold: 0
+  _frontWheelCollider1: {fileID: 0}
+  _frontWheelCollider2: {fileID: 0}
 --- !u!114 &919132149101803702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12448,7 +12465,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149101803693}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1163079462, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
@@ -12573,7 +12590,7 @@ PrefabInstance:
     - target: {fileID: 6863854329073087094, guid: 98091ba153ca0a91fab6bd4c3570624c,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8127843463950316585, guid: 98091ba153ca0a91fab6bd4c3570624c,
         type: 3}
@@ -13310,7 +13327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mode: 1
-  target: {fileID: 543450653627441687}
+  target: {fileID: 1222839950}
   changeCameraKey: 99
   customCameraIndex: 0
   timeMode: 1
