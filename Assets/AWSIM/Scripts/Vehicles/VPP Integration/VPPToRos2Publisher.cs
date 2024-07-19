@@ -106,7 +106,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
             // VelocityReport
             var rosLinearVelocity = ROS2Utility.UnityToRosPosition(_adapter.VPVelocityReport);
-            var rosAngularVelocity = ROS2Utility.UnityToRosPosition(-_adapter.VPAngularVelocityReport);
+            var rosAngularVelocity = ROS2Utility.UnityToRosPosition(_adapter.VPAngularVelocityReport);
             _velocityReportMsg.Longitudinal_velocity = rosLinearVelocity.x;
             _velocityReportMsg.Lateral_velocity = rosLinearVelocity.y;
             _velocityReportMsg.Heading_rate = rosAngularVelocity.z;

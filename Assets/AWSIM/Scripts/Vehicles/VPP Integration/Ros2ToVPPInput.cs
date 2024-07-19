@@ -10,15 +10,12 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         // topics
         [SerializeField] private string turnIndicatorsCommandTopic = "/control/command/turn_indicators_cmd";
         [SerializeField] private string hazardLightsCommandTopic = "/control/command/hazard_lights_cmd";
-
-        [FormerlySerializedAs("ackermannControlCommandTopic")] [SerializeField]
-        private string controlCommandTopic = "/control/command/control_cmd";
-
+        [SerializeField] private string controlCommandTopic = "/control/command/control_cmd";
         [SerializeField] private string gearCommandTopic = "/control/command/gear_cmd";
         [SerializeField] private string vehicleEmergencyStampedTopic = "/control/command/emergency_cmd";
         [SerializeField] private string positionTopic = "/initialpose";
 
-        [SerializeField] private QoSSettings qosSettings = new QoSSettings();
+        [SerializeField] private QoSSettings qosSettings = new();
         [SerializeField] private AutowareVPPAdapter adapter;
         [SerializeField] private QoSSettings positionQosInput;
 
@@ -63,7 +60,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 input = VPPTurnSignal.NONE;
 
             // input
-            if (adapter.SignalInput != input)
+            if (!Equals(adapter.SignalInput, input))
                 adapter.SignalInput = input;
         }
 
@@ -107,7 +104,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     adapter.IsDefinedSteeringTireRotationRateInput = msg.Lateral.Is_defined_steering_tire_rotation_rate;
                     adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
                 }, qos);
-
             _gearCommandSubscriber = SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.GearCommand>(
                 gearCommandTopic,
                 msg => { adapter.AutomaticShiftInput = Ros2ToVPPUtilities.Ros2ToVPPShift(msg); }, qos);
@@ -122,6 +118,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                         // if (_isEmergency)
                         // adapter.AccelerationInput = emergencyDeceleration;
                     });
+
             _positionSubscriber = SimulatorROS2Node.CreateSubscription<geometry_msgs.msg.PoseWithCovarianceStamped>(
                 positionTopic, msg =>
                 {
