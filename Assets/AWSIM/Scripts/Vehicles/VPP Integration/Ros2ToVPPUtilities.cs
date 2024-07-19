@@ -1,17 +1,22 @@
+using VehiclePhysics;
+
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     public static class Ros2ToVPPUtilities
     {
-        public static int Ros2ToVPPShift(autoware_vehicle_msgs.msg.GearCommand gearCommand)
+        public static Gearbox.AutomaticGear Ros2ToVPPShift(autoware_vehicle_msgs.msg.GearCommand gearCommand)
         {
-            return gearCommand.Command switch
-            {
-                autoware_vehicle_msgs.msg.GearReport.NONE or autoware_vehicle_msgs.msg.GearReport.PARK => 1,
-                autoware_vehicle_msgs.msg.GearReport.REVERSE => 2,
-                autoware_vehicle_msgs.msg.GearReport.NEUTRAL => 3,
-                autoware_vehicle_msgs.msg.GearReport.DRIVE or autoware_vehicle_msgs.msg.GearReport.LOW => 4,
-                _ => 1
-            };
+            if (gearCommand.Command is autoware_vehicle_msgs.msg.GearReport.NONE
+                or autoware_vehicle_msgs.msg.GearReport.PARK)
+                return Gearbox.AutomaticGear.P;
+            if (gearCommand.Command == autoware_vehicle_msgs.msg.GearReport.REVERSE)
+                return Gearbox.AutomaticGear.R;
+            if (gearCommand.Command == autoware_vehicle_msgs.msg.GearReport.NEUTRAL)
+                return Gearbox.AutomaticGear.N;
+            if (gearCommand.Command is autoware_vehicle_msgs.msg.GearReport.DRIVE
+                or autoware_vehicle_msgs.msg.GearReport.LOW)
+                return Gearbox.AutomaticGear.D;
+            return Gearbox.AutomaticGear.P;
         }
 
         public static byte VPPToRos2Shift(int shift)
