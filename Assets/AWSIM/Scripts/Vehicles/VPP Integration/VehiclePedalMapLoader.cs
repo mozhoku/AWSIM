@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     public class VehiclePedalMapLoader : MonoBehaviour
     {
-        public TextAsset accelMapCsv;
-        public TextAsset brakeMapCsv;
+        public TextAsset AccelMapCsv;
+        public TextAsset BrakeMapCsv;
 
         public Dictionary<float, List<float>> AccelMap;
         public Dictionary<float, List<float>> AccelMapVertical;
@@ -22,22 +23,21 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void Start()
         {
             // Load the acceleration map
-            AccelMap = LoadMap(accelMapCsv);
-            AccelMapHeaders = LoadHeaders(accelMapCsv);
+            AccelMap = LoadMap(AccelMapCsv);
+            AccelMapHeaders = LoadHeaders(AccelMapCsv);
             AccelMapVertical = VerticalDict(AccelMap, AccelMapHeaders);
 
             // Load the brake map
-            BrakeMap = LoadMap(brakeMapCsv);
-            BrakeMapHeaders = LoadHeaders(brakeMapCsv);
+            BrakeMap = LoadMap(BrakeMapCsv);
+            BrakeMapHeaders = LoadHeaders(BrakeMapCsv);
             BrakeMapVertical = VerticalDict(BrakeMap, BrakeMapHeaders);
         }
 
-        private Dictionary<float, List<float>> LoadMap(TextAsset csv)
+        private static Dictionary<float, List<float>> LoadMap(TextAsset csv)
         {
             Dictionary<float, List<float>> map = new Dictionary<float, List<float>>();
             StringReader reader = new StringReader(csv.text);
-            string line = reader.ReadLine();
-            while ((line = reader.ReadLine()) != null)
+            while (reader.ReadLine() is { } line)
             {
                 string[] values = line.Split(',');
                 float key = float.Parse(values[0], CultureInfo.InvariantCulture);
@@ -54,14 +54,15 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         }
 
         // return adjusted headers for indexing etc.
-        private List<float> LoadHeaders(TextAsset csv)
+        private static List<float> LoadHeaders(TextAsset csv)
         {
             List<float> headerList = new List<float>();
             StringReader reader = new StringReader(csv.text);
 
             string line = reader.ReadLine();
-            string[] headers = line.Split(',');
+            string[] headers = line?.Split(',');
 
+            if (headers == null) return headerList;
             foreach (var s in headers)
             {
                 if (float.TryParse(s, out float result))
@@ -73,7 +74,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             return headerList;
         }
 
-        public float GetPedalPercent(Dictionary<float, List<float>> map, Dictionary<float, List<float>> vertMap,
+        public static float GetPedalPercent(Dictionary<float, List<float>> map, Dictionary<float, List<float>> vertMap,
             List<float> headers, float targetAccel, float currentSpeed)
         {
             // Get the closest speed value from the headers
@@ -104,7 +105,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             List<float> headers)
         {
             var verticalDict = new Dictionary<float, List<float>>();
-            // vertical groups
             foreach (var header in headers)
             {
                 var verticalGroup = new List<float>();
@@ -123,7 +123,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         // Get the closest value from a list (helper function, can be moved to a utility class)
         private static float GetClosestValueFromList(List<float> list, float value)
         {
-            // check for null
+            // null/empty check
             if (list == null || list.Count == 0)
             {
                 throw new ArgumentException("List cannot be null or empty.");

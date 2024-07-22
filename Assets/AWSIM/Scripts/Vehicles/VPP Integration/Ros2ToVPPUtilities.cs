@@ -6,17 +6,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
     {
         public static Gearbox.AutomaticGear Ros2ToVPPShift(autoware_vehicle_msgs.msg.GearCommand gearCommand)
         {
-            if (gearCommand.Command is autoware_vehicle_msgs.msg.GearReport.NONE
-                or autoware_vehicle_msgs.msg.GearReport.PARK)
-                return Gearbox.AutomaticGear.P;
-            if (gearCommand.Command == autoware_vehicle_msgs.msg.GearReport.REVERSE)
-                return Gearbox.AutomaticGear.R;
-            if (gearCommand.Command == autoware_vehicle_msgs.msg.GearReport.NEUTRAL)
-                return Gearbox.AutomaticGear.N;
-            if (gearCommand.Command is autoware_vehicle_msgs.msg.GearReport.DRIVE
-                or autoware_vehicle_msgs.msg.GearReport.LOW)
-                return Gearbox.AutomaticGear.D;
-            return Gearbox.AutomaticGear.P;
+            return gearCommand.Command switch
+            {
+                autoware_vehicle_msgs.msg.GearReport.NONE or autoware_vehicle_msgs.msg.GearReport.PARK => Gearbox
+                    .AutomaticGear.P,
+                autoware_vehicle_msgs.msg.GearReport.REVERSE => Gearbox.AutomaticGear.R,
+                autoware_vehicle_msgs.msg.GearReport.NEUTRAL => Gearbox.AutomaticGear.N,
+                autoware_vehicle_msgs.msg.GearReport.DRIVE or autoware_vehicle_msgs.msg.GearReport.LOW => Gearbox
+                    .AutomaticGear.D,
+                _ => Gearbox.AutomaticGear.P
+            };
         }
 
         public static byte VPPToRos2Shift(int shift)
@@ -54,8 +53,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             };
         }
 
-        public static VPPTurnSignal Ros2ToVPPHazard(
-            autoware_vehicle_msgs.msg.HazardLightsCommand hazardLightsCommand)
+        public static VPPTurnSignal Ros2ToVPPHazard(autoware_vehicle_msgs.msg.HazardLightsCommand hazardLightsCommand)
         {
             return hazardLightsCommand.Command switch
             {
