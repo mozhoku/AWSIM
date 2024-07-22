@@ -85,9 +85,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private Rigidbody _rigidbody;
         private VehiclePedalMapLoader _pedalMap;
 
-        private float currentSpeed;
-        private float previousAcceleration;
-        private float currentJerk;
+        private float _currentSpeed;
+        private float _previousAcceleration;
+        private float _currentJerk;
 
         private void Start()
         {
@@ -120,29 +120,33 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
             _frontWheelCollider2.steerAngle = _steerAngleInput;
 
-            // set accel
-            if (_accelerationInput > 0 || _velocityInput > 0)
+            if (_isAccelerationDefinedInput)
             {
-                var throttlePercent = _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _pedalMap.AccelMapVertical,
-                    _pedalMap.AccelMapHeaders, _accelerationInput, currentSpeed);
-                // Debug.Log("Throttle %: " + throttlePercent);
-                throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
-                _vehicleController.data.bus[Channel.Input][InputData.Throttle] = (int)throttlePercent;
+                // set accel
+                if (_accelerationInput > 0 || _velocityInput > 0)
+                {
+                    var throttlePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.AccelMap, _pedalMap.AccelMapVertical,
+                        _pedalMap.AccelMapHeaders, _accelerationInput, _currentSpeed);
+                    // Debug.Log("Throttle %: " + throttlePercent);
+                    throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
+                    _vehicleController.data.bus[Channel.Input][InputData.Throttle] = (int)throttlePercent;
+                }
+
+                // set brake
+                if (_accelerationInput < 0 || _velocityInput < 0)
+                {
+                    var brakePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.BrakeMap, _pedalMap.BrakeMapVertical,
+                        _pedalMap.BrakeMapHeaders, _accelerationInput, _currentSpeed);
+                    // Debug.Log("Brake %: " + brakePercent);
+                    brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
+                    _vehicleController.data.bus[Channel.Input][InputData.Brake] = (int)brakePercent;
+                }
             }
 
-            // set brake
-            if (_accelerationInput < 0 || _velocityInput < 0)
-            {
-                var brakePercent = _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _pedalMap.BrakeMapVertical,
-                    _pedalMap.BrakeMapHeaders, _accelerationInput, currentSpeed);
-                // Debug.Log("Brake %: " + brakePercent);
-                brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] = (int)brakePercent;
-            }
 
             // Store current values
             // speed
-            currentSpeed = _vehicleController.speed;
+            _currentSpeed = _vehicleController.speed;
             // jerk
             // if (_isJerkDefinedInput)
             // {
@@ -158,7 +162,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
             // Debug.Log("gearCommand: " + _automaticShiftInput);
             // Debug.Log("VPGearReport: " + VPGearReport);
-            VPVelocityReport = transform.InverseTransformDirection(_rigidbody.velocity.normalized * currentSpeed);
+            VPVelocityReport = transform.InverseTransformDirection(_rigidbody.velocity.normalized * _currentSpeed);
             VPAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
             VPSteeringReport = _frontWheelCollider1.steerAngle;
             // VPHazardLightsReport = (int)_signalInput;

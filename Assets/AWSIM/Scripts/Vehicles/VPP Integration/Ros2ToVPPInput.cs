@@ -27,9 +27,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private ISubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped> _vehicleEmergencyStampedSubscriber;
         private ISubscription<geometry_msgs.msg.PoseWithCovarianceStamped> _positionSubscriber;
 
-        VPPTurnSignal turnIndicatorsSignal = VPPTurnSignal.NONE;
-        VPPTurnSignal hazardLightsSignal = VPPTurnSignal.NONE;
-        VPPTurnSignal input = VPPTurnSignal.NONE;
+        private VPPTurnSignal _turnIndicatorsSignal = VPPTurnSignal.NONE;
+        private VPPTurnSignal _hazardLightsSignal = VPPTurnSignal.NONE;
+        private VPPTurnSignal _input = VPPTurnSignal.NONE;
 
         private bool _isEmergency;
 
@@ -52,16 +52,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void UpdateVehicleTurnSignal()
         {
             // HAZARD > LEFT, RIGHT > NONE
-            if (hazardLightsSignal == VPPTurnSignal.HAZARD)
-                input = hazardLightsSignal;
-            else if (turnIndicatorsSignal is VPPTurnSignal.LEFT or VPPTurnSignal.RIGHT)
-                input = turnIndicatorsSignal;
+            if (_hazardLightsSignal == VPPTurnSignal.HAZARD)
+                _input = _hazardLightsSignal;
+            else if (_turnIndicatorsSignal is VPPTurnSignal.LEFT or VPPTurnSignal.RIGHT)
+                _input = _turnIndicatorsSignal;
             else
-                input = VPPTurnSignal.NONE;
+                _input = VPPTurnSignal.NONE;
 
             // input
-            if (!Equals(adapter.SignalInput, input))
-                adapter.SignalInput = input;
+            if (!Equals(adapter.SignalInput, _input))
+                adapter.SignalInput = _input;
         }
 
         private void Start()
@@ -73,7 +73,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand>(
                     turnIndicatorsCommandTopic, msg =>
                     {
-                        turnIndicatorsSignal = Ros2ToVPPUtilities.Ros2ToVPPTurnSignal(msg);
+                        _turnIndicatorsSignal = Ros2ToVPPUtilities.Ros2ToVPPTurnSignal(msg);
                         UpdateVehicleTurnSignal();
                     }, qos);
 
@@ -81,7 +81,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.HazardLightsCommand>(
                     hazardLightsCommandTopic, msg =>
                     {
-                        hazardLightsSignal = Ros2ToVPPUtilities.Ros2ToVPPHazard(msg);
+                        _hazardLightsSignal = Ros2ToVPPUtilities.Ros2ToVPPHazard(msg);
                         UpdateVehicleTurnSignal();
                     }, qos);
 
@@ -104,6 +104,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     adapter.IsDefinedSteeringTireRotationRateInput = msg.Lateral.Is_defined_steering_tire_rotation_rate;
                     adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
                 }, qos);
+
             _gearCommandSubscriber = SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.GearCommand>(
                 gearCommandTopic,
                 msg => { adapter.AutomaticShiftInput = Ros2ToVPPUtilities.Ros2ToVPPShift(msg); }, qos);

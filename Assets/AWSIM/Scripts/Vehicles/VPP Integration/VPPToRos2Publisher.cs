@@ -1,5 +1,6 @@
 using ROS2;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VehiclePhysics;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
@@ -14,11 +15,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private string _velocityReportTopic = "/vehicle/status/velocity_status";
         [SerializeField] private string _frameId = "base_link";
 
-        [Range(1, 60)] [SerializeField] private int _publishHz = 30;
-        [SerializeField] private QoSSettings qosSettings;
+        [Range(1, 60)][SerializeField] private int _publishHz = 30;
+        [SerializeField] private QoSSettings _qosSettings;
         [SerializeField] private AutowareVPPAdapter _adapter;
 
-        // msgs.
+        // messages
         private autoware_vehicle_msgs.msg.ControlModeReport _controlModeReportMsg;
         private autoware_vehicle_msgs.msg.GearReport _gearReportMsg;
         private autoware_vehicle_msgs.msg.SteeringReport _steeringReportMsg;
@@ -26,7 +27,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private autoware_vehicle_msgs.msg.HazardLightsReport _hazardLightsReportMsg;
         private autoware_vehicle_msgs.msg.VelocityReport _velocityReportMsg;
 
-        // publisher.
+        // publisher
         private IPublisher<autoware_vehicle_msgs.msg.ControlModeReport> _controlModeReportPublisher;
         private IPublisher<autoware_vehicle_msgs.msg.GearReport> _gearReportPublisher;
         private IPublisher<autoware_vehicle_msgs.msg.SteeringReport> _steeringReportPublisher;
@@ -39,21 +40,18 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private void Start()
         {
-            // Create publisher.
-            var qos = qosSettings.GetQoSProfile();
+            // Create publisher
+            var qos = _qosSettings.GetQoSProfile();
             _controlModeReportPublisher =
-                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.ControlModeReport>(_controlModeReportTopic,
-                    qos);
+                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.ControlModeReport>(_controlModeReportTopic, qos);
             _gearReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.GearReport>(_gearReportTopic, qos);
             _steeringReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.SteeringReport>(_steeringReportTopic, qos);
             _turnIndicatorsReportPublisher =
-                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.TurnIndicatorsReport>(
-                    _turnIndicatorsReportTopic, qos);
+                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.TurnIndicatorsReport>(_turnIndicatorsReportTopic, qos);
             _hazardLightsReportPublisher =
-                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.HazardLightsReport>(
-                    _hazardLightsReportTopic, qos);
+                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.HazardLightsReport>(_hazardLightsReportTopic, qos);
             _velocityReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.VelocityReport>(_velocityReportTopic, qos);
 
@@ -80,7 +78,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 return;
 
             // Update timer.
-            _timer += Time.deltaTime;
+            _timer += Time.fixedDeltaTime;
 
             // Matching publish to hz.
             var interval = 1.0f / _publishHz;
