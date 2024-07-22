@@ -1,13 +1,12 @@
 using ROS2;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     [RequireComponent(typeof(AutowareVPPAdapter))]
     public class Ros2ToVPPInput : MonoBehaviour
     {
-        // topics
+        [Header("Topics")][SerializeField] private string controlModeTopic = "/vehicle/status/control_mode";
         [SerializeField] private string turnIndicatorsCommandTopic = "/control/command/turn_indicators_cmd";
         [SerializeField] private string hazardLightsCommandTopic = "/control/command/hazard_lights_cmd";
         [SerializeField] private string controlCommandTopic = "/control/command/control_cmd";
@@ -19,7 +18,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private AutowareVPPAdapter adapter;
         [SerializeField] private QoSSettings positionQosInput;
 
-        // subscribers.
+        // subscribers
+        private ISubscription<autoware_vehicle_msgs.msg.ControlModeReport> _controlModeReportSubscriber;
         private ISubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand> _turnIndicatorsCommandSubscriber;
         private ISubscription<autoware_vehicle_msgs.msg.HazardLightsCommand> _hazardLightsCommandSubscriber;
         private ISubscription<autoware_control_msgs.msg.Control> _controlCommandSubscriber;
@@ -27,9 +27,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private ISubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped> _vehicleEmergencyStampedSubscriber;
         private ISubscription<geometry_msgs.msg.PoseWithCovarianceStamped> _positionSubscriber;
 
-        private VPPTurnSignal _turnIndicatorsSignal = VPPTurnSignal.NONE;
-        private VPPTurnSignal _hazardLightsSignal = VPPTurnSignal.NONE;
-        private VPPTurnSignal _input = VPPTurnSignal.NONE;
+        private AutowareVPPAdapter.VPPSignal _turnIndicatorsSignal = AutowareVPPAdapter.VPPSignal.None;
+        private AutowareVPPAdapter.VPPSignal _hazardLightsSignal = AutowareVPPAdapter.VPPSignal.None;
+        private AutowareVPPAdapter.VPPSignal _input = AutowareVPPAdapter.VPPSignal.None;
 
         private bool _isEmergency;
 
@@ -52,12 +52,12 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void UpdateVehicleTurnSignal()
         {
             // HAZARD > LEFT, RIGHT > NONE
-            if (_hazardLightsSignal == VPPTurnSignal.HAZARD)
+            if (_hazardLightsSignal == AutowareVPPAdapter.VPPSignal.Hazard)
                 _input = _hazardLightsSignal;
-            else if (_turnIndicatorsSignal is VPPTurnSignal.LEFT or VPPTurnSignal.RIGHT)
+            else if (_turnIndicatorsSignal is AutowareVPPAdapter.VPPSignal.Left or AutowareVPPAdapter.VPPSignal.Right)
                 _input = _turnIndicatorsSignal;
             else
-                _input = VPPTurnSignal.NONE;
+                _input = AutowareVPPAdapter.VPPSignal.None;
 
             // input
             if (!Equals(adapter.SignalInput, _input))
@@ -68,6 +68,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             var qos = qosSettings.GetQoSProfile();
             var positionQoS = positionQosInput.GetQoSProfile();
+
+            _controlModeReportSubscriber =
+                SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
+                    controlModeTopic,
+                    msg => { adapter.ControlModeInput = Ros2ToVPPUtilities.Ros2ToVPPControlMode(msg); }, qos);
 
             _turnIndicatorsCommandSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand>(
@@ -141,6 +146,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private void OnDestroy()
         {
+            SimulatorROS2Node.RemoveSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
+                _controlModeReportSubscriber);
             SimulatorROS2Node.RemoveSubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand>(
                 _turnIndicatorsCommandSubscriber);
             SimulatorROS2Node.RemoveSubscription<autoware_vehicle_msgs.msg.HazardLightsCommand>(

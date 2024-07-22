@@ -30,46 +30,84 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             };
         }
 
-        public static VPPTurnSignal Ros2ToVPPTurnSignal(
+        // Turn Signal conversion
+        public static AutowareVPPAdapter.VPPSignal Ros2ToVPPTurnSignal(
             autoware_vehicle_msgs.msg.TurnIndicatorsCommand turnIndicatorsCommand)
         {
             return turnIndicatorsCommand.Command switch
             {
-                autoware_vehicle_msgs.msg.TurnIndicatorsCommand.DISABLE => VPPTurnSignal.NONE,
-                autoware_vehicle_msgs.msg.TurnIndicatorsCommand.ENABLE_LEFT => VPPTurnSignal.LEFT,
-                autoware_vehicle_msgs.msg.TurnIndicatorsCommand.ENABLE_RIGHT => VPPTurnSignal.RIGHT,
-                _ => VPPTurnSignal.NONE
+                autoware_vehicle_msgs.msg.TurnIndicatorsCommand.DISABLE => AutowareVPPAdapter.VPPSignal.None,
+                autoware_vehicle_msgs.msg.TurnIndicatorsCommand.ENABLE_LEFT => AutowareVPPAdapter.VPPSignal.Left,
+                autoware_vehicle_msgs.msg.TurnIndicatorsCommand.ENABLE_RIGHT => AutowareVPPAdapter.VPPSignal.Right,
+                _ => AutowareVPPAdapter.VPPSignal.None
             };
         }
 
-        public static byte VPPToRos2TurnSignal(VPPTurnSignal turnSignal)
+        public static byte VPPToRos2TurnSignal(AutowareVPPAdapter.VPPSignal turnSignal)
         {
             return turnSignal switch
             {
-                VPPTurnSignal.NONE => autoware_vehicle_msgs.msg.TurnIndicatorsReport.DISABLE,
-                VPPTurnSignal.LEFT => autoware_vehicle_msgs.msg.TurnIndicatorsReport.ENABLE_LEFT,
-                VPPTurnSignal.RIGHT => autoware_vehicle_msgs.msg.TurnIndicatorsReport.ENABLE_RIGHT,
+                AutowareVPPAdapter.VPPSignal.None => autoware_vehicle_msgs.msg.TurnIndicatorsReport.DISABLE,
+                AutowareVPPAdapter.VPPSignal.Left => autoware_vehicle_msgs.msg.TurnIndicatorsReport.ENABLE_LEFT,
+                AutowareVPPAdapter.VPPSignal.Right => autoware_vehicle_msgs.msg.TurnIndicatorsReport.ENABLE_RIGHT,
                 _ => autoware_vehicle_msgs.msg.TurnIndicatorsReport.DISABLE
             };
         }
 
-        public static VPPTurnSignal Ros2ToVPPHazard(autoware_vehicle_msgs.msg.HazardLightsCommand hazardLightsCommand)
+        // Hazard Lights conversion
+        public static AutowareVPPAdapter.VPPSignal Ros2ToVPPHazard(
+            autoware_vehicle_msgs.msg.HazardLightsCommand hazardLightsCommand)
         {
             return hazardLightsCommand.Command switch
             {
-                autoware_vehicle_msgs.msg.HazardLightsCommand.ENABLE => VPPTurnSignal.HAZARD,
-                autoware_vehicle_msgs.msg.HazardLightsCommand.DISABLE => VPPTurnSignal.NONE,
-                _ => VPPTurnSignal.NONE
+                autoware_vehicle_msgs.msg.HazardLightsCommand.ENABLE => AutowareVPPAdapter.VPPSignal.Hazard,
+                autoware_vehicle_msgs.msg.HazardLightsCommand.DISABLE => AutowareVPPAdapter.VPPSignal.None,
+                _ => AutowareVPPAdapter.VPPSignal.None
             };
         }
 
-        public static byte VPPToRos2Hazard(VPPTurnSignal turnSignal)
+        public static byte VPPToRos2Hazard(AutowareVPPAdapter.VPPSignal turnSignal)
         {
             return turnSignal switch
             {
-                VPPTurnSignal.HAZARD => autoware_vehicle_msgs.msg.HazardLightsReport.ENABLE,
-                VPPTurnSignal.NONE => autoware_vehicle_msgs.msg.HazardLightsReport.DISABLE,
+                AutowareVPPAdapter.VPPSignal.Hazard => autoware_vehicle_msgs.msg.HazardLightsReport.ENABLE,
+                AutowareVPPAdapter.VPPSignal.None => autoware_vehicle_msgs.msg.HazardLightsReport.DISABLE,
                 _ => autoware_vehicle_msgs.msg.HazardLightsReport.DISABLE
+            };
+        }
+
+        // Control Mode conversion
+        public static AutowareVPPAdapter.VPPControlMode Ros2ToVPPControlMode(
+            autoware_vehicle_msgs.msg.ControlModeReport controlMode)
+        {
+            return controlMode.Mode switch
+            {
+                autoware_vehicle_msgs.msg.ControlModeReport.AUTONOMOUS => AutowareVPPAdapter.VPPControlMode.Autonomous,
+                autoware_vehicle_msgs.msg.ControlModeReport.AUTONOMOUS_STEER_ONLY => AutowareVPPAdapter.VPPControlMode
+                    .AutonomousSteerOnly,
+                autoware_vehicle_msgs.msg.ControlModeReport.AUTONOMOUS_VELOCITY_ONLY => AutowareVPPAdapter
+                    .VPPControlMode
+                    .AutonomousVelocityOnly,
+                autoware_vehicle_msgs.msg.ControlModeReport.MANUAL => AutowareVPPAdapter.VPPControlMode.Manual,
+                autoware_vehicle_msgs.msg.ControlModeReport.DISENGAGED => AutowareVPPAdapter.VPPControlMode.Disengaged,
+                autoware_vehicle_msgs.msg.ControlModeReport.NOT_READY => AutowareVPPAdapter.VPPControlMode.NotReady,
+                _ => AutowareVPPAdapter.VPPControlMode.NoCommand
+            };
+        }
+
+        public static byte VPPToRos2ControlMode(AutowareVPPAdapter.VPPControlMode controlMode)
+        {
+            return controlMode switch
+            {
+                AutowareVPPAdapter.VPPControlMode.Autonomous => autoware_vehicle_msgs.msg.ControlModeReport.AUTONOMOUS,
+                AutowareVPPAdapter.VPPControlMode.AutonomousSteerOnly => autoware_vehicle_msgs.msg.ControlModeReport
+                    .AUTONOMOUS_STEER_ONLY,
+                AutowareVPPAdapter.VPPControlMode.AutonomousVelocityOnly => autoware_vehicle_msgs.msg.ControlModeReport
+                    .AUTONOMOUS_VELOCITY_ONLY,
+                AutowareVPPAdapter.VPPControlMode.Manual => autoware_vehicle_msgs.msg.ControlModeReport.MANUAL,
+                AutowareVPPAdapter.VPPControlMode.Disengaged => autoware_vehicle_msgs.msg.ControlModeReport.DISENGAGED,
+                AutowareVPPAdapter.VPPControlMode.NotReady => autoware_vehicle_msgs.msg.ControlModeReport.NOT_READY,
+                _ => autoware_vehicle_msgs.msg.ControlModeReport.NOT_READY
             };
         }
     }

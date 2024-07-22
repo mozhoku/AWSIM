@@ -1363,6 +1363,7 @@ GameObject:
   - component: {fileID: 5004268421890106903}
   - component: {fileID: 1469440915397572680}
   - component: {fileID: 8380214914162268112}
+  - component: {fileID: 1782664888259975789}
   - component: {fileID: 6684375080505768016}
   m_Layer: 6
   m_Name: Lexus RX450h 2015 Sample Sensor
@@ -1544,7 +1545,7 @@ MonoBehaviour:
     preload: 0
     stiffness: 0.5
   steering:
-    maxSteerAngle: 60
+    maxSteerAngle: 50
     toeAngle: 0
     ackerman: 1
     ackermanReference: {fileID: 5055317025945945549}
@@ -1845,10 +1846,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dbceea492288af5a9a663c606ad86a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sleepVelocityThreshold: 0
-  sleepTimeThreshold: 0
   _frontWheelCollider1: {fileID: 5429697449238222761}
   _frontWheelCollider2: {fileID: 718712847548543310}
+  _updatePositionOffsetY: 1.33
+  _updatePositionRayOriginY: 1000
 --- !u!114 &8380214914162268112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1861,6 +1862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca678817e2c893b797f2e68f1cd5d67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controlModeTopic: /vehicle/status/control_mode
   turnIndicatorsCommandTopic: /control/command/turn_indicators_cmd
   hazardLightsCommandTopic: /control/command/hazard_lights_cmd
   controlCommandTopic: /control/command/control_cmd
@@ -1878,6 +1880,41 @@ MonoBehaviour:
     DurabilityPolicy: 2
     HistoryPolicy: 1
     Depth: 1
+--- !u!114 &1782664888259975789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4981081891045692864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e59ef37f82b1643d0a1d62edf54a2c1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _adapter: {fileID: 1469440915397572680}
+  _vpVehicle: {fileID: 609743776972327103}
+  brakeLights:
+  - meshRenderer: {fileID: 8794606528374986436}
+    materialIndex: 0
+    lightingColor: {r: 2.9960785, g: 0, b: 0, a: 0}
+    emissionIntensity: 0
+  leftTurnSignalLights:
+  - meshRenderer: {fileID: 4161163181542201040}
+    materialIndex: 0
+    lightingColor: {r: 5.9921575, g: 1.7623993, b: 0, a: 0}
+    emissionIntensity: 0
+  rightTurnSignalLights:
+  - meshRenderer: {fileID: 8262602167162004868}
+    materialIndex: 0
+    lightingColor: {r: 8, g: 2.3529413, b: 0, a: 0}
+    emissionIntensity: 0
+  turnSignalTimerIntervalSec: 0.5
+  _reverseLights:
+  - meshRenderer: {fileID: 2064283678226759879}
+    materialIndex: 0
+    lightingColor: {r: 2.9960787, g: 2.9960787, b: 2.9960787, a: 0}
+    emissionIntensity: 0
 --- !u!114 &6684375080505768016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1890,8 +1927,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d4d0dcd4f570d529785cd333a2fc7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelMapCsv: {fileID: 4900000, guid: 5fbe6425a5b4eb099ad74ad0e8fb2c4e, type: 3}
-  brakeMapCsv: {fileID: 4900000, guid: 0a9feb186569833eda4fd5dc70c129c3, type: 3}
+  AccelMapCsv: {fileID: 4900000, guid: 5fbe6425a5b4eb099ad74ad0e8fb2c4e, type: 3}
+  BrakeMapCsv: {fileID: 4900000, guid: 0a9feb186569833eda4fd5dc70c129c3, type: 3}
 --- !u!1 &5383865282617533158
 GameObject:
   m_ObjectHideFlags: 0
@@ -4011,11 +4048,11 @@ MonoBehaviour:
   _velocityReportTopic: /vehicle/status/velocity_status
   _frameId: base_link
   _publishHz: 30
-  qosSettings:
-    ReliabilityPolicy: 1
-    DurabilityPolicy: 2
-    HistoryPolicy: 1
-    Depth: 1
+  _qosSettings:
+    ReliabilityPolicy: 0
+    DurabilityPolicy: 0
+    HistoryPolicy: 0
+    Depth: 0
   _adapter: {fileID: 1469440915397572680}
 --- !u!1001 &2465439770172797818
 PrefabInstance:
