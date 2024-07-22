@@ -1419,10 +1419,25 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2034560788105417487, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: brakeLights.Array.data[0].lightingColor.r
+      value: 1.4980392
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: _reverseLights.Array.data[0].lightingColor.b
+      value: 1.4980391
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: _reverseLights.Array.data[0].lightingColor.g
+      value: 1.4980391
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: _reverseLights.Array.data[0].lightingColor.r
+      value: 1.4980391
       objectReference: {fileID: 0}
     - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
@@ -1495,11 +1510,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824200548975616440, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8627087200372202738, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
       propertyPath: m_Enabled
       value: 1

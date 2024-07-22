@@ -43,15 +43,18 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             // Create publisher
             var qos = _qosSettings.GetQoSProfile();
             _controlModeReportPublisher =
-                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.ControlModeReport>(_controlModeReportTopic, qos);
+                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.ControlModeReport>(_controlModeReportTopic,
+                    qos);
             _gearReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.GearReport>(_gearReportTopic, qos);
             _steeringReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.SteeringReport>(_steeringReportTopic, qos);
             _turnIndicatorsReportPublisher =
-                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.TurnIndicatorsReport>(_turnIndicatorsReportTopic, qos);
+                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.TurnIndicatorsReport>(
+                    _turnIndicatorsReportTopic, qos);
             _hazardLightsReportPublisher =
-                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.HazardLightsReport>(_hazardLightsReportTopic, qos);
+                SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.HazardLightsReport>(
+                    _hazardLightsReportTopic, qos);
             _velocityReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.VelocityReport>(_velocityReportTopic, qos);
 
@@ -88,7 +91,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _timer = 0;
 
             // ControlModeReport
-            _controlModeReportMsg.Mode = autoware_vehicle_msgs.msg.ControlModeReport.AUTONOMOUS;
+            _controlModeReportMsg.Mode = Ros2ToVPPUtilities.VPPToRos2ControlMode(_adapter.VPControlModeReport);
 
             // GearReport
             _gearReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Shift(_adapter.VPGearReport);
@@ -97,10 +100,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _steeringReportMsg.Steering_tire_angle = -1 * _adapter.VPSteeringReport * Mathf.Deg2Rad;
 
             // TurnIndicatorsReport
-            // _turnIndicatorsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2TurnSignal(_vpVehicle.SignalInput);
+            _turnIndicatorsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2TurnSignal(_adapter.SignalInput);
 
             // HazardLightsReport
-            // _hazardLightsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Hazard(_vpVehicle.SignalInput);
+            _hazardLightsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Hazard(_adapter.SignalInput);
 
             // VelocityReport
             var rosLinearVelocity = ROS2Utility.UnityToRosPosition(_adapter.VPVelocityReport);

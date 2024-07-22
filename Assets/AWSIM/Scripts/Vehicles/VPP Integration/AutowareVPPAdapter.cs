@@ -6,16 +6,27 @@ using Vector3 = UnityEngine.Vector3;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
-    public enum VPPTurnSignal
-    {
-        NONE,
-        LEFT,
-        RIGHT,
-        HAZARD
-    }
-
     public class AutowareVPPAdapter : MonoBehaviour
     {
+        public enum VPPSignal
+        {
+            None,
+            Left,
+            Right,
+            Hazard
+        }
+
+        public enum VPPControlMode
+        {
+            NoCommand,
+            Autonomous,
+            AutonomousSteerOnly,
+            AutonomousVelocityOnly,
+            Manual,
+            Disengaged,
+            NotReady
+        }
+
         // [Header("Physics Settings (experimental)")] [SerializeField]
         // float sleepVelocityThreshold;
         //
@@ -24,16 +35,18 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private VPWheelCollider _frontWheelCollider1;
         [SerializeField] private VPWheelCollider _frontWheelCollider2;
 
-        // Inputs
+        /// <summary>
+        /// Inputs
+        /// </summary>
 
         // Initial Position Inputs from Rviz
         [NonSerialized] public Vector3 PositionInput;
+
         [NonSerialized] public Quaternion RotationInput;
         [NonSerialized] public bool WillUpdatePositionInput;
 
-        ////////////////////////////////////
-        // Control commands from Autoware //
-        ////////////////////////////////////
+        // Control commands from Autoware
+
         //longitudinal
         [NonSerialized] public float VelocityInput;
         private float _velocityInput => VelocityInput;
@@ -65,11 +78,15 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private Gearbox.AutomaticGear _automaticShiftInput => AutomaticShiftInput;
 
         // Signal commands from Autoware
-        [NonSerialized] public VPPTurnSignal SignalInput;
-        private VPPTurnSignal _signalInput => SignalInput;
+        [NonSerialized] public VPPSignal SignalInput;
+        private VPPSignal _signalInput => SignalInput;
+
+        // Control mode from Autoware
+        [NonSerialized] public VPPControlMode ControlModeInput;
+        private VPPControlMode _controlModeInput => ControlModeInput;
 
         // Outputs from Unity/VPP
-        // private int _controlModeReport;
+        [NonSerialized] public VPPControlMode VPControlModeReport;
         [NonSerialized] public int VPGearReport;
         [NonSerialized] public Vector3 VPVelocityReport;
         [NonSerialized] public Vector3 VPAngularVelocityReport;
@@ -77,17 +94,21 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [NonSerialized] public int VPTurnIndicatorsReport;
         [NonSerialized] public int VPHazardLightsReport;
 
+        // VPP components
         private VPVehicleController _vehicleController;
-
         // private VPTelemetry _telemetry;
         // private VPVisualEffects _visualEffects;
         // private VPVehicleToolkit _toolkit;
+
         private Rigidbody _rigidbody;
         private VehiclePedalMapLoader _pedalMap;
 
         private float _currentSpeed;
         private float _previousAcceleration;
         private float _currentJerk;
+
+        [SerializeField] private float _updatePositionOffsetY = 1.33f;
+        [SerializeField] private float _updatePositionRayOriginY = 1000.0f;
 
         private void Start()
         {
@@ -96,17 +117,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _pedalMap = GetComponent<VehiclePedalMapLoader>();
         }
 
-
         private void FixedUpdate()
         {
-            ////////////////////////////////
-            // Debugs for Autoware Inputs //
-            ////////////////////////////////
-            // Debug.Log("AutomaticShiftInput: " + AutomaticShiftInput);
-            // Debug.Log("Input accel: " + AccelerationInput);
-            // Debug.Log("Input velo: " + VelocityInput);
-            // Debug.Log("JerkInput: " + JerkInput);
-
             // Update the ego position depending on RViz Input.
             if (WillUpdatePositionInput)
             {
@@ -114,18 +126,86 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 WillUpdatePositionInput = false;
             }
 
-            // directly set wheel angles for now (will simulate steering wheel input later on)
+            // Control the vehicle based on the control mode
+            ControlVehicle(_controlModeInput);
+        }
+
+        private void ControlVehicle(VPPControlMode controlMode)
+        {
+            switch (controlMode)
+            {
+                case VPPControlMode.NoCommand:
+                    break;
+
+                case VPPControlMode.Autonomous:
+                    HandleTurnSignal();
+                    HandleHazardLights();
+                    HandleSteer();
+                    HandleGear();
+                    HandleAcceleration();
+                    break;
+
+                case VPPControlMode.AutonomousSteerOnly:
+                    HandleTurnSignal();
+                    HandleHazardLights();
+                    HandleSteer();
+                    HandleGear();
+                    break;
+
+                case VPPControlMode.AutonomousVelocityOnly:
+                    HandleTurnSignal();
+                    HandleHazardLights();
+                    HandleGear();
+                    HandleAcceleration();
+                    break;
+
+                case VPPControlMode.Manual:
+                    break;
+
+                case VPPControlMode.Disengaged:
+                    break;
+
+                case VPPControlMode.NotReady:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(controlMode), controlMode, null);
+            }
+
+            ReportVehicleState();
+        }
+
+        private void HandleHazardLights()
+        {
+        }
+
+        private void HandleTurnSignal()
+        {
+        }
+
+        private void HandleSteer()
+        {
+            // set wheel angles for now (will simulate steering wheel input later on)
             _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
             _frontWheelCollider1.steerAngle = _steerAngleInput;
             _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
             _frontWheelCollider2.steerAngle = _steerAngleInput;
+        }
 
+        private void HandleGear()
+        {
+            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)_automaticShiftInput;
+        }
+
+        private void HandleAcceleration()
+        {
             if (_isAccelerationDefinedInput)
             {
                 // set accel
                 if (_accelerationInput > 0 || _velocityInput > 0)
                 {
-                    var throttlePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.AccelMap, _pedalMap.AccelMapVertical,
+                    var throttlePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.AccelMap,
+                        _pedalMap.AccelMapVertical,
                         _pedalMap.AccelMapHeaders, _accelerationInput, _currentSpeed);
                     // Debug.Log("Throttle %: " + throttlePercent);
                     throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
@@ -135,7 +215,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 // set brake
                 if (_accelerationInput < 0 || _velocityInput < 0)
                 {
-                    var brakePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.BrakeMap, _pedalMap.BrakeMapVertical,
+                    var brakePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.BrakeMap,
+                        _pedalMap.BrakeMapVertical,
                         _pedalMap.BrakeMapHeaders, _accelerationInput, _currentSpeed);
                     // Debug.Log("Brake %: " + brakePercent);
                     brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
@@ -143,62 +224,37 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 }
             }
 
-
             // Store current values
-            // speed
             _currentSpeed = _vehicleController.speed;
-            // jerk
-            // if (_isJerkDefinedInput)
-            // {
-            //     float currentAcceleration = _vehicleController.localAcceleration.magnitude;
-            //     currentJerk = (currentAcceleration - previousAcceleration) / Time.fixedDeltaTime;
-            //     previousAcceleration = currentAcceleration;
-            // }
+            if (_isJerkDefinedInput)
+            {
+                float currentAcceleration = _vehicleController.localAcceleration.magnitude;
+                _currentJerk = (currentAcceleration - _previousAcceleration) / Time.fixedDeltaTime;
+                _previousAcceleration = currentAcceleration;
+            }
+        }
 
-            // set gear
-            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)_automaticShiftInput;
-
-            // Update values sent to the ros2 publisher
+        // TODO: report jerk state (mozzz)
+        private void ReportVehicleState()
+        {
+            VPControlModeReport = _controlModeInput;
+            VPHazardLightsReport = (int)_signalInput;
+            VPTurnIndicatorsReport = (int)_signalInput;
+            VPSteeringReport = _frontWheelCollider1.steerAngle;
             VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
-            // Debug.Log("gearCommand: " + _automaticShiftInput);
-            // Debug.Log("VPGearReport: " + VPGearReport);
             VPVelocityReport = transform.InverseTransformDirection(_rigidbody.velocity.normalized * _currentSpeed);
             VPAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
-            VPSteeringReport = _frontWheelCollider1.steerAngle;
-            // VPHazardLightsReport = (int)_signalInput;
-            // VPTurnIndicatorsReport = (int)_signalInput;
-
-            // Debug.Log("rigidbody veloc: " + _rigidbody.velocity.magnitude);
-            // Debug.Log("vpp veloc: " + currentSpeed);
-            // Debug.Log("VPVelocityReport: " + VPVelocityReport.magnitude);
         }
 
-        private static float RemapValue(float value, float from1, float to1, float from2, float to2)
-        {
-            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-        }
-
-        private static int RemapValue(float value, float from1, float to1, int from2, int to2)
-        {
-            return (int)((value - from1) / (to1 - from1) * (to2 - from2) + from2);
-        }
-
-        /// <summary>
-        /// Convert vpp speed to km/h
-        /// </summary>
-        // private static float ConvertToKmh(float vppSpeed)
-        // {
-        //     return vppSpeed * 3.6f / 1000;
-        // }
         private void UpdateEgoPosition()
         {
             // Method to update the position based on PositionInput
-            Vector3 rayOrigin = new Vector3(PositionInput.x, 1000.0f, PositionInput.z);
+            Vector3 rayOrigin = new Vector3(PositionInput.x, _updatePositionRayOriginY, PositionInput.z);
             Vector3 rayDirection = Vector3.down;
 
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, Mathf.Infinity))
             {
-                PositionInput = new Vector3(PositionInput.x, hit.point.y + 1.33f, PositionInput.z);
+                PositionInput = new Vector3(PositionInput.x, hit.point.y + _updatePositionOffsetY, PositionInput.z);
                 transform.SetPositionAndRotation(PositionInput, RotationInput);
             }
             else
@@ -206,6 +262,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 Debug.LogWarning(
                     "No mesh or collider detected on target location. Please ensure that the target location is on a mesh or collider.");
             }
+        }
+
+        private static int RemapValue(float value, float from1, float to1, int from2, int to2)
+        {
+            return (int)((value - from1) / (to1 - from1) * (to2 - from2) + from2);
         }
     }
 }

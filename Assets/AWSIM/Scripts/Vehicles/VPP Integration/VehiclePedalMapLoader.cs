@@ -20,6 +20,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         public Dictionary<float, List<float>> BrakeMapVertical;
         [NonSerialized] public List<float> BrakeMapHeaders = new();
 
+        private static CultureInfo _culture = CultureInfo.InvariantCulture;
+
         private void Start()
         {
             // Load the acceleration map
@@ -40,11 +42,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             while (reader.ReadLine() is { } line)
             {
                 string[] values = line.Split(',');
-                float key = float.Parse(values[0], CultureInfo.InvariantCulture);
+                float key = float.Parse(values[0], _culture);
                 List<float> data = new List<float>();
                 for (int i = 1; i < values.Length; i++)
                 {
-                    data.Add(float.Parse(values[i], CultureInfo.InvariantCulture));
+                    data.Add(float.Parse(values[i], _culture));
                 }
 
                 map.Add(key, data);
