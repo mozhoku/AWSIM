@@ -1394,53 +1394,7 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 609743776972327103, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: engine.canStall
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 609743776972327103, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: steeringAids.helpMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 609743776972327103, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: steeringAids.limitMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 609743776972327103, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: gearbox.automaticThrottleSens
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1611083234106224468, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: brakeLights.Array.data[0].lightingColor.r
-      value: 1.4980392
-      objectReference: {fileID: 0}
-    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: _reverseLights.Array.data[0].lightingColor.b
-      value: 1.4980391
-      objectReference: {fileID: 0}
-    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: _reverseLights.Array.data[0].lightingColor.g
-      value: 1.4980391
-      objectReference: {fileID: 0}
-    - target: {fileID: 1782664888259975789, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: _reverseLights.Array.data[0].lightingColor.r
-      value: 1.4980391
-      objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
+    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
       propertyPath: m_Name
       value: Lexus RX450h 2015 Sample Sensor
       objectReference: {fileID: 0}
@@ -1504,18 +1458,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7226978134186799435, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7824200548975616440, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8694826825807246079, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
+    - target: {fileID: 8694826825807246079, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -1768,8 +1711,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1743169424}
   m_HandleRect: {fileID: 1743169422}
   m_Direction: 2
-  m_Value: 1.0000012
-  m_Size: 0.9126437
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

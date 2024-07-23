@@ -8,25 +8,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     public class AutowareVPPAdapter : MonoBehaviour
     {
-        public enum VPPSignal
-        {
-            None,
-            Left,
-            Right,
-            Hazard
-        }
-
-        public enum VPPControlMode
-        {
-            NoCommand,
-            Autonomous,
-            AutonomousSteerOnly,
-            AutonomousVelocityOnly,
-            Manual,
-            Disengaged,
-            NotReady
-        }
-
         // [Header("Physics Settings (experimental)")] [SerializeField]
         // float sleepVelocityThreshold;
         //
@@ -110,11 +91,22 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private float _updatePositionOffsetY = 1.33f;
         [SerializeField] private float _updatePositionRayOriginY = 1000.0f;
 
+        private void Awake()
+        {
+            // Initialize the control mode to Autonomous
+            ControlModeInput = VPPControlMode.Autonomous;
+        }
+
         private void Start()
         {
             _vehicleController = GetComponent<VPVehicleController>();
             _rigidbody = GetComponent<Rigidbody>();
             _pedalMap = GetComponent<VehiclePedalMapLoader>();
+        }
+
+        private void Update()
+        {
+            SwitchControlMode();
         }
 
         private void FixedUpdate()
@@ -136,40 +128,34 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             {
                 case VPPControlMode.NoCommand:
                     break;
-
                 case VPPControlMode.Autonomous:
-                    HandleTurnSignal();
                     HandleHazardLights();
-                    HandleSteer();
-                    HandleGear();
+                    HandleTurnSignal();
                     HandleAcceleration();
+                    HandleGear();
+                    HandleSteer();
                     break;
-
                 case VPPControlMode.AutonomousSteerOnly:
-                    HandleTurnSignal();
                     HandleHazardLights();
+                    HandleTurnSignal();
+                    HandleGear();
                     HandleSteer();
-                    HandleGear();
                     break;
-
                 case VPPControlMode.AutonomousVelocityOnly:
-                    HandleTurnSignal();
                     HandleHazardLights();
-                    HandleGear();
+                    HandleTurnSignal();
                     HandleAcceleration();
+                    HandleGear();
                     break;
-
                 case VPPControlMode.Manual:
                     break;
-
                 case VPPControlMode.Disengaged:
                     break;
-
                 case VPPControlMode.NotReady:
                     break;
-
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(controlMode), controlMode, null);
+                    Debug.LogWarning("Control mode is not recognized.");
+                    break;
             }
 
             ReportVehicleState();
@@ -199,31 +185,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private void HandleAcceleration()
         {
-            if (_isAccelerationDefinedInput)
-            {
-                // set accel
-                if (_accelerationInput > 0 || _velocityInput > 0)
-                {
-                    var throttlePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.AccelMap,
-                        _pedalMap.AccelMapVertical,
-                        _pedalMap.AccelMapHeaders, _accelerationInput, _currentSpeed);
-                    // Debug.Log("Throttle %: " + throttlePercent);
-                    throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
-                    _vehicleController.data.bus[Channel.Input][InputData.Throttle] = (int)throttlePercent;
-                }
-
-                // set brake
-                if (_accelerationInput < 0 || _velocityInput < 0)
-                {
-                    var brakePercent = VehiclePedalMapLoader.GetPedalPercent(_pedalMap.BrakeMap,
-                        _pedalMap.BrakeMapVertical,
-                        _pedalMap.BrakeMapHeaders, _accelerationInput, _currentSpeed);
-                    // Debug.Log("Brake %: " + brakePercent);
-                    brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
-                    _vehicleController.data.bus[Channel.Input][InputData.Brake] = (int)brakePercent;
-                }
-            }
-
             // Store current values
             _currentSpeed = _vehicleController.speed;
             if (_isJerkDefinedInput)
@@ -231,6 +192,27 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 float currentAcceleration = _vehicleController.localAcceleration.magnitude;
                 _currentJerk = (currentAcceleration - _previousAcceleration) / Time.fixedDeltaTime;
                 _previousAcceleration = currentAcceleration;
+            }
+
+            // TODO: for some reason "isAccelerationDefinedInput" is always false from the Autoware side, can't use it (mozzz)
+            // set accel
+            if (_accelerationInput > 0 || _velocityInput > 0)
+            {
+                var throttlePercent = _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _pedalMap.AccelMapVertical,
+                    _pedalMap.AccelMapHeaders, _accelerationInput, _currentSpeed);
+                // Debug.Log("Throttle %: " + throttlePercent);
+                throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
+                _vehicleController.data.bus[Channel.Input][InputData.Throttle] = (int)throttlePercent;
+            }
+
+            // set brake
+            if (_accelerationInput < 0 || _velocityInput < 0)
+            {
+                var brakePercent = _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _pedalMap.BrakeMapVertical,
+                    _pedalMap.BrakeMapHeaders, _accelerationInput, _currentSpeed);
+                // Debug.Log("Brake %: " + brakePercent);
+                brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
+                _vehicleController.data.bus[Channel.Input][InputData.Brake] = (int)brakePercent;
             }
         }
 
@@ -262,6 +244,29 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 Debug.LogWarning(
                     "No mesh or collider detected on target location. Please ensure that the target location is on a mesh or collider.");
             }
+        }
+
+        // Method to switch control mode based on user input
+        // TODO: fix clashing with turn indicators and VPP shift (mozzz)
+        private void SwitchControlMode()
+        {
+            // if (Input.GetKey(KeyCode.LeftControl))
+            // {
+            //     if (Input.GetKeyDown(KeyCode.Alpha0))
+            //         ControlModeInput = VPPControlMode.NoCommand;
+            //     else if (Input.GetKeyDown(KeyCode.Alpha1))
+            //         ControlModeInput = VPPControlMode.Autonomous;
+            //     else if (Input.GetKeyDown(KeyCode.Alpha2))
+            //         ControlModeInput = VPPControlMode.AutonomousSteerOnly;
+            //     else if (Input.GetKeyDown(KeyCode.Alpha3))
+            //         ControlModeInput = VPPControlMode.AutonomousVelocityOnly;
+            //     else if (Input.GetKeyDown(KeyCode.Alpha4))
+            //         ControlModeInput = VPPControlMode.Manual;
+            //     else if (Input.GetKeyDown(KeyCode.Alpha5))
+            //         ControlModeInput = VPPControlMode.Disengaged;
+            //     else if (Input.GetKeyDown(KeyCode.Alpha6))
+            //         ControlModeInput = VPPControlMode.NotReady;
+            // }
         }
 
         private static int RemapValue(float value, float from1, float to1, int from2, int to2)

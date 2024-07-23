@@ -15,7 +15,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private string positionTopic = "/initialpose";
 
         [SerializeField] private QoSSettings qosSettings = new();
-        [SerializeField] private AutowareVPPAdapter adapter;
+        [SerializeField] private AutowareVPPAdapter _adapter;
         [SerializeField] private QoSSettings positionQosInput;
 
         // subscribers
@@ -27,16 +27,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private ISubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped> _vehicleEmergencyStampedSubscriber;
         private ISubscription<geometry_msgs.msg.PoseWithCovarianceStamped> _positionSubscriber;
 
-        private AutowareVPPAdapter.VPPSignal _turnIndicatorsSignal = AutowareVPPAdapter.VPPSignal.None;
-        private AutowareVPPAdapter.VPPSignal _hazardLightsSignal = AutowareVPPAdapter.VPPSignal.None;
-        private AutowareVPPAdapter.VPPSignal _input = AutowareVPPAdapter.VPPSignal.None;
+        private VPPSignal _turnIndicatorsSignal = VPPSignal.None;
+        private VPPSignal _hazardLightsSignal = VPPSignal.None;
+        private VPPSignal _input = VPPSignal.None;
 
         private bool _isEmergency;
 
         private void Reset()
         {
-            if (adapter == null)
-                adapter = GetComponent<AutowareVPPAdapter>();
+            if (_adapter == null)
+                _adapter = GetComponent<AutowareVPPAdapter>();
 
             // initialize default QoS params.
             qosSettings.ReliabilityPolicy = ReliabilityPolicy.QOS_POLICY_RELIABILITY_RELIABLE;
@@ -52,16 +52,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void UpdateVehicleTurnSignal()
         {
             // HAZARD > LEFT, RIGHT > NONE
-            if (_hazardLightsSignal == AutowareVPPAdapter.VPPSignal.Hazard)
+            if (_hazardLightsSignal == VPPSignal.Hazard)
                 _input = _hazardLightsSignal;
-            else if (_turnIndicatorsSignal is AutowareVPPAdapter.VPPSignal.Left or AutowareVPPAdapter.VPPSignal.Right)
+            else if (_turnIndicatorsSignal is VPPSignal.Left or VPPSignal.Right)
                 _input = _turnIndicatorsSignal;
             else
-                _input = AutowareVPPAdapter.VPPSignal.None;
+                _input = VPPSignal.None;
 
             // input
-            if (!Equals(adapter.SignalInput, _input))
-                adapter.SignalInput = _input;
+            if (!Equals(_adapter.SignalInput, _input))
+                _adapter.SignalInput = _input;
         }
 
         private void Start()
@@ -72,7 +72,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _controlModeReportSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
                     controlModeTopic,
-                    msg => { adapter.ControlModeInput = Ros2ToVPPUtilities.Ros2ToVPPControlMode(msg); }, qos);
+                    msg => { _adapter.ControlModeInput = Ros2ToVPPUtilities.Ros2ToVPPControlMode(msg); }, qos);
 
             _turnIndicatorsCommandSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand>(
@@ -98,21 +98,22 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     if (_isEmergency) return;
 
                     // longitudinal
-                    adapter.VelocityInput = msg.Longitudinal.Velocity;
-                    adapter.IsAccelerationDefinedInput = msg.Longitudinal.Is_defined_acceleration;
-                    adapter.AccelerationInput = msg.Longitudinal.Acceleration;
-                    adapter.IsJerkDefinedInput = msg.Longitudinal.Is_defined_jerk;
-                    adapter.JerkInput = msg.Longitudinal.Jerk;
+                    _adapter.VelocityInput = msg.Longitudinal.Velocity;
+                    _adapter.IsAccelerationDefinedInput = msg.Longitudinal.Is_defined_acceleration;
+                    _adapter.AccelerationInput = msg.Longitudinal.Acceleration;
+                    _adapter.IsJerkDefinedInput = msg.Longitudinal.Is_defined_jerk;
+                    _adapter.JerkInput = msg.Longitudinal.Jerk;
 
                     // lateral
-                    adapter.SteerAngleInput = -(float)msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
-                    adapter.IsDefinedSteeringTireRotationRateInput = msg.Lateral.Is_defined_steering_tire_rotation_rate;
-                    adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
+                    _adapter.SteerAngleInput = -(float)msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
+                    _adapter.IsDefinedSteeringTireRotationRateInput =
+                        msg.Lateral.Is_defined_steering_tire_rotation_rate;
+                    _adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
                 }, qos);
 
             _gearCommandSubscriber = SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.GearCommand>(
-                gearCommandTopic,
-                msg => { adapter.AutomaticShiftInput = Ros2ToVPPUtilities.Ros2ToVPPShift(msg); }, qos);
+                gearCommandTopic, msg => { _adapter.AutomaticShiftInput = Ros2ToVPPUtilities.Ros2ToVPPShift(msg); },
+                qos);
 
             _vehicleEmergencyStampedSubscriber =
                 SimulatorROS2Node.CreateSubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped>(
@@ -137,10 +138,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                         (float)msg.Pose.Pose.Orientation.Z,
                         (float)msg.Pose.Pose.Orientation.W);
 
-                    adapter.PositionInput =
+                    _adapter.PositionInput =
                         ROS2Utility.RosToUnityPosition(positionVector - Environment.Instance.MgrsOffsetPosition);
-                    adapter.RotationInput = ROS2Utility.RosToUnityRotation(rotationVector);
-                    adapter.WillUpdatePositionInput = true;
+                    _adapter.RotationInput = ROS2Utility.RosToUnityRotation(rotationVector);
+                    _adapter.WillUpdatePositionInput = true;
                 }, positionQoS);
         }
 
