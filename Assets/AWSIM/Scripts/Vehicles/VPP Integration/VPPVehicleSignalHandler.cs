@@ -1,3 +1,4 @@
+using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using UnityEngine;
 using VehiclePhysics;
 
@@ -49,13 +50,13 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             // User input for turn signal.
             if (Input.GetKey(KeyCode.Alpha1))
-                _adapter.SignalInput = AutowareVPPAdapter.VPPSignal.Left;
+                _adapter.SignalInput = VPPSignal.Left;
             else if (Input.GetKey(KeyCode.Alpha2))
-                _adapter.SignalInput = AutowareVPPAdapter.VPPSignal.Right;
+                _adapter.SignalInput = VPPSignal.Right;
             else if (Input.GetKey(KeyCode.Alpha3))
-                _adapter.SignalInput = AutowareVPPAdapter.VPPSignal.Hazard;
+                _adapter.SignalInput = VPPSignal.Hazard;
             else if (Input.GetKey(KeyCode.Alpha4))
-                _adapter.SignalInput = AutowareVPPAdapter.VPPSignal.None;
+                _adapter.SignalInput = VPPSignal.None;
 
             // brake light.
             var isBrakeLight = IsBrakeLight();
@@ -116,23 +117,19 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private bool IsTurnSignalOn()
         {
             return _adapter.SignalInput is
-                AutowareVPPAdapter.VPPSignal.Left or
-                AutowareVPPAdapter.VPPSignal.Right or
-                AutowareVPPAdapter.VPPSignal.Hazard;
+                VPPSignal.Left or VPPSignal.Right or VPPSignal.Hazard;
         }
 
         private bool IsTurnLeftLight()
         {
             return _adapter.SignalInput is
-                AutowareVPPAdapter.VPPSignal.Left or
-                AutowareVPPAdapter.VPPSignal.Hazard && _turnSignalOn;
+                VPPSignal.Left or VPPSignal.Hazard && _turnSignalOn;
         }
 
         private bool IsTurnRightLight()
         {
             return _adapter.SignalInput is
-                AutowareVPPAdapter.VPPSignal.Right or
-                AutowareVPPAdapter.VPPSignal.Hazard && _turnSignalOn;
+                VPPSignal.Right or VPPSignal.Hazard && _turnSignalOn;
         }
 
         private static void ApplyLights(VehicleVisualEffect.EmissionMaterial[] emissionMaterials, bool isOn)

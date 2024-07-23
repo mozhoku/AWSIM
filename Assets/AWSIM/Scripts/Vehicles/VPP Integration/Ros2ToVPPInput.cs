@@ -1,3 +1,4 @@
+using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using ROS2;
 using UnityEngine;
 
