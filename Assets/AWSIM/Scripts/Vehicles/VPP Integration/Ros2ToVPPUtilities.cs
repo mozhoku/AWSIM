@@ -1,3 +1,4 @@
+using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using VehiclePhysics;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration

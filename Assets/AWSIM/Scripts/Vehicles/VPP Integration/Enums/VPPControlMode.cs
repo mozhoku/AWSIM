@@ -1,4 +1,4 @@
-namespace AWSIM.Scripts.Vehicles.VPP_Integration
+namespace AWSIM.Scripts.Vehicles.VPP_Integration.Enums
 {
     public enum VPPControlMode
     {

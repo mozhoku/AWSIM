@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
+using AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes;
 using UnityEngine;
 using VehiclePhysics;
 using Quaternion = UnityEngine.Quaternion;
@@ -8,14 +11,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     public class AutowareVPPAdapter : MonoBehaviour
     {
-        // [Header("Physics Settings (experimental)")] [SerializeField]
-        // float sleepVelocityThreshold;
-        //
-        // [SerializeField] float sleepTimeThreshold;
-
-        [SerializeField] private VPWheelCollider _frontWheelCollider1;
-        [SerializeField] private VPWheelCollider _frontWheelCollider2;
-
         /// <summary>
         /// Inputs
         /// </summary>
@@ -30,28 +25,22 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         //longitudinal
         [NonSerialized] public float VelocityInput;
-        private float _velocityInput => VelocityInput;
-
         [NonSerialized] public bool IsAccelerationDefinedInput;
-        private bool _isAccelerationDefinedInput => IsAccelerationDefinedInput;
-
         [NonSerialized] public float AccelerationInput;
-        private float _accelerationInput => AccelerationInput;
-
         [NonSerialized] public bool IsJerkDefinedInput;
-        private bool _isJerkDefinedInput => IsJerkDefinedInput;
-
         [NonSerialized] public float JerkInput;
+        private float _velocityInput => VelocityInput;
+        private bool _isAccelerationDefinedInput => IsAccelerationDefinedInput;
+        private float _accelerationInput => AccelerationInput;
+        private bool _isJerkDefinedInput => IsJerkDefinedInput;
         private float _jerkInput => JerkInput;
 
         //lateral
         [NonSerialized] public float SteerAngleInput;
-        private float _steerAngleInput => SteerAngleInput;
-
         [NonSerialized] public bool IsDefinedSteeringTireRotationRateInput;
-        private bool _isDefinedSteeringTireRotationRateInput => IsDefinedSteeringTireRotationRateInput;
-
         [NonSerialized] public float SteeringTireRotationRateInput;
+        private float _steerAngleInput => SteerAngleInput;
+        private bool _isDefinedSteeringTireRotationRateInput => IsDefinedSteeringTireRotationRateInput;
         private float _steeringTireRotationRateInput => SteeringTireRotationRateInput;
 
         //gear
@@ -77,9 +66,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // VPP components
         private VPVehicleController _vehicleController;
-        // private VPTelemetry _telemetry;
-        // private VPVisualEffects _visualEffects;
-        // private VPVehicleToolkit _toolkit;
+        private VPTelemetry _telemetry;
+        private VPVisualEffects _visualEffects;
+        private VPVehicleToolkit _toolkit;
+        [SerializeField] private VPWheelCollider _frontWheelCollider1;
+        [SerializeField] private VPWheelCollider _frontWheelCollider2;
 
         private Rigidbody _rigidbody;
         private VehiclePedalMapLoader _pedalMap;
@@ -88,6 +79,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private float _previousAcceleration;
         private float _currentJerk;
 
+        // Control mode variables
+        private Dictionary<VPPControlMode, IVehicleControlMode> _controlModes;
+        private IVehicleControlMode _currentMode;
+
+        // RViz2 Update position variables
         [SerializeField] private float _updatePositionOffsetY = 1.33f;
         [SerializeField] private float _updatePositionRayOriginY = 1000.0f;
 
@@ -102,11 +98,24 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _vehicleController = GetComponent<VPVehicleController>();
             _rigidbody = GetComponent<Rigidbody>();
             _pedalMap = GetComponent<VehiclePedalMapLoader>();
+
+            // Initialize the control mode dictionary
+            _controlModes = new Dictionary<VPPControlMode, IVehicleControlMode>
+            {
+                { VPPControlMode.NoCommand, new ControlMode.NoCommand() },
+                { VPPControlMode.Autonomous, new ControlMode.Autonomous() },
+                { VPPControlMode.AutonomousSteerOnly, new ControlMode.AutonomousSteerOnly() },
+                { VPPControlMode.AutonomousVelocityOnly, new ControlMode.AutonomousVelocityOnly() },
+                { VPPControlMode.Manual, new ControlMode.Manual() },
+                { VPPControlMode.Disengaged, new ControlMode.Disengaged() },
+                { VPPControlMode.NotReady, new ControlMode.NotReady() }
+            };
         }
 
         private void Update()
         {
-            SwitchControlMode();
+            // TODO: Implement the control mode switch from simulator (mozzz)
+            // SwitchControlMode();
         }
 
         private void FixedUpdate()
@@ -124,52 +133,27 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private void ControlVehicle(VPPControlMode controlMode)
         {
-            switch (controlMode)
+            if (_controlModes.TryGetValue(controlMode, out _currentMode))
             {
-                case VPPControlMode.NoCommand:
-                    break;
-                case VPPControlMode.Autonomous:
-                    HandleHazardLights();
-                    HandleTurnSignal();
-                    HandleAcceleration();
-                    HandleGear();
-                    HandleSteer();
-                    break;
-                case VPPControlMode.AutonomousSteerOnly:
-                    HandleHazardLights();
-                    HandleTurnSignal();
-                    HandleGear();
-                    HandleSteer();
-                    break;
-                case VPPControlMode.AutonomousVelocityOnly:
-                    HandleHazardLights();
-                    HandleTurnSignal();
-                    HandleAcceleration();
-                    HandleGear();
-                    break;
-                case VPPControlMode.Manual:
-                    break;
-                case VPPControlMode.Disengaged:
-                    break;
-                case VPPControlMode.NotReady:
-                    break;
-                default:
-                    Debug.LogWarning("Control mode is not recognized.");
-                    break;
+                _currentMode.ExecuteControlMode(this);
+            }
+            else
+            {
+                Debug.LogWarning("Control mode is not recognized.");
             }
 
             ReportVehicleState();
         }
 
-        private void HandleHazardLights()
+        public void HandleHazardLights()
         {
         }
 
-        private void HandleTurnSignal()
+        public void HandleTurnSignal()
         {
         }
 
-        private void HandleSteer()
+        public void HandleSteer()
         {
             // set wheel angles for now (will simulate steering wheel input later on)
             _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
@@ -178,12 +162,12 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _frontWheelCollider2.steerAngle = _steerAngleInput;
         }
 
-        private void HandleGear()
+        public void HandleGear()
         {
             _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)_automaticShiftInput;
         }
 
-        private void HandleAcceleration()
+        public void HandleAcceleration()
         {
             // Store current values
             _currentSpeed = _vehicleController.speed;
