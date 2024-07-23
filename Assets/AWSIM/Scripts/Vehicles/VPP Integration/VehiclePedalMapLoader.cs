@@ -9,8 +9,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     public class VehiclePedalMapLoader : MonoBehaviour
     {
-        public TextAsset AccelMapCsv;
-        public TextAsset BrakeMapCsv;
+        public TextAsset _accelMapCsv;
+        public TextAsset _brakeMapCsv;
 
         public Dictionary<float, List<float>> AccelMap;
         public Dictionary<float, List<float>> AccelMapVertical;
@@ -20,18 +20,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         public Dictionary<float, List<float>> BrakeMapVertical;
         [NonSerialized] public List<float> BrakeMapHeaders = new();
 
-        private static CultureInfo _culture = CultureInfo.InvariantCulture;
-
         private void Start()
         {
             // Load the acceleration map
-            AccelMap = LoadMap(AccelMapCsv);
-            AccelMapHeaders = LoadHeaders(AccelMapCsv);
+            AccelMap = LoadMap(_accelMapCsv);
+            AccelMapHeaders = LoadHeaders(_accelMapCsv);
             AccelMapVertical = VerticalDict(AccelMap, AccelMapHeaders);
 
             // Load the brake map
-            BrakeMap = LoadMap(BrakeMapCsv);
-            BrakeMapHeaders = LoadHeaders(BrakeMapCsv);
+            BrakeMap = LoadMap(_brakeMapCsv);
+            BrakeMapHeaders = LoadHeaders(_brakeMapCsv);
             BrakeMapVertical = VerticalDict(BrakeMap, BrakeMapHeaders);
         }
 
@@ -42,14 +40,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             while (reader.ReadLine() is { } line)
             {
                 string[] values = line.Split(',');
-                float key = float.Parse(values[0], _culture);
-                List<float> data = new List<float>();
-                for (int i = 1; i < values.Length; i++)
+                if (float.TryParse(values[0], out var key))
                 {
-                    data.Add(float.Parse(values[i], _culture));
-                }
+                    List<float> data = new List<float>();
+                    for (int i = 1; i < values.Length; i++)
+                    {
+                        data.Add(float.Parse(values[i], CultureInfo.InvariantCulture));
+                    }
 
-                map.Add(key, data);
+                    map.Add(key, data);
+                }
             }
 
             return map;
@@ -76,7 +76,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             return headerList;
         }
 
-        public static float GetPedalPercent(Dictionary<float, List<float>> map, Dictionary<float, List<float>> vertMap,
+        public float GetPedalPercent(Dictionary<float, List<float>> map, Dictionary<float, List<float>> vertMap,
             List<float> headers, float targetAccel, float currentSpeed)
         {
             // Get the closest speed value from the headers

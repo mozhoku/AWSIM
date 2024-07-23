@@ -1466,10 +1466,10 @@ MonoBehaviour:
     inertiaRow2: {x: 0, y: 0, z: 400}
   steeringAids:
     priority: 1
-    helpMode: 1
+    helpMode: 0
     helpRatio: 1
     helpGravity: 0.4
-    limitMode: 2
+    limitMode: 0
     limitRatio: 1
     limitProportionality: 1
     limitCustomSlip: 2
@@ -1597,7 +1597,7 @@ MonoBehaviour:
     maxIdleThrottle: 0.8
     activeIdleRange: 0.25
     activeIdleBias: 0.25
-    canStall: 1
+    canStall: 0
     stallBias: 0.8
     stalledFrictionTorque: 25
     starterMotorBias: 0.8
@@ -1874,7 +1874,7 @@ MonoBehaviour:
     DurabilityPolicy: 1
     HistoryPolicy: 1
     Depth: 1
-  adapter: {fileID: 1469440915397572680}
+  _adapter: {fileID: 1469440915397572680}
   positionQosInput:
     ReliabilityPolicy: 1
     DurabilityPolicy: 2
@@ -1897,7 +1897,7 @@ MonoBehaviour:
   brakeLights:
   - meshRenderer: {fileID: 8794606528374986436}
     materialIndex: 0
-    lightingColor: {r: 2.9960785, g: 0, b: 0, a: 0}
+    lightingColor: {r: 1.4980392, g: 0, b: 0, a: 0}
     emissionIntensity: 0
   leftTurnSignalLights:
   - meshRenderer: {fileID: 4161163181542201040}
@@ -1913,7 +1913,7 @@ MonoBehaviour:
   _reverseLights:
   - meshRenderer: {fileID: 2064283678226759879}
     materialIndex: 0
-    lightingColor: {r: 2.9960787, g: 2.9960787, b: 2.9960787, a: 0}
+    lightingColor: {r: 1.4980391, g: 1.4980391, b: 1.4980391, a: 0}
     emissionIntensity: 0
 --- !u!114 &6684375080505768016
 MonoBehaviour:
@@ -1927,8 +1927,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55d4d0dcd4f570d529785cd333a2fc7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AccelMapCsv: {fileID: 4900000, guid: 5fbe6425a5b4eb099ad74ad0e8fb2c4e, type: 3}
-  BrakeMapCsv: {fileID: 4900000, guid: 0a9feb186569833eda4fd5dc70c129c3, type: 3}
+  _accelMapCsv: {fileID: 4900000, guid: 5fbe6425a5b4eb099ad74ad0e8fb2c4e, type: 3}
+  _brakeMapCsv: {fileID: 4900000, guid: 0a9feb186569833eda4fd5dc70c129c3, type: 3}
 --- !u!1 &5383865282617533158
 GameObject:
   m_ObjectHideFlags: 0
