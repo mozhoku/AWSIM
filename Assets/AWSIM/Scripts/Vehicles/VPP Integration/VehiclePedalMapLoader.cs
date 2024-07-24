@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
@@ -12,25 +11,24 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         public TextAsset _accelMapCsv;
         public TextAsset _brakeMapCsv;
 
-        public Dictionary<float, List<float>> AccelMap;
-        public Dictionary<float, List<float>> AccelMapVertical;
-        [NonSerialized] public List<float> AccelMapHeaders = new();
-
-        public Dictionary<float, List<float>> BrakeMap;
-        public Dictionary<float, List<float>> BrakeMapVertical;
-        [NonSerialized] public List<float> BrakeMapHeaders = new();
+        [NonSerialized] public PedalMap AccelMap;
+        [NonSerialized] public PedalMap BrakeMap;
 
         private void Start()
         {
-            // Load the acceleration map
-            AccelMap = LoadMap(_accelMapCsv);
-            AccelMapHeaders = LoadHeaders(_accelMapCsv);
-            AccelMapVertical = VerticalDict(AccelMap, AccelMapHeaders);
-
-            // Load the brake map
-            BrakeMap = LoadMap(_brakeMapCsv);
-            BrakeMapHeaders = LoadHeaders(_brakeMapCsv);
-            BrakeMapVertical = VerticalDict(BrakeMap, BrakeMapHeaders);
+            // Load the pedal maps
+            AccelMap = new PedalMap
+            {
+                Map = LoadMap(_accelMapCsv),
+                MapHeaders = LoadHeaders(_accelMapCsv),
+                MapVertical = VerticalDict(AccelMap.Map, AccelMap.MapHeaders)
+            };
+            BrakeMap = new PedalMap
+            {
+                Map = LoadMap(_brakeMapCsv),
+                MapHeaders = LoadHeaders(_brakeMapCsv),
+                MapVertical = VerticalDict(BrakeMap.Map, BrakeMap.MapHeaders)
+            };
         }
 
         private static Dictionary<float, List<float>> LoadMap(TextAsset csv)
@@ -76,25 +74,21 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             return headerList;
         }
 
-        public float GetPedalPercent(Dictionary<float, List<float>> map, Dictionary<float, List<float>> vertMap,
-            List<float> headers, float targetAccel, float currentSpeed)
+        public float GetPedalPercent(PedalMap pedalMap, float targetAccel, float currentSpeed)
         {
             // Get the closest speed value from the headers
-            var closestSpeed = GetClosestValueFromList(headers, currentSpeed);
+            var closestSpeed = GetClosestValueFromList(pedalMap.MapHeaders, currentSpeed);
 
             // Get the closest acceleration value from the map
-            vertMap.TryGetValue(closestSpeed, out List<float> valueList);
+            pedalMap.MapVertical.TryGetValue(closestSpeed, out List<float> valueList);
             var closestAccel = GetClosestValueFromList(valueList, targetAccel);
             // get index of accel from the header list
-            var closestAccelIndex = headers.IndexOf(closestSpeed);
+            var closestAccelIndex = pedalMap.MapHeaders.IndexOf(closestSpeed);
 
-            // Debug.Log("Target Accel: " + targetAccel);
-            // Debug.Log("Closest Accel: " + closestAccel);
-            foreach (var pair in map)
+            foreach (var pair in pedalMap.Map)
             {
                 if (Mathf.Approximately(pair.Value[closestAccelIndex], closestAccel))
                 {
-                    // Debug.Log("Pedal value: " + pair.Key);
                     return pair.Key; // return the pedal value
                 }
             }

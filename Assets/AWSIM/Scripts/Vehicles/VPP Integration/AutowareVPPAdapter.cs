@@ -15,16 +15,17 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         /// Inputs
         /// </summary>
 
-        // Initial Position Inputs from Rviz
-        [NonSerialized] public Vector3 PositionInput;
-
-        [NonSerialized] public Quaternion RotationInput;
+        // Initial Position inputs from Rviz
         [NonSerialized] public bool WillUpdatePositionInput;
 
-        // Control commands from Autoware
+        [NonSerialized] public Vector3 PositionInput;
+        [NonSerialized] public Quaternion RotationInput;
+
+        /// Control inputs from Autoware
 
         //longitudinal
         [NonSerialized] public float VelocityInput;
+
         [NonSerialized] public bool IsAccelerationDefinedInput;
         [NonSerialized] public float AccelerationInput;
         [NonSerialized] public bool IsJerkDefinedInput;
@@ -43,15 +44,19 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private bool _isDefinedSteeringTireRotationRateInput => IsDefinedSteeringTireRotationRateInput;
         private float _steeringTireRotationRateInput => SteeringTireRotationRateInput;
 
-        //gear
+        // Gear input from Autoware
         [NonSerialized] public Gearbox.AutomaticGear AutomaticShiftInput;
         private Gearbox.AutomaticGear _automaticShiftInput => AutomaticShiftInput;
 
-        // Signal commands from Autoware
-        [NonSerialized] public VPPSignal SignalInput;
-        private VPPSignal _signalInput => SignalInput;
+        // Signal input from Autoware
+        [NonSerialized] public VPPSignal VehicleSignalInput;
+        private VPPSignal _vehicleSignalInput => VehicleSignalInput;
 
-        // Control mode from Autoware
+        // Emergency input from Autoware
+        [NonSerialized] public bool IsEmergencyInput;
+        private bool _isEmergencyInput => IsEmergencyInput;
+
+        // Control mode input from Autoware
         [NonSerialized] public VPPControlMode ControlModeInput;
         private VPPControlMode _controlModeInput => ControlModeInput;
 
@@ -61,8 +66,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [NonSerialized] public Vector3 VPVelocityReport;
         [NonSerialized] public Vector3 VPAngularVelocityReport;
         [NonSerialized] public float VPSteeringReport;
-        [NonSerialized] public int VPTurnIndicatorsReport;
-        [NonSerialized] public int VPHazardLightsReport;
+        [NonSerialized] public VPPSignal VPTurnIndicatorsReport;
+        [NonSerialized] public VPPSignal VPHazardLightsReport;
 
         // VPP components
         private VPVehicleController _vehicleController;
@@ -72,9 +77,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private VPWheelCollider _frontWheelCollider1;
         [SerializeField] private VPWheelCollider _frontWheelCollider2;
 
+
         private Rigidbody _rigidbody;
         private VehiclePedalMapLoader _pedalMap;
-
+        [Range(0f, 100f)][SerializeField] private float _EmergencyBrakePercent = 100.0f;
         private float _currentSpeed;
         private float _previousAcceleration;
         private float _currentJerk;
@@ -99,7 +105,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _rigidbody = GetComponent<Rigidbody>();
             _pedalMap = GetComponent<VehiclePedalMapLoader>();
 
-            // Initialize the control mode dictionary
+            // Initialize the control modes
             _controlModes = new Dictionary<VPPControlMode, IVehicleControlMode>
             {
                 { VPPControlMode.NoCommand, new ControlMode.NoCommand() },
@@ -115,7 +121,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void Update()
         {
             // TODO: Implement the control mode switch from simulator (mozzz)
-            // SwitchControlMode();
+            UserSwitchControlMode();
         }
 
         private void FixedUpdate()
@@ -147,19 +153,33 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         public void HandleHazardLights()
         {
+            // TODO: this is implemented in Ros2ToVPPInput.cs, move it here (mozzz)
         }
 
         public void HandleTurnSignal()
         {
+            // TODO: this is implemented in Ros2ToVPPInput.cs, move it here (mozzz)
         }
 
         public void HandleSteer()
         {
             // set wheel angles for now (will simulate steering wheel input later on)
-            _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
-            _frontWheelCollider1.steerAngle = _steerAngleInput;
-            _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
-            _frontWheelCollider2.steerAngle = _steerAngleInput;
+            // lerp in FixedUpdate() with while()??? (mozzz)
+            // temp solution for it to not interfere with the keyboard control
+            if (_steerAngleInput > 0)
+            {
+                _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
+                _frontWheelCollider1.steerAngle = _steerAngleInput;
+                _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
+                _frontWheelCollider2.steerAngle = _steerAngleInput;
+            }
+            else if (_steerAngleInput < 0)
+            {
+                _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
+                _frontWheelCollider1.steerAngle = _steerAngleInput;
+                _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
+                _frontWheelCollider2.steerAngle = _steerAngleInput;
+            }
         }
 
         public void HandleGear()
@@ -178,34 +198,50 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 _previousAcceleration = currentAcceleration;
             }
 
-            // TODO: for some reason "isAccelerationDefinedInput" is always false from the Autoware side, can't use it (mozzz)
-            // set accel
-            if (_accelerationInput > 0 || _velocityInput > 0)
+            if (_isEmergencyInput)
             {
-                var throttlePercent = _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _pedalMap.AccelMapVertical,
-                    _pedalMap.AccelMapHeaders, _accelerationInput, _currentSpeed);
-                // Debug.Log("Throttle %: " + throttlePercent);
-                throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
-                _vehicleController.data.bus[Channel.Input][InputData.Throttle] = (int)throttlePercent;
+                // set emergency brake
+                var emergencyBrakePercent = RemapValue(_EmergencyBrakePercent, 0f, 100f, 0, 10000);
+                SetBrake(emergencyBrakePercent);
             }
+            else
+            {
+                // TODO: for some reason "isAccelerationDefinedInput" is always false from the Autoware side, can't use it (mozzz)
+                // set accel
+                if (_accelerationInput > 0 || _velocityInput > 0)
+                {
+                    var throttlePercent =
+                        _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _accelerationInput, _currentSpeed);
+                    throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
+                    SetThrottle((int)throttlePercent);
+                }
 
-            // set brake
-            if (_accelerationInput < 0 || _velocityInput < 0)
-            {
-                var brakePercent = _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _pedalMap.BrakeMapVertical,
-                    _pedalMap.BrakeMapHeaders, _accelerationInput, _currentSpeed);
-                // Debug.Log("Brake %: " + brakePercent);
-                brakePercent = RemapValue(brakePercent, -0f, 0.8f, 0, 8000);
-                _vehicleController.data.bus[Channel.Input][InputData.Brake] = (int)brakePercent;
+                // set brake
+                if (_accelerationInput < 0 || _velocityInput < 0)
+                {
+                    var brakePercent = _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _accelerationInput, _currentSpeed);
+                    brakePercent = RemapValue(brakePercent, 0f, 0.8f, 0, 8000);
+                    SetBrake((int)brakePercent);
+                }
             }
+        }
+
+        private void SetThrottle(int throttlePercent)
+        {
+            _vehicleController.data.bus[Channel.Input][InputData.Throttle] = throttlePercent;
+        }
+
+        private void SetBrake(int brakePercent)
+        {
+            _vehicleController.data.bus[Channel.Input][InputData.Brake] = brakePercent;
         }
 
         // TODO: report jerk state (mozzz)
         private void ReportVehicleState()
         {
             VPControlModeReport = _controlModeInput;
-            VPHazardLightsReport = (int)_signalInput;
-            VPTurnIndicatorsReport = (int)_signalInput;
+            VPHazardLightsReport = _vehicleSignalInput;
+            VPTurnIndicatorsReport = _vehicleSignalInput;
             VPSteeringReport = _frontWheelCollider1.steerAngle;
             VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
             VPVelocityReport = transform.InverseTransformDirection(_rigidbody.velocity.normalized * _currentSpeed);
@@ -232,7 +268,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // Method to switch control mode based on user input
         // TODO: fix clashing with turn indicators and VPP shift (mozzz)
-        private void SwitchControlMode()
+        private void UserSwitchControlMode()
         {
             // if (Input.GetKey(KeyCode.LeftControl))
             // {
@@ -253,6 +289,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             // }
         }
 
+        /// <summary>
+        /// Remap input value for VPP pedal percent assignment [Range: 0,10000]
+        /// </summary>
         private static int RemapValue(float value, float from1, float to1, int from2, int to2)
         {
             return (int)((value - from1) / (to1 - from1) * (to2 - from2) + from2);

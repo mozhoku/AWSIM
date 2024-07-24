@@ -1394,7 +1394,23 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
+    - target: {fileID: 761227894150027610, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 761227894649641225, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 761227895339884612, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
       propertyPath: m_Name
       value: Lexus RX450h 2015 Sample Sensor
       objectReference: {fileID: 0}
@@ -1458,9 +1474,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8694826825807246079, guid: 164645b2d105b6b4ab4e3d2e7c65dab2, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+    - target: {fileID: 6387232935648582734, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6387232936574723408, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6387232937081677059, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8917940877303146778, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8917940878763528196, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8917940879272513623, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8996813226046187441, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
@@ -1711,7 +1753,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1743169424}
   m_HandleRect: {fileID: 1743169422}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5034,105 +5076,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
---- !u!1001 &1100155339
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1416174297}
-    m_Modifications:
-    - target: {fileID: 2069814030545375925, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_Name
-      value: VPP Sport Coupe
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375925, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_ImplicitCom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_CenterOfMass.x
-      value: 0.00000013411045
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_CenterOfMass.y
-      value: 0.365
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375926, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_CenterOfMass.z
-      value: 0.49800882
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 223.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.2665004
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -275.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.95931405
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.28234148
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -32.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: f7a352f52c0b4034a8e157c2e33e54c4, type: 3}
---- !u!4 &1100155340 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2069814030545375927, guid: f7a352f52c0b4034a8e157c2e33e54c4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1100155339}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1104652902
 GameObject:
   m_ObjectHideFlags: 0
@@ -6770,7 +6713,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1100155340}
   - {fileID: 1222839950}
   m_Father: {fileID: 543989980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

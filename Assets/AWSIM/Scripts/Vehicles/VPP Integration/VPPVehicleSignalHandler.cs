@@ -50,13 +50,13 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             // User input for turn signal.
             if (Input.GetKey(KeyCode.Alpha1))
-                _adapter.SignalInput = VPPSignal.Left;
+                _adapter.VehicleSignalInput = VPPSignal.Left;
             else if (Input.GetKey(KeyCode.Alpha2))
-                _adapter.SignalInput = VPPSignal.Right;
+                _adapter.VehicleSignalInput = VPPSignal.Right;
             else if (Input.GetKey(KeyCode.Alpha3))
-                _adapter.SignalInput = VPPSignal.Hazard;
+                _adapter.VehicleSignalInput = VPPSignal.Hazard;
             else if (Input.GetKey(KeyCode.Alpha4))
-                _adapter.SignalInput = VPPSignal.None;
+                _adapter.VehicleSignalInput = VPPSignal.None;
 
             // brake light.
             var isBrakeLight = IsBrakeLight();
@@ -116,19 +116,19 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private bool IsTurnSignalOn()
         {
-            return _adapter.SignalInput is
+            return _adapter.VehicleSignalInput is
                 VPPSignal.Left or VPPSignal.Right or VPPSignal.Hazard;
         }
 
         private bool IsTurnLeftLight()
         {
-            return _adapter.SignalInput is
+            return _adapter.VehicleSignalInput is
                 VPPSignal.Left or VPPSignal.Hazard && _turnSignalOn;
         }
 
         private bool IsTurnRightLight()
         {
-            return _adapter.SignalInput is
+            return _adapter.VehicleSignalInput is
                 VPPSignal.Right or VPPSignal.Hazard && _turnSignalOn;
         }
 

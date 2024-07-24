@@ -16,7 +16,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private string positionTopic = "/initialpose";
 
         [SerializeField] private QoSSettings qosSettings = new();
-        [SerializeField] private AutowareVPPAdapter _adapter;
+        [SerializeField] private AutowareVPPAdapter adapter;
         [SerializeField] private QoSSettings positionQosInput;
 
         // subscribers
@@ -32,12 +32,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private VPPSignal _hazardLightsSignal = VPPSignal.None;
         private VPPSignal _input = VPPSignal.None;
 
-        private bool _isEmergency;
-
         private void Reset()
         {
-            if (_adapter == null)
-                _adapter = GetComponent<AutowareVPPAdapter>();
+            if (adapter == null)
+                adapter = GetComponent<AutowareVPPAdapter>();
 
             // initialize default QoS params.
             qosSettings.ReliabilityPolicy = ReliabilityPolicy.QOS_POLICY_RELIABILITY_RELIABLE;
@@ -61,8 +59,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 _input = VPPSignal.None;
 
             // input
-            if (!Equals(_adapter.SignalInput, _input))
-                _adapter.SignalInput = _input;
+            if (!Equals(adapter.VehicleSignalInput, _input))
+                adapter.VehicleSignalInput = _input;
         }
 
         private void Start()
@@ -73,7 +71,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _controlModeReportSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
                     controlModeTopic,
-                    msg => { _adapter.ControlModeInput = Ros2ToVPPUtilities.Ros2ToVPPControlMode(msg); }, qos);
+                    msg => { adapter.ControlModeInput = Ros2ToVPPUtilities.Ros2ToVPPControlMode(msg); }, qos);
 
             _turnIndicatorsCommandSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand>(
@@ -94,38 +92,27 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _controlCommandSubscriber = SimulatorROS2Node.CreateSubscription<autoware_control_msgs.msg.Control>(
                 controlCommandTopic, msg =>
                 {
-                    // highest priority is EMERGENCY.
-                    // If Emergency is true, ControlCommand is not used for vehicle acceleration input.
-                    if (_isEmergency) return;
-
                     // longitudinal
-                    _adapter.VelocityInput = msg.Longitudinal.Velocity;
-                    _adapter.IsAccelerationDefinedInput = msg.Longitudinal.Is_defined_acceleration;
-                    _adapter.AccelerationInput = msg.Longitudinal.Acceleration;
-                    _adapter.IsJerkDefinedInput = msg.Longitudinal.Is_defined_jerk;
-                    _adapter.JerkInput = msg.Longitudinal.Jerk;
+                    adapter.VelocityInput = msg.Longitudinal.Velocity;
+                    adapter.IsAccelerationDefinedInput = msg.Longitudinal.Is_defined_acceleration;
+                    adapter.AccelerationInput = msg.Longitudinal.Acceleration;
+                    adapter.IsJerkDefinedInput = msg.Longitudinal.Is_defined_jerk;
+                    adapter.JerkInput = msg.Longitudinal.Jerk;
 
                     // lateral
-                    _adapter.SteerAngleInput = -(float)msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
-                    _adapter.IsDefinedSteeringTireRotationRateInput =
+                    adapter.SteerAngleInput = -(float)msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
+                    adapter.IsDefinedSteeringTireRotationRateInput =
                         msg.Lateral.Is_defined_steering_tire_rotation_rate;
-                    _adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
+                    adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
                 }, qos);
 
             _gearCommandSubscriber = SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.GearCommand>(
-                gearCommandTopic, msg => { _adapter.AutomaticShiftInput = Ros2ToVPPUtilities.Ros2ToVPPShift(msg); },
+                gearCommandTopic, msg => { adapter.AutomaticShiftInput = Ros2ToVPPUtilities.Ros2ToVPPShift(msg); },
                 qos);
 
             _vehicleEmergencyStampedSubscriber =
                 SimulatorROS2Node.CreateSubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped>(
-                    vehicleEmergencyStampedTopic, msg =>
-                    {
-                        // highest priority is EMERGENCY.
-                        // If emergency is true, emergencyDeceleration is applied to the vehicle's deceleration.
-                        _isEmergency = msg.Emergency;
-                        // if (_isEmergency)
-                        // adapter.AccelerationInput = emergencyDeceleration;
-                    });
+                    vehicleEmergencyStampedTopic, msg => { adapter.IsEmergencyInput = msg.Emergency; });
 
             _positionSubscriber = SimulatorROS2Node.CreateSubscription<geometry_msgs.msg.PoseWithCovarianceStamped>(
                 positionTopic, msg =>
@@ -139,10 +126,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                         (float)msg.Pose.Pose.Orientation.Z,
                         (float)msg.Pose.Pose.Orientation.W);
 
-                    _adapter.PositionInput =
+                    adapter.PositionInput =
                         ROS2Utility.RosToUnityPosition(positionVector - Environment.Instance.MgrsOffsetPosition);
-                    _adapter.RotationInput = ROS2Utility.RosToUnityRotation(rotationVector);
-                    _adapter.WillUpdatePositionInput = true;
+                    adapter.RotationInput = ROS2Utility.RosToUnityRotation(rotationVector);
+                    adapter.WillUpdatePositionInput = true;
                 }, positionQoS);
         }
 
