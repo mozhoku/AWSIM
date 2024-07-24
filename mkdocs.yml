@@ -180,6 +180,7 @@ nav:
     - VSCode Configuration: DeveloperGuide/EditorSetup/VSCode/index.md
     - Rider Configuration: DeveloperGuide/EditorSetup/JetBrainsRider/index.md
     - Graphy Asset Setup: DeveloperGuide/EditorSetup/Graphy/index.md
+    - Vehicle Physics Pro CE Setup: DeveloperGuide/EditorSetup/VPPCommunityEdition/index.md
     - Trouble shooting: DeveloperGuide/TroubleShooting/index.md
     - Documentation: DeveloperGuide/Documentation/index.md
     - License : DeveloperGuide/License/index.md
