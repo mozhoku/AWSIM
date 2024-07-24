@@ -17,18 +17,15 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void Start()
         {
             // Load the pedal maps
-            AccelMap = new PedalMap
-            {
-                Map = LoadMap(_accelMapCsv),
-                MapHeaders = LoadHeaders(_accelMapCsv),
-                MapVertical = VerticalDict(AccelMap.Map, AccelMap.MapHeaders)
-            };
-            BrakeMap = new PedalMap
-            {
-                Map = LoadMap(_brakeMapCsv),
-                MapHeaders = LoadHeaders(_brakeMapCsv),
-                MapVertical = VerticalDict(BrakeMap.Map, BrakeMap.MapHeaders)
-            };
+            AccelMap = new PedalMap();
+            AccelMap.Map = LoadMap(_accelMapCsv);
+            AccelMap.MapHeaders = LoadHeaders(_accelMapCsv);
+            AccelMap.MapVertical = VerticalDict(AccelMap.Map, AccelMap.MapHeaders);
+
+            BrakeMap = new PedalMap();
+            BrakeMap.Map = LoadMap(_brakeMapCsv);
+            BrakeMap.MapHeaders = LoadHeaders(_brakeMapCsv);
+            BrakeMap.MapVertical = VerticalDict(BrakeMap.Map, BrakeMap.MapHeaders);
         }
 
         private static Dictionary<float, List<float>> LoadMap(TextAsset csv)
