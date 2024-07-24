@@ -1,7 +1,5 @@
 using ROS2;
 using UnityEngine;
-using UnityEngine.Serialization;
-using VehiclePhysics;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
@@ -100,10 +98,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _steeringReportMsg.Steering_tire_angle = -1 * _adapter.VPSteeringReport * Mathf.Deg2Rad;
 
             // TurnIndicatorsReport
-            _turnIndicatorsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2TurnSignal(_adapter.SignalInput);
+            _turnIndicatorsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2TurnSignal(_adapter.VehicleSignalInput);
 
             // HazardLightsReport
-            _hazardLightsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Hazard(_adapter.SignalInput);
+            _hazardLightsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Hazard(_adapter.VehicleSignalInput);
 
             // VelocityReport
             var rosLinearVelocity = ROS2Utility.UnityToRosPosition(_adapter.VPVelocityReport);
