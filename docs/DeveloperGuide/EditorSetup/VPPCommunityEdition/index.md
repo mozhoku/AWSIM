@@ -19,10 +19,8 @@ VPP-CE Asset Store link:
 
 ## Useful links:
 
-Unity Package manager:
-
+Unity Package manager:  
 - https://docs.unity3d.com/Manual/upm-ui.html
 
-VPP Website:
-
+VPP Website:  
 - https://vehiclephysics.com/
