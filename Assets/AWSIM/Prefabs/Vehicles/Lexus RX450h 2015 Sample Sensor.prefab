@@ -1473,7 +1473,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4981081891045692864}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 541707468, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
@@ -1632,9 +1632,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _frontWheelCollider1: {fileID: 5429697449238222761}
   _frontWheelCollider2: {fileID: 718712847548543310}
-  _EmergencyBrakePercent: 100
+  _steerWheelInput: 50
+  _doUsePedalMaps: 1
+  _applyPedal: 5
+  _emergencyBrakePercent: 100
   _updatePositionOffsetY: 1.33
   _updatePositionRayOriginY: 1000
+  _velocityThreshold: 0.01
+  kp: 0.85
+  ki: 0.45
+  kd: 0.01
 --- !u!114 &8380214914162268112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1659,7 +1666,7 @@ MonoBehaviour:
     DurabilityPolicy: 1
     HistoryPolicy: 1
     Depth: 1
-  adapter: {fileID: 0}
+  _adapter: {fileID: 1469440915397572680}
   positionQosInput:
     ReliabilityPolicy: 1
     DurabilityPolicy: 2
@@ -3834,10 +3841,10 @@ MonoBehaviour:
   _frameId: base_link
   _publishHz: 30
   _qosSettings:
-    ReliabilityPolicy: 0
-    DurabilityPolicy: 0
-    HistoryPolicy: 0
-    Depth: 0
+    ReliabilityPolicy: 1
+    DurabilityPolicy: 2
+    HistoryPolicy: 1
+    Depth: 1
   _adapter: {fileID: 1469440915397572680}
 --- !u!1001 &2465439770172797818
 PrefabInstance:

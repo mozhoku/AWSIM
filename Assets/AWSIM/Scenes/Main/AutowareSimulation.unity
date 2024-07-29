@@ -1394,21 +1394,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 761227894150027610, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 761227894649641225, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 761227895339884612, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
       propertyPath: m_Name
@@ -1473,36 +1458,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6387232935648582734, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6387232936574723408, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6387232937081677059, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8917940877303146778, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8917940878763528196, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8917940879272513623, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Layer
-      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8996813226046187441, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
@@ -1753,8 +1708,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1743169424}
   m_HandleRect: {fileID: 1743169422}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1.0000011
+  m_Size: 0.90229887
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
