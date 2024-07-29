@@ -4,8 +4,7 @@
 
 - Go to Unity Asset Store and add VPP-CE to personal assets.
 
-VPP-CE Asset Store link:
-- https://assetstore.unity.com/packages/tools/physics/vehicle-physics-pro-community-edition-153556
+[Vehicle Physics Pro Asset Store link](https://assetstore.unity.com/packages/tools/physics/vehicle-physics-pro-community-edition-153556)
 
 ## Add VPP-CE to the Unity Editor
 
