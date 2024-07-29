@@ -4,7 +4,7 @@ VPP is a package that provides realistic vehicle simulation. Here you can find a
 Ego Vehicle.
 
 !!! tip "Example Vehicle"
-It is recommended to take a look at the default Lexus vehicle prefab as example to see how the components are set up.
+    It is recommended to take a look at the default Lexus vehicle prefab as example to see how the components are set up.
 
 ## Initial setup
 
@@ -21,8 +21,8 @@ Added to prefab root:
 - `VP Vehicle Toolkit`
 
 !!! warning "Wheel Colliders"
-VPP uses its own implementation of the `Wheel Colliders`! For the wheel colliders, please add the `Wheel Colliders`
-provided by the VPP package. They share the same name with the default Unity components.
+    VPP uses its own implementation of the `Wheel Colliders`! For the wheel colliders, please add the `Wheel Colliders`
+    provided by the VPP package. They share the same name with the default Unity components.
 
 After adding those scripts continue with adding the following components to the vehicle prefab:
 
@@ -53,9 +53,9 @@ information about the VPP components.
 As for the other components we've added to the vehicle, we have to give their necessary references.
 
 !!! warning "Camera Controller"
-If you've added the `Camera Target` component, you'll need a separate gameObject with a `Camera Controller`. Don't
-forget to assign vehicle Transform reference in this component. This is used by default in the `AutowareSimulation`
-scene.
+    If you've added the `Camera Target` component, you'll need a separate gameObject with a `Camera Controller`. Don't
+    forget to assign vehicle Transform reference in this component. This is used by default in the `AutowareSimulation`
+    scene.
 
 ### AutowareVPPAdapter.cs
 
@@ -115,7 +115,7 @@ For the VPP to work correctly, you need to set up the child objects of the vehic
 ### Setting up reference for Ackermann Steering:
 
 1) Create an empty game object named `"Ackermann"` and set as the direct child of the prefab. Then assign reference in
-   the `Vehicle Controller`.
+   the `Vehicle Controller`.  
 2) Move position of the created game object to the middle of the rear axle and set its height to the bottom of the rear
    wheels. Make sure the rotations are `(0,0,0)`
 
@@ -127,12 +127,12 @@ VPP Reference:
 ### Setting up the reference for Dynamics:
 
 1) Create an empty game object named `"Dynamics"` and set as the direct child of the prefab. Add the following
-   components to this object:
+   components to this object:  
     - `Rolling Friction`
     - `Anti-roll Bar` (x2)
 
 2) Create an empty game object named `"Aero"` and set as the child of the "Dynamics". Add the following
-   components to this object:
+   components to this object:  
     - `Aerodynamic Surface`
 
 Assign the references in the `Vehicle Controller`. For configuring these components, you can refer to the VPP.
