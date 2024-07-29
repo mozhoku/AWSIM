@@ -114,9 +114,9 @@ For the VPP to work correctly, you need to set up the child objects of the vehic
 
 ### Setting up reference for Ackermann Steering:
 
-1) Create an empty game object named `"Ackermann"` and set as the direct child of the prefab. Then assign reference in
+1. Create an empty game object named `"Ackermann"` and set as the direct child of the prefab. Then assign reference in
    the `Vehicle Controller`.  
-2) Move position of the created game object to the middle of the rear axle and set its height to the bottom of the rear
+2. Move position of the created game object to the middle of the rear axle and set its height to the bottom of the rear
    wheels. Make sure the rotations are `(0,0,0)`
 
 Assign the reference in the `Vehicle Controller`. For details, you can refer to the VPP.
@@ -126,12 +126,12 @@ VPP Reference:
 
 ### Setting up the reference for Dynamics:
 
-1) Create an empty game object named `"Dynamics"` and set as the direct child of the prefab. Add the following
+1. Create an empty game object named `"Dynamics"` and set as the direct child of the prefab. Add the following
    components to this object:  
     - `Rolling Friction`
     - `Anti-roll Bar` (x2)
 
-2) Create an empty game object named `"Aero"` and set as the child of the "Dynamics". Add the following
+2. Create an empty game object named `"Aero"` and set as the child of the "Dynamics". Add the following
    components to this object:  
     - `Aerodynamic Surface`
 
