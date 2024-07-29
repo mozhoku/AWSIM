@@ -7,7 +7,12 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
     [RequireComponent(typeof(AutowareVPPAdapter))]
     public class Ros2ToVPPInput : MonoBehaviour
     {
-        [Header("Topics")][SerializeField] private string controlModeTopic = "/vehicle/status/control_mode";
+        [Header("AutowareVPPAdapter")]
+        [SerializeField]
+        private AutowareVPPAdapter _adapter;
+
+        [Header("Ros2 fields")]
+        [SerializeField] private string controlModeTopic = "/vehicle/status/control_mode";
         [SerializeField] private string turnIndicatorsCommandTopic = "/control/command/turn_indicators_cmd";
         [SerializeField] private string hazardLightsCommandTopic = "/control/command/hazard_lights_cmd";
         [SerializeField] private string controlCommandTopic = "/control/command/control_cmd";
@@ -16,7 +21,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private string positionTopic = "/initialpose";
 
         [SerializeField] private QoSSettings qosSettings = new();
-        [SerializeField] private AutowareVPPAdapter _adapter;
         [SerializeField] private QoSSettings positionQosInput;
 
         // subscribers

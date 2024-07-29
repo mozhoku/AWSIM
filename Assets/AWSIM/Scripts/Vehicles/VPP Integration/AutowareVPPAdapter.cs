@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VehiclePhysics;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
@@ -72,11 +71,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // VPP components
         private VPVehicleController _vehicleController;
-
         // private VPTelemetry _telemetry;
         // private VPVisualEffects _visualEffects;
         // private VPVehicleToolkit _toolkit;
-        [SerializeField] private VPWheelCollider _frontWheelCollider1;
+
+        [Header("Lateral")][SerializeField] private VPWheelCollider _frontWheelCollider1;
         [SerializeField] private VPWheelCollider _frontWheelCollider2;
 
         private Rigidbody _rigidbody;
@@ -97,12 +96,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         /// <summary>
         /// Use pedal maps to control throttle and brake. If set to false, will use velocity and acceleration input to control throttle and brake
         /// </summary>
-        [SerializeField] private bool _doUsePedalMaps;
-
-        /// <summary>
-        /// Change applied to the pedals per fixed update if pedal maps are not used
-        /// </summary>
-        [Range(0f, 100f)][SerializeField] private float _applyPedal = 5f;
+        [Header("Longitudinal")]
+        [SerializeField]
+        private bool _doUsePedalMaps;
 
         private int _vppThrottleFromLastFrame;
         private int _vppBrakeFromLastFrame;
@@ -113,7 +109,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         /// </summary>
         [Range(0f, 100f)][SerializeField] private float _emergencyBrakePercent = 100f;
 
-
         private float _currentSpeed;
         private float _previousAcceleration;
         private float _currentJerk;
@@ -123,7 +118,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private IVehicleControlMode _currentMode;
 
         // RViz2 Update position variables
-        [SerializeField] private float _updatePositionOffsetY = 1.33f;
+        [Header("RViz2 Update Position")]
+        [SerializeField]
+        private float _updatePositionOffsetY = 1.33f;
+
         [SerializeField] private float _updatePositionRayOriginY = 1000f;
 
         private static float GainAdjuster(float error)
@@ -138,7 +136,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private VehicleState _vehicleState = VehicleState.Braking;
 
         // Threshold to determine if the vehicle is close enough to the target velocity
-        [SerializeField] private float _velocityThreshold = 0.01f;
+        [Header("PID Params")]
+        [SerializeField]
+        private float _velocityThreshold = 0.01f;
+
         [SerializeField] private float kp;
         [SerializeField] private float ki;
         [SerializeField] private float kd;
@@ -289,7 +290,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 {
                     // TODO: for some reason "isAccelerationDefinedInput" is always false from the Autoware side, can't use it (mozzz)
                     // set accel
-                    if (_accelerationInput > 0 || _velocityInput > 0)
+                    if (_velocityInput > 0)
                     {
                         var throttlePercent =
                             _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _accelerationInput, _currentSpeed);
@@ -298,7 +299,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     }
 
                     // set brake
-                    if (_accelerationInput < 0 || _velocityInput < 0)
+                    if (_velocityInput < 0)
                     {
                         var brakePercent =
                             _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _accelerationInput, _currentSpeed);
