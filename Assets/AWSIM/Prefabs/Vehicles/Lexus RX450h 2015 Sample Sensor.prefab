@@ -973,12 +973,12 @@ MonoBehaviour:
   m_Script: {fileID: 1445780741, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 20
-  radius: 0.36
+  mass: 15
+  radius: 0.365
   center: {x: 0.01, y: 0, z: 0}
   suspensionDistance: 0.15
   suspensionAnchor: 0.4
-  springRate: 53000
+  springRate: 55000
   damperRate: 3000
   suspensionTransform: {fileID: 0}
   caliperTransform: {fileID: 0}
@@ -1081,12 +1081,12 @@ MonoBehaviour:
   m_Script: {fileID: 1445780741, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 20
-  radius: 0.36
+  mass: 15
+  radius: 0.365
   center: {x: 0.01, y: 0, z: 0}
   suspensionDistance: 0.15
   suspensionAnchor: 0.5
-  springRate: 53000
+  springRate: 55000
   damperRate: 3000
   suspensionTransform: {fileID: 0}
   caliperTransform: {fileID: 0}
@@ -1239,11 +1239,11 @@ MonoBehaviour:
   showContactGizmos: 1
   disableContactProcessing: 0
   inertia:
-    mode: 1
+    mode: 3
     inertiaColliders: []
     chassisDimensions: {x: 1.5, y: 0.3, z: 4}
     inertiaBias: 1
-    inertiaTensor: {x: 2000, y: 2200, z: 400}
+    inertiaTensor: {x: 2000, y: 2200, z: 700}
     inertiaTensorRotation: {x: 0, y: 0, z: 0}
     inertiaRow0: {x: 2000, y: 0, z: 0}
     inertiaRow1: {x: 0, y: 2200, z: 0}
@@ -1632,9 +1632,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _frontWheelCollider1: {fileID: 5429697449238222761}
   _frontWheelCollider2: {fileID: 718712847548543310}
-  _steerWheelInput: 50
+  _steerWheelInput: 45
   _doUsePedalMaps: 1
-  _applyPedal: 5
   _emergencyBrakePercent: 100
   _updatePositionOffsetY: 1.33
   _updatePositionRayOriginY: 1000
@@ -1654,6 +1653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca678817e2c893b797f2e68f1cd5d67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _adapter: {fileID: 1469440915397572680}
   controlModeTopic: /vehicle/status/control_mode
   turnIndicatorsCommandTopic: /control/command/turn_indicators_cmd
   hazardLightsCommandTopic: /control/command/hazard_lights_cmd
@@ -1666,7 +1666,6 @@ MonoBehaviour:
     DurabilityPolicy: 1
     HistoryPolicy: 1
     Depth: 1
-  _adapter: {fileID: 1469440915397572680}
   positionQosInput:
     ReliabilityPolicy: 1
     DurabilityPolicy: 2
@@ -2083,12 +2082,12 @@ MonoBehaviour:
   m_Script: {fileID: 1445780741, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 20
-  radius: 0.36
+  mass: 15
+  radius: 0.365
   center: {x: -0.05, y: 0, z: 0}
   suspensionDistance: 0.15
   suspensionAnchor: 0.5
-  springRate: 53000
+  springRate: 55000
   damperRate: 3000
   suspensionTransform: {fileID: 0}
   caliperTransform: {fileID: 0}
@@ -3105,12 +3104,12 @@ MonoBehaviour:
   m_Script: {fileID: 1445780741, guid: b8873f7cd5fec6f49a4b37228b9b23ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 20
-  radius: 0.36
+  mass: 15
+  radius: 0.365
   center: {x: -0.05, y: 0, z: 0}
   suspensionDistance: 0.15
   suspensionAnchor: 0.4
-  springRate: 53000
+  springRate: 55000
   damperRate: 3000
   suspensionTransform: {fileID: 0}
   caliperTransform: {fileID: 0}
@@ -3832,6 +3831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8d1cd8ae6a65d2f3bd79183dfecd210, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _adapter: {fileID: 1469440915397572680}
   _controlModeReportTopic: /vehicle/status/control_mode
   _gearReportTopic: /vehicle/status/gear_status
   _steeringReportTopic: /vehicle/status/steering_status
@@ -3845,7 +3845,6 @@ MonoBehaviour:
     DurabilityPolicy: 2
     HistoryPolicy: 1
     Depth: 1
-  _adapter: {fileID: 1469440915397572680}
 --- !u!1001 &2465439770172797818
 PrefabInstance:
   m_ObjectHideFlags: 0

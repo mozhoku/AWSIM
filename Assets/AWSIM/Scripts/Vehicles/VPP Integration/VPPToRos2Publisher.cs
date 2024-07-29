@@ -5,6 +5,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
     public class VPPToRos2Publisher : MonoBehaviour
     {
+        [Header("AutowareVPPAdapter")]
+        [SerializeField]
+        private AutowareVPPAdapter _adapter;
+
+        [Header("Ros2 fields")]
         [SerializeField] private string _controlModeReportTopic = "/vehicle/status/control_mode";
         [SerializeField] private string _gearReportTopic = "/vehicle/status/gear_status";
         [SerializeField] private string _steeringReportTopic = "/vehicle/status/steering_status";
@@ -15,7 +20,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         [Range(1, 60)][SerializeField] private int _publishHz = 30;
         [SerializeField] private QoSSettings _qosSettings;
-        [SerializeField] private AutowareVPPAdapter _adapter;
 
         // messages
         private autoware_vehicle_msgs.msg.ControlModeReport _controlModeReportMsg;
