@@ -134,6 +134,7 @@ nav:
         - Add Visual Elements: Components/Vehicle/AddNewVehicle/AddVisualElements/index.md
       - Customize Slip: Components/Vehicle/CustomizeSlip/index.md
       - FollowCamera: Components/Vehicle/FollowCamera/index.md
+      - VPP Integration: Components/Vehicle/VPPIntegration/index.md
     - Sensors:
       - LiDAR Sensor:
         - LiDAR Sensor: Components/Sensors/LiDARSensor/LiDARSensor/index.md
