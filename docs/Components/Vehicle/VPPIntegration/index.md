@@ -111,7 +111,7 @@ Rest of the signal related settings are same as `VehicleVisualEffect.cs`. These 
 
 !!! warning "Pedal Maps"
     These pedal maps are loaded in runtime. The default location for the pedal maps is `Assets/Resources/Pedal Maps/...`.
-    You can also find the Lexus's pedal maps in the same location.
+    You can find the Lexus's pedal maps in the same location.
 
 ### VPPToRos2Publisher.cs
 
