@@ -61,7 +61,8 @@ As for the other components we've added to the vehicle, we have to give their ne
 
 | Variable                       | Description                                                                                                                                 |
 |--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `Front Wheel Collider 1/2`     | Used for handling the steering input. Give front wheel colliders of the vehicle.                                                            |
+| `Front Wheels`                 | Used for handling the steering input. Give front wheel colliders of the vehicle.                                                            |
+| `Simulate Steering`            | Simulate the steering instead of assigning wheel angles directly.                                                                           |
 | `Steer Wheel Input`            | Change applied to steering wheel when simulating steering. Applied every in fixed update as an input to the VPP steering. _(0-100)_         |
 | `Do Use Pedal Maps`            | Whether to use the pedal maps for the vehicle or not. If set to false the vehicle will use the PID Controller for the longitudinal control. |
 | `Emergency Brake Percent`      | The amount of brake pedal percent applied when the emergency is triggered. _(0-1)_                                                          |

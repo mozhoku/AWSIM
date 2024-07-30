@@ -1394,25 +1394,15 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2963107000747016823, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4981081891045692864, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
       propertyPath: m_Name
       value: Lexus RX450h 2015 Sample Sensor
-      objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692865, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_Mass
-      value: 1500
-      objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692865, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_CenterOfMass.x
-      value: 0.000008165836
-      objectReference: {fileID: 0}
-    - target: {fileID: 4981081891045692865, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
-        type: 3}
-      propertyPath: m_CenterOfMass.z
-      value: 1.1850014
       objectReference: {fileID: 0}
     - target: {fileID: 5650763240072318842, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
@@ -1422,7 +1412,7 @@ PrefabInstance:
     - target: {fileID: 5650763240072318842, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.246
+      value: -1.316
       objectReference: {fileID: 0}
     - target: {fileID: 5650763240072318842, guid: 164645b2d105b6b4ab4e3d2e7c65dab2,
         type: 3}
