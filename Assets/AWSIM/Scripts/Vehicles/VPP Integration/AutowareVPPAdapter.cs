@@ -71,12 +71,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // VPP components
         private VPVehicleController _vehicleController;
-        // private VPTelemetry _telemetry;
-        // private VPVisualEffects _visualEffects;
-        // private VPVehicleToolkit _toolkit;
 
-        [Header("Lateral")][SerializeField] private VPWheelCollider _frontWheelCollider1;
-        [SerializeField] private VPWheelCollider _frontWheelCollider2;
+        [Header("Lateral")][SerializeField] private VPWheelCollider[] _frontWheels;
 
         private Rigidbody _rigidbody;
         private VehiclePedalMapLoader _pedalMap;
@@ -84,7 +80,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         /// <summary>
         /// Whether set wheel angle directly from Autoware or simulate with additive steering wheel input
         /// </summary>
-        private bool _setWheelAngleDirectly;
+        [SerializeField] private bool _simulateSteering;
 
         /// <summary>
         /// Change applied to steering wheel per fixed update
@@ -124,26 +120,24 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         [SerializeField] private float _updatePositionRayOriginY = 1000f;
 
-        private static float GainAdjuster(float error)
-        {
-            // Example: Reduce gains as error magnitude increases
-            return 1.0f / (1.0f + Mathf.Abs(error));
-        }
-
-        // PID stuff
-
-        private PIDController _pidController;
-        private VehicleState _vehicleState = VehicleState.Braking;
-
-        // Threshold to determine if the vehicle is close enough to the target velocity
-        [Header("PID Params")]
-        [SerializeField]
-        private float _velocityThreshold = 0.01f;
-
-        [SerializeField] private float kp;
-        [SerializeField] private float ki;
-        [SerializeField] private float kd;
-
+        // private static float GainAdjuster(float error)
+        // {
+        //     // Example: Reduce gains as error magnitude increases
+        //     return 1.0f / (1.0f + Mathf.Abs(error));
+        // }
+        //
+        // // PID stuff
+        // private PIDController _pidController;
+        // private VehicleState _vehicleState = VehicleState.Braking;
+        //
+        // // Threshold to determine if the vehicle is close enough to the target velocity
+        // [Header("PID Params")] [SerializeField]
+        // private float _velocityThreshold = 0.01f;
+        //
+        // [SerializeField] private float kp;
+        // [SerializeField] private float ki;
+        // [SerializeField] private float kd;
+        // public float targetVel;
         private void Awake()
         {
             // Initialize the control mode to Autonomous
@@ -155,8 +149,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _vehicleController = GetComponent<VPVehicleController>();
             _rigidbody = GetComponent<Rigidbody>();
             _pedalMap = GetComponent<VehiclePedalMapLoader>();
-            _pidController = new PIDController(kp, ki, kd, 0, 10000, 5000, 0.01f, 0.2f, true,
-                gainAdjuster: GainAdjuster);
+            // _pidController = new PIDController(kp, ki, kd, 0, 10000, 5000, 0.01f, 0.2f, true,
+            //     gainAdjuster: GainAdjuster);
 
             // Initialize the control modes
             _controlModes = new Dictionary<VPPControlMode, IVehicleControlMode>
@@ -176,12 +170,23 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             // TODO: Implement the control mode switch from simulator (mozzz)
             UserSwitchControlMode();
 
-            // update pid
-            if (Input.GetKey(KeyCode.K))
-            {
-                _pidController = new PIDController(kp, ki, kd, 0, 10000, 5000, 0.01f, 0.2f, true,
-                    gainAdjuster: GainAdjuster);
-            }
+            // // update pid
+            // if (Input.GetKey(KeyCode.K))
+            // {
+            //     _pidController = new PIDController(kp, ki, kd, 0, 10000, 5000, 0.01f, 0.2f, true,
+            //         gainAdjuster: GainAdjuster);
+            // }
+            //
+            // if (Input.GetKey(KeyCode.L))
+            // {
+            //     AutomaticShiftInput = Gearbox.AutomaticGear.D;
+            //     VelocityInput = targetVel;
+            // }
+            //
+            // if (Input.GetKey(KeyCode.J))
+            // {
+            //     IsEmergencyInput = !IsEmergencyInput;
+            // }
         }
 
         private void FixedUpdate()
@@ -223,22 +228,20 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         public void HandleSteer()
         {
-            if (_setWheelAngleDirectly)
-            {
-                // set wheel angle directly
-                _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
-                _frontWheelCollider1.steerAngle = _steerAngleInput;
-                _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
-                _frontWheelCollider2.steerAngle = _steerAngleInput;
-            }
-            else
+            if (_simulateSteering)
             {
                 SimulateSteeringWheelInput();
             }
-            // Debug.Log("Steer input | tier steer angle | wheel steer amount: "
-            //           + _steerAngleInput + " | " +
-            //           _vehicleController.wheelState[0].steerAngle + " | " +
-            //           _vehicleController.data.bus[Channel.Input][InputData.Steer]);
+            else
+            {
+                // set wheel angle directly
+                _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
+                _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
+                foreach (var wheel in _frontWheels)
+                {
+                    wheel.steerAngle = _steerAngleInput;
+                }
+            }
         }
 
         private void SimulateSteeringWheelInput()
@@ -311,7 +314,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 return;
             }
 
-            // // handle pedals if not using pedal maps
+            // handle pedals if not using pedal maps
             // if (_isEmergencyInput)
             // {
             //     // set emergency brake
@@ -324,7 +327,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             //     float velocityError = _velocityInput - _currentSpeed;
             //
             //     // Compute the required action from PID controller
-            //     float controlOutput = _pidController.Compute(velocityError, Time.fixedDeltaTime)*100000;
+            //     float controlOutput = _pidController.Compute(velocityError, Time.fixedDeltaTime) * 100000;
             //
             //     // Determine the desired state based on control output
             //     if (Mathf.Abs(velocityError) < _velocityThreshold)
@@ -355,7 +358,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             //
             //         case VehicleState.Braking:
             //             ApplyThrottle(0);
-            //             ApplyBrake(controlOutput);
+            //             ApplyBrake(-controlOutput);
             //             break;
             //
             //         case VehicleState.Coasting:
@@ -370,6 +373,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             //             throw new ArgumentOutOfRangeException();
             //     }
             // }
+
             // Debug.Log("Speed Input | Current Speed : " +
             //           _velocityInput + " | " + _currentSpeed);
             // Debug.Log("Accel Input | Current Accel : " +
@@ -378,18 +382,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             //           _vehicleController.data.bus[Channel.Input][InputData.Throttle] + " | " +
             //           _vehicleController.data.bus[Channel.Input][InputData.Brake]);
         }
-
-        // // Apply throttle
-        // private void ApplyThrottle(float amount)
-        // {
-        //     _vehicleController.data.bus[Channel.Input][InputData.Throttle] = (int)Mathf.Clamp(amount, 0, 10000);
-        // }
-        //
-        // // Apply brake
-        // private void ApplyBrake(float amount)
-        // {
-        //     _vehicleController.data.bus[Channel.Input][InputData.Brake] = (int)Mathf.Clamp(amount, 0, 10000);
-        // }
 
         /// <summary>
         /// Range:[0-10000]
@@ -413,7 +405,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             VPControlModeReport = _controlModeInput;
             VPHazardLightsReport = _vehicleSignalInput;
             VPTurnIndicatorReport = _vehicleSignalInput;
-            VPSteeringReport = _frontWheelCollider1.steerAngle;
+            VPSteeringReport = _frontWheels[0].steerAngle;
             VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
             VPVelocityReport = transform.InverseTransformDirection(_rigidbody.velocity.normalized * _currentSpeed);
             VPAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
@@ -437,27 +429,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             }
         }
 
-        // Method to switch control mode based on user input
-        // TODO: fix clashing with turn indicators and VPP shift (mozzz)
+        // TODO: Method to switch control mode based on user input (mozzz)
         private void UserSwitchControlMode()
         {
-            // if (Input.GetKey(KeyCode.LeftControl))
-            // {
-            //     if (Input.GetKeyDown(KeyCode.Alpha0))
-            //         ControlModeInput = VPPControlMode.NoCommand;
-            //     else if (Input.GetKeyDown(KeyCode.Alpha1))
-            //         ControlModeInput = VPPControlMode.Autonomous;
-            //     else if (Input.GetKeyDown(KeyCode.Alpha2))
-            //         ControlModeInput = VPPControlMode.AutonomousSteerOnly;
-            //     else if (Input.GetKeyDown(KeyCode.Alpha3))
-            //         ControlModeInput = VPPControlMode.AutonomousVelocityOnly;
-            //     else if (Input.GetKeyDown(KeyCode.Alpha4))
-            //         ControlModeInput = VPPControlMode.Manual;
-            //     else if (Input.GetKeyDown(KeyCode.Alpha5))
-            //         ControlModeInput = VPPControlMode.Disengaged;
-            //     else if (Input.GetKeyDown(KeyCode.Alpha6))
-            //         ControlModeInput = VPPControlMode.NotReady;
-            // }
         }
 
         /// <summary>

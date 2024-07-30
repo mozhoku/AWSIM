@@ -4,7 +4,7 @@ VPP is a package that provides realistic vehicle simulation. Here you can find a
 Ego Vehicle.
 
 !!! tip "Example Vehicle"
-   It is recommended to take a look at the default Lexus vehicle prefab as example to see how the components are set up.
+    It is recommended to take a look at the default Lexus vehicle prefab as example to see how the components are set up.
 
 ## Initial setup
 
@@ -21,8 +21,8 @@ Added to prefab root:
 - `VP Vehicle Toolkit`
 
 !!! warning "Wheel Colliders"
-   VPP uses its own implementation of the `Wheel Colliders`! For the wheel colliders, please add the `Wheel Colliders`
-   provided by the VPP package. They share the same name with the default Unity components.
+    VPP uses its own implementation of the `Wheel Colliders`! For the wheel colliders, please add the `Wheel Colliders`
+    provided by the VPP package. They share the same name with the default Unity components.
 
 After adding those scripts continue with adding the following components to the vehicle prefab:
 
@@ -53,9 +53,9 @@ information about the VPP components.
 As for the other components we've added to the vehicle, we have to give their necessary references.
 
 !!! warning "Camera Controller"
-   If you've added the `Camera Target` component, you'll need a separate gameObject with a `Camera Controller`. Don't
-   forget to assign vehicle Transform reference in this component. This is used by default in the `AutowareSimulation`
-   scene.
+    If you've added the `Camera Target` component, you'll need a separate gameObject with a `Camera Controller`. Don't
+    forget to assign vehicle Transform reference in this component. This is used by default in the `AutowareSimulation`
+    scene.
 
 ### AutowareVPPAdapter.cs
 

@@ -1,5 +1,6 @@
 using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VehiclePhysics;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
@@ -22,7 +23,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private VehicleVisualEffect.EmissionMaterial[] leftTurnSignalLights;
 
         [SerializeField] private VehicleVisualEffect.EmissionMaterial[] rightTurnSignalLights;
-        [SerializeField] float turnSignalTimerIntervalSec = 0.5f;
+        [SerializeField] private float _turnSignalTimerIntervalSec = 0.5f;
         private float _turnSignalTimer;
         private bool _turnSignalOn;
 
@@ -78,7 +79,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 ApplyLights(_reverseLights, true);
             }
 
-
             // turn signal light.
             if (IsTurnSignalOn() == false)
             {
@@ -92,7 +92,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _turnSignalTimer -= Time.deltaTime;
             if (_turnSignalTimer < 0f)
             {
-                _turnSignalTimer = turnSignalTimerIntervalSec;
+                _turnSignalTimer = _turnSignalTimerIntervalSec;
                 _turnSignalOn = !_turnSignalOn;
             }
 

@@ -1630,17 +1630,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dbceea492288af5a9a663c606ad86a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _frontWheelCollider1: {fileID: 5429697449238222761}
-  _frontWheelCollider2: {fileID: 718712847548543310}
+  _frontWheels:
+  - {fileID: 5429697449238222761}
+  - {fileID: 718712847548543310}
+  _simulateSteering: 1
   _steerWheelInput: 45
   _doUsePedalMaps: 1
   _emergencyBrakePercent: 100
   _updatePositionOffsetY: 1.33
   _updatePositionRayOriginY: 1000
-  _velocityThreshold: 0.01
-  kp: 0.85
-  ki: 0.45
-  kd: 0.01
 --- !u!114 &8380214914162268112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1700,7 +1698,7 @@ MonoBehaviour:
     materialIndex: 0
     lightingColor: {r: 8, g: 2.3529413, b: 0, a: 0}
     emissionIntensity: 0
-  turnSignalTimerIntervalSec: 0.5
+  _turnSignalTimerIntervalSec: 0.5
   _reverseLights:
   - meshRenderer: {fileID: 2064283678226759879}
     materialIndex: 0
