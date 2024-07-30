@@ -110,8 +110,8 @@ Rest of the signal related settings are same as `VehicleVisualEffect.cs`. These 
 | `Brake Map Csv` | The file reference of the brake pedal map. _(Drag the corresponding csv file from the Project Window)_        |
 
 !!! warning "Pedal Maps"
-   These pedal maps are loaded in runtime. The default location for the pedal maps is `Assets/Resources/Pedal Maps/...`.
-   You can also find the Lexus's pedal maps in the same location.
+    These pedal maps are loaded in runtime. The default location for the pedal maps is `Assets/Resources/Pedal Maps/...`.
+    You can also find the Lexus's pedal maps in the same location.
 
 ### VPPToRos2Publisher.cs
 
