@@ -382,7 +382,7 @@ Transform:
   m_GameObject: {fileID: 2540743507290084091}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.07, y: 0.936, z: 0.87}
+  m_LocalPosition: {x: 0.17, y: 1.026, z: 0.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -404,7 +404,7 @@ ReflectionProbe:
   m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 25, y: 5, z: 25}
-  m_BoxOffset: {x: -0.2515869, y: 1.5, z: 0.48220825}
+  m_BoxOffset: {x: 0, y: 1.5, z: 0}
   m_NearClip: 0.5
   m_FarClip: 10
   m_ShadowDistance: 10
@@ -478,7 +478,7 @@ Transform:
   m_GameObject: {fileID: 2963106999894658623}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9326711, y: 0.37483424, z: -1.4200822}
+  m_LocalPosition: {x: 0.9329091, y: 0.41799986, z: -1.4188654}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -511,7 +511,7 @@ Transform:
   m_GameObject: {fileID: 2963107000137126779}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9326711, y: 0.3748342, z: 1.3677951}
+  m_LocalPosition: {x: 0.9329091, y: 0.41799983, z: 1.3690119}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -577,7 +577,7 @@ Transform:
   m_GameObject: {fileID: 2963107000432534361}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8872308, y: 0.3748342, z: 1.3677951}
+  m_LocalPosition: {x: -0.8869929, y: 0.41799983, z: 1.3690119}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -643,7 +643,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2963107000747016822}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.0009598613, z: 0, w: 0.9999996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -685,7 +685,7 @@ Transform:
   m_GameObject: {fileID: 2963107000967671468}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8872308, y: 0.37483424, z: -1.4200822}
+  m_LocalPosition: {x: -0.8869929, y: 0.41799986, z: -1.4188654}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -955,7 +955,7 @@ Transform:
   m_GameObject: {fileID: 3204577569035564864}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9326711, y: 0.3748342, z: 1.3677951}
+  m_LocalPosition: {x: 0.9329091, y: 0.41799983, z: 1.3690119}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1063,7 +1063,7 @@ Transform:
   m_GameObject: {fileID: 3774390953481019643}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9326711, y: 0.37483424, z: -1.4200822}
+  m_LocalPosition: {x: 0.9329091, y: 0.41799986, z: -1.4188654}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1190,7 +1190,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4981081891045692864}
   serializedVersion: 4
-  m_Mass: 1800
+  m_Mass: 2110
   m_Drag: 0
   m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0.395, z: 1.185}
@@ -1300,7 +1300,7 @@ MonoBehaviour:
     powerRatio: 5
     coastRatio: 5
   centerDifferential:
-    type: 1
+    type: 0
     gearRatio: 1
     preload: 0
     powerStiffness: 0.2
@@ -1329,7 +1329,7 @@ MonoBehaviour:
     preload: 0
     stiffness: 0.5
   steering:
-    maxSteerAngle: 50
+    maxSteerAngle: 40
     toeAngle: 0
     ackerman: 1
     ackermanReference: {fileID: 5055317025945945549}
@@ -1360,22 +1360,22 @@ MonoBehaviour:
     frictionMultiplier: 1
     maxAdherentSpeed: 6.388889
   engine:
-    idleRpm: 1100
-    peakRpm: 8336
-    maxRpm: 9000
-    idleRpmTorque: 106
-    peakRpmTorque: 188
-    idleRpmCurveBias: 0.95700055
-    peakRpmCurveBias: 0
+    idleRpm: 1000
+    peakRpm: 7700
+    maxRpm: 8000
+    idleRpmTorque: 105
+    peakRpmTorque: 140
+    idleRpmCurveBias: 0.855
+    peakRpmCurveBias: 0.5
     inertia: 0.15
     frictionTorque: 20
-    rotationalFriction: 0.06
-    viscousFriction: 0.007
-    torqueCap: 1
-    torqueCapLimit: 210
+    rotationalFriction: 0.14
+    viscousFriction: 0.0167
+    torqueCap: 0
+    torqueCapLimit: 290.4
     rpmLimiter: 1
     rpmLimiterMode: 0
-    rpmLimiterMax: 8700
+    rpmLimiterMax: 6000
     rpmLimiterCutoffTime: 0.075
     idleControl: 1
     maxIdleThrottle: 0.8
@@ -1422,8 +1422,8 @@ MonoBehaviour:
     autoShiftDownInterval: 0.2
     automaticTransitionTime: 0.5
     automaticShiftInterval: 1
-    automaticGearDownRevs: 3000
-    automaticGearUpRevs: 6500
+    automaticGearDownRevs: 2000
+    automaticGearUpRevs: 5000
     automaticThrottleSens: 0
     automaticThrottleSensMin: 0.6
     automaticFullThrottleGearDownRevs: 3000
@@ -2062,7 +2062,7 @@ Transform:
   m_GameObject: {fileID: 5889245242532048299}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8872308, y: 0.37483424, z: -1.4200822}
+  m_LocalPosition: {x: -0.8869929, y: 0.41799986, z: -1.4188654}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2391,7 +2391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragModel: 0
-  dragCoefficientQuadratic: 0.31
+  dragCoefficientQuadratic: 0.33
   dragCoefficientCubic: 0.3
   dragMixedRefSpeed: 25
   dragMixedRefForce: 4000
@@ -3084,7 +3084,7 @@ Transform:
   m_GameObject: {fileID: 8142014580109698536}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8872308, y: 0.3748342, z: 1.3677951}
+  m_LocalPosition: {x: -0.887, y: 0.418, z: 1.369}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
