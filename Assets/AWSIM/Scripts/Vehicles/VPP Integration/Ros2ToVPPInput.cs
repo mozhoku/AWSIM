@@ -12,7 +12,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private AutowareVPPAdapter _adapter;
 
         [Header("Ros2 fields")]
-        [SerializeField] private string controlModeTopic = "/vehicle/status/control_mode";
+        [SerializeField]
+        private string controlModeTopic = "/vehicle/status/control_mode";
+
         [SerializeField] private string turnIndicatorsCommandTopic = "/control/command/turn_indicators_cmd";
         [SerializeField] private string hazardLightsCommandTopic = "/control/command/hazard_lights_cmd";
         [SerializeField] private string controlCommandTopic = "/control/command/control_cmd";
@@ -106,7 +108,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     _adapter.JerkInput = msg.Longitudinal.Jerk;
 
                     // lateral
-                    _adapter.SteerAngleInput = -(float)msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
+                    _adapter.SteerAngleInput = -msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
                     _adapter.IsDefinedSteeringTireRotationRateInput =
                         msg.Lateral.Is_defined_steering_tire_rotation_rate;
                     _adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
