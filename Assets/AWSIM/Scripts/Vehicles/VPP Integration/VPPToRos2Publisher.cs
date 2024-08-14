@@ -10,12 +10,15 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private AutowareVPPAdapter _adapter;
 
         [Header("Ros2 fields")]
-        [SerializeField] private string _controlModeReportTopic = "/vehicle/status/control_mode";
+        [SerializeField]
+        private string _controlModeReportTopic = "/vehicle/status/control_mode";
+
         [SerializeField] private string _gearReportTopic = "/vehicle/status/gear_status";
         [SerializeField] private string _steeringReportTopic = "/vehicle/status/steering_status";
         [SerializeField] private string _turnIndicatorsReportTopic = "/vehicle/status/turn_indicators_status";
         [SerializeField] private string _hazardLightsReportTopic = "/vehicle/status/hazard_lights_status";
         [SerializeField] private string _velocityReportTopic = "/vehicle/status/velocity_status";
+        [SerializeField] private string _ActuationStatusTopic = "/vehicle/status/actuation_status";
         [SerializeField] private string _frameId = "base_link";
 
         [Range(1, 60)][SerializeField] private int _publishHz = 30;
@@ -28,6 +31,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private autoware_vehicle_msgs.msg.TurnIndicatorsReport _turnIndicatorsReportMsg;
         private autoware_vehicle_msgs.msg.HazardLightsReport _hazardLightsReportMsg;
         private autoware_vehicle_msgs.msg.VelocityReport _velocityReportMsg;
+        private tier4_vehicle_msgs.msg.ActuationStatusStamped _actuationStatusReport;
 
         // publisher
         private IPublisher<autoware_vehicle_msgs.msg.ControlModeReport> _controlModeReportPublisher;
@@ -36,6 +40,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private IPublisher<autoware_vehicle_msgs.msg.TurnIndicatorsReport> _turnIndicatorsReportPublisher;
         private IPublisher<autoware_vehicle_msgs.msg.HazardLightsReport> _hazardLightsReportPublisher;
         private IPublisher<autoware_vehicle_msgs.msg.VelocityReport> _velocityReportPublisher;
+        private IPublisher<tier4_vehicle_msgs.msg.ActuationStatusStamped> _actuationStatusPublisher;
 
         private bool _isInitialized;
         private float _timer;
@@ -59,6 +64,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     _hazardLightsReportTopic, qos);
             _velocityReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.VelocityReport>(_velocityReportTopic, qos);
+            _actuationStatusPublisher =
+                SimulatorROS2Node.CreatePublisher<tier4_vehicle_msgs.msg.ActuationStatusStamped>(_ActuationStatusTopic,
+                    qos);
 
             // Create msg.
             _controlModeReportMsg = new autoware_vehicle_msgs.msg.ControlModeReport();
@@ -66,7 +74,14 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _steeringReportMsg = new autoware_vehicle_msgs.msg.SteeringReport();
             _turnIndicatorsReportMsg = new autoware_vehicle_msgs.msg.TurnIndicatorsReport();
             _hazardLightsReportMsg = new autoware_vehicle_msgs.msg.HazardLightsReport();
-            _velocityReportMsg = new autoware_vehicle_msgs.msg.VelocityReport()
+            _velocityReportMsg = new autoware_vehicle_msgs.msg.VelocityReport
+            {
+                Header = new std_msgs.msg.Header
+                {
+                    Frame_id = _frameId,
+                }
+            };
+            _actuationStatusReport = new tier4_vehicle_msgs.msg.ActuationStatusStamped
             {
                 Header = new std_msgs.msg.Header()
                 {
@@ -114,6 +129,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _velocityReportMsg.Lateral_velocity = rosLinearVelocity.y;
             _velocityReportMsg.Heading_rate = rosAngularVelocity.z;
 
+            // ActuationStatusReport
+            _actuationStatusReport.Status.Accel_status = _adapter.VPThrottleStatusReport;
+            _actuationStatusReport.Status.Brake_status = _adapter.VPBrakeStatusReport;
+            _actuationStatusReport.Status.Steer_status = _adapter.VPSteerStatusReport;
+
             // Update Stamp
             var time = SimulatorROS2Node.GetCurrentRosTime();
             _controlModeReportMsg.Stamp = time;
@@ -123,6 +143,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _hazardLightsReportMsg.Stamp = time;
             var velocityReportMsgHeader = _velocityReportMsg as MessageWithHeader;
             SimulatorROS2Node.UpdateROSTimestamp(ref velocityReportMsgHeader);
+            var actuationStatusReportHeader = _actuationStatusReport as MessageWithHeader;
+            SimulatorROS2Node.UpdateROSTimestamp(ref actuationStatusReportHeader);
 
             // publish
             _controlModeReportPublisher.Publish(_controlModeReportMsg);
@@ -131,6 +153,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _turnIndicatorsReportPublisher.Publish(_turnIndicatorsReportMsg);
             _hazardLightsReportPublisher.Publish(_hazardLightsReportMsg);
             _velocityReportPublisher.Publish(_velocityReportMsg);
+            _actuationStatusPublisher.Publish(_actuationStatusReport);
         }
 
         private void OnDestroy()
@@ -143,6 +166,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             SimulatorROS2Node.RemovePublisher<autoware_vehicle_msgs.msg.HazardLightsReport>(
                 _hazardLightsReportPublisher);
             SimulatorROS2Node.RemovePublisher<autoware_vehicle_msgs.msg.VelocityReport>(_velocityReportPublisher);
+            SimulatorROS2Node.RemovePublisher<tier4_vehicle_msgs.msg.ActuationStatusStamped>(_actuationStatusPublisher);
         }
     }
 }

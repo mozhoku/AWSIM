@@ -12,7 +12,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
     public class AutowareVPPAdapter : MonoBehaviour
     {
         /// <summary>
-        /// Inputs
+        /// This script applies the VPP vehicle inputs.
+        /// Vehicle inputs are updated from the `Ros2ToVPPInput.cs`.
+        /// Results from this script are sent to the `VPPtoRos2Publisher.cs`.
         /// </summary>
 
         // Initial Position inputs from Rviz
@@ -60,6 +62,15 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [NonSerialized] public VPPControlMode ControlModeInput;
         private VPPControlMode _controlModeInput => ControlModeInput;
 
+        // Actuation commands from Autoware
+        public double SteerInput { get; set; }
+        private double _steerInput => SteerInput;
+        public double BrakeInput { get; set; }
+        private double _brakeInput => BrakeInput;
+        public double ThrottleInput { get; set; }
+        private double _throttleInput => ThrottleInput;
+
+
         // Outputs from Unity/VPP
         [NonSerialized] public VPPControlMode VPControlModeReport;
         [NonSerialized] public int VPGearReport;
@@ -68,6 +79,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [NonSerialized] public float VPSteeringReport;
         [NonSerialized] public VPPSignal VPTurnIndicatorReport;
         [NonSerialized] public VPPSignal VPHazardLightsReport;
+        [NonSerialized] public double VPThrottleStatusReport;
+        [NonSerialized] public double VPBrakeStatusReport;
+        [NonSerialized] public double VPSteerStatusReport;
 
         // VPP components
         private VPVehicleController _vehicleController;
@@ -75,7 +89,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [Header("Lateral")][SerializeField] private VPWheelCollider[] _frontWheels;
 
         private Rigidbody _rigidbody;
-        private VehiclePedalMapLoader _pedalMap;
 
         /// <summary>
         /// Whether set wheel angle directly from Autoware or simulate with additive steering wheel input
@@ -88,16 +101,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [Range(0f, 100f)][SerializeField] private float _steerWheelInput = 5f;
 
         private int _vppSteerFromLastFrame;
-
-        /// <summary>
-        /// Use pedal maps to control throttle and brake. If set to false, will use velocity and acceleration input to control throttle and brake
-        /// </summary>
-        [Header("Longitudinal")]
-        [SerializeField]
-        private bool _doUsePedalMaps;
-
-        private int _vppThrottleFromLastFrame;
-        private int _vppBrakeFromLastFrame;
 
         /// <summary>
         /// Brake pedal percent on emergency brake
@@ -120,27 +123,14 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         [SerializeField] private float _updatePositionRayOriginY = 1000f;
 
-        // private static float GainAdjuster(float error)
-        // {
-        //     // Example: Reduce gains as error magnitude increases
-        //     return 1.0f / (1.0f + Mathf.Abs(error));
-        // }
-        //
-        // // PID stuff
-        // private PIDController _pidController;
-        // private VehicleState _vehicleState = VehicleState.Braking;
-        //
-        // // Threshold to determine if the vehicle is close enough to the target velocity
-        // [Header("PID Params")] [SerializeField]
-        // private float _velocityThreshold = 0.01f;
-        //
-        // [SerializeField] private float kp;
-        // [SerializeField] private float ki;
-        // [SerializeField] private float kd;
-        // public float targetVel;
+        // Pedal calibration stuff
+        private int _brakeAmount;
+        private int _throttleAmount;
+        [SerializeField] private bool _doPedalCalibration;
+
         private void Awake()
-        {
-            // Initialize the control mode to Autonomous
+        {   //TODO: Implement the control mode switch from simulator (mozzz)
+            // Initialize the control mode as Autonomous
             ControlModeInput = VPPControlMode.Autonomous;
         }
 
@@ -148,9 +138,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             _vehicleController = GetComponent<VPVehicleController>();
             _rigidbody = GetComponent<Rigidbody>();
-            _pedalMap = GetComponent<VehiclePedalMapLoader>();
-            // _pidController = new PIDController(kp, ki, kd, 0, 10000, 5000, 0.01f, 0.2f, true,
-            //     gainAdjuster: GainAdjuster);
 
             // Initialize the control modes
             _controlModes = new Dictionary<VPPControlMode, IVehicleControlMode>
@@ -163,30 +150,15 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 { VPPControlMode.Disengaged, new ControlMode.Disengaged() },
                 { VPPControlMode.NotReady, new ControlMode.NotReady() }
             };
+
+            // Set initial vehicle gear to Park to prevent sliding
+            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)Gearbox.AutomaticGear.P;
         }
 
         private void Update()
         {
             // TODO: Implement the control mode switch from simulator (mozzz)
             UserSwitchControlMode();
-
-            // // update pid
-            // if (Input.GetKey(KeyCode.K))
-            // {
-            //     _pidController = new PIDController(kp, ki, kd, 0, 10000, 5000, 0.01f, 0.2f, true,
-            //         gainAdjuster: GainAdjuster);
-            // }
-            //
-            // if (Input.GetKey(KeyCode.L))
-            // {
-            //     AutomaticShiftInput = Gearbox.AutomaticGear.D;
-            //     VelocityInput = targetVel;
-            // }
-            //
-            // if (Input.GetKey(KeyCode.J))
-            // {
-            //     IsEmergencyInput = !IsEmergencyInput;
-            // }
         }
 
         private void FixedUpdate()
@@ -198,8 +170,17 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 WillUpdatePositionInput = false;
             }
 
+            if (_doPedalCalibration)
+            {
+                PedalCalibrationMode();
+            }
+
             // Control the vehicle based on the control mode
             ControlVehicle(_controlModeInput);
+            Debug.Log("Control Mode: " + _controlModeInput);
+
+            // Update the publisher values for VPPToRos2Publisher.cs
+            ReportVehicleState();
         }
 
         private void ControlVehicle(VPPControlMode controlMode)
@@ -212,8 +193,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             {
                 Debug.LogWarning("Control mode is not recognized.");
             }
-
-            ReportVehicleState();
         }
 
         public void HandleHazardLights()
@@ -280,107 +259,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 _previousAcceleration = currentAcceleration;
             }
 
-            // return after applying pedals if using pedal maps
-            if (_doUsePedalMaps)
-            {
-                if (_isEmergencyInput)
-                {
-                    // set emergency brake
-                    var emergencyBrakePercent = RemapValue(_emergencyBrakePercent, 0f, 100f, 0, 10000);
-                    SetBrake(emergencyBrakePercent);
-                }
-                else
-                {
-                    // TODO: for some reason "isAccelerationDefinedInput" is always false from the Autoware side, can't use it (mozzz)
-                    // set accel
-                    if (_velocityInput > 0)
-                    {
-                        var throttlePercent =
-                            _pedalMap.GetPedalPercent(_pedalMap.AccelMap, _accelerationInput, _currentSpeed);
-                        throttlePercent = RemapValue(throttlePercent, 0f, 0.5f, 0, 5000);
-                        SetThrottle((int)throttlePercent);
-                    }
-
-                    // set brake
-                    if (_velocityInput < 0)
-                    {
-                        var brakePercent =
-                            _pedalMap.GetPedalPercent(_pedalMap.BrakeMap, _accelerationInput, _currentSpeed);
-                        brakePercent = RemapValue(brakePercent, 0f, 0.8f, 0, 8000);
-                        SetBrake((int)brakePercent);
-                    }
-                }
-
-                return;
-            }
-
-            // handle pedals if not using pedal maps
-            // if (_isEmergencyInput)
-            // {
-            //     // set emergency brake
-            //     var emergencyBrakePercent = RemapValue(_emergencyBrakePercent, 0f, 100f, 0, 10000);
-            //     SetBrake(emergencyBrakePercent);
-            // }
-            // else
-            // {
-            //     // Calculate the velocity error
-            //     float velocityError = _velocityInput - _currentSpeed;
-            //
-            //     // Compute the required action from PID controller
-            //     float controlOutput = _pidController.Compute(velocityError, Time.fixedDeltaTime) * 100000;
-            //
-            //     // Determine the desired state based on control output
-            //     if (Mathf.Abs(velocityError) < _velocityThreshold)
-            //     {
-            //         _vehicleState = VehicleState.Coasting;
-            //     }
-            //     else if (controlOutput > 0)
-            //     {
-            //         _vehicleState = VehicleState.Accelerating;
-            //     }
-            //     else
-            //     {
-            //         _vehicleState = VehicleState.Braking;
-            //     }
-            //
-            //     Debug.Log("Velocity diff: " + velocityError);
-            //     Debug.Log("PID output throttle: " + controlOutput);
-            //     Debug.Log("VehicleState: " + _vehicleState);
-            //
-            //
-            //     // Execute actions based on current state
-            //     switch (_vehicleState)
-            //     {
-            //         case VehicleState.Accelerating:
-            //             ApplyThrottle(controlOutput);
-            //             ApplyBrake(0);
-            //             break;
-            //
-            //         case VehicleState.Braking:
-            //             ApplyThrottle(0);
-            //             ApplyBrake(-controlOutput);
-            //             break;
-            //
-            //         case VehicleState.Coasting:
-            //             // Coasting state: apply coast throttle
-            //             // float coastThrottle = _pidController.ComputeCoastThrottle(_currentSpeed);
-            //             // ApplyThrottle(coastThrottle);
-            //             // ApplyBrake(0); // Ensure brakes are not applied
-            //             break;
-            //         case VehicleState.Idle:
-            //             break;
-            //         default:
-            //             throw new ArgumentOutOfRangeException();
-            //     }
-            // }
-
-            // Debug.Log("Speed Input | Current Speed : " +
-            //           _velocityInput + " | " + _currentSpeed);
-            // Debug.Log("Accel Input | Current Accel : " +
-            //           _accelerationInput + " | " + _vehicleController.localAcceleration.magnitude);
-            // Debug.Log("Throttle % |Brake % : " +
-            //           _vehicleController.data.bus[Channel.Input][InputData.Throttle] + " | " +
-            //           _vehicleController.data.bus[Channel.Input][InputData.Brake]);
+            SetThrottle((int)(_throttleInput * 10000));
+            SetBrake((int)(_brakeInput * 10000));
         }
 
         /// <summary>
@@ -407,8 +287,12 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             VPTurnIndicatorReport = _vehicleSignalInput;
             VPSteeringReport = _frontWheels[0].steerAngle;
             VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
-            VPVelocityReport = transform.InverseTransformDirection(_rigidbody.velocity.normalized * _currentSpeed);
+            VPVelocityReport =
+                transform.InverseTransformDirection(_rigidbody.velocity.normalized * _vehicleController.speed);
             VPAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
+            VPThrottleStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Throttle] * 0.0001f;
+            VPBrakeStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Brake] * 0.0001f;
+            VPSteerStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Steer] * 0.0001f;
         }
 
         private void UpdateEgoPosition()
@@ -434,14 +318,30 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
         }
 
+        // TODO: Add UI and documentation for this method (mozzz)
         /// <summary>
-        /// Remap Autoware input value to VPP input
-        /// Range for pedals: [0,10000]
-        /// Range for steer: [-10000,10000]
+        /// Used to enable Numpad(+,-,0) keys to set constant throttle/brake values for ease of calibration
         /// </summary>
-        private static int RemapValue(float value, float from1, float to1, int from2, int to2)
+        private void PedalCalibrationMode()
         {
-            return (int)((value - from1) / (to1 - from1) * (to2 - from2) + from2);
+            _vehicleController.data.bus[Channel.Input][InputData.Throttle] = _throttleAmount;
+            _vehicleController.data.bus[Channel.Input][InputData.Brake] = _brakeAmount;
+
+            if (Input.GetKeyDown(KeyCode.KeypadPlus))
+            {
+                _throttleAmount += 1000;
+            }
+
+            if (Input.GetKeyDown(KeyCode.KeypadMinus))
+            {
+                _brakeAmount += 1000;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Keypad0))
+            {
+                _throttleAmount = 0;
+                _brakeAmount = 0;
+            }
         }
     }
 }

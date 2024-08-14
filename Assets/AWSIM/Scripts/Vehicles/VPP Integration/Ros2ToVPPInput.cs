@@ -21,18 +21,21 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private string gearCommandTopic = "/control/command/gear_cmd";
         [SerializeField] private string vehicleEmergencyStampedTopic = "/control/command/emergency_cmd";
         [SerializeField] private string positionTopic = "/initialpose";
+        [SerializeField] private string actuationCommandTopic = "/control/command/actuation_cmd";
 
         [SerializeField] private QoSSettings qosSettings = new();
         [SerializeField] private QoSSettings positionQosInput;
+        [SerializeField] private QoSSettings _actuationQoSSettings;
 
         // subscribers
-        private ISubscription<autoware_vehicle_msgs.msg.ControlModeReport> _controlModeReportSubscriber;
+        private ISubscription<autoware_vehicle_msgs.msg.ControlModeReport> _controlModeSubscriber;
         private ISubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand> _turnIndicatorsCommandSubscriber;
         private ISubscription<autoware_vehicle_msgs.msg.HazardLightsCommand> _hazardLightsCommandSubscriber;
         private ISubscription<autoware_control_msgs.msg.Control> _controlCommandSubscriber;
         private ISubscription<autoware_vehicle_msgs.msg.GearCommand> _gearCommandSubscriber;
         private ISubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped> _vehicleEmergencyStampedSubscriber;
         private ISubscription<geometry_msgs.msg.PoseWithCovarianceStamped> _positionSubscriber;
+        private ISubscription<tier4_vehicle_msgs.msg.ActuationCommandStamped> _actuationCommandSubscriber;
 
         private VPPSignal _turnIndicatorsCommand = VPPSignal.None;
         private VPPSignal _hazardLightsCommand = VPPSignal.None;
@@ -50,6 +53,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             qosSettings.Depth = 1;
         }
 
+        // TODO: handle this input in VPPVehicleSignalHandler.cs (mozzz)
         /// <summary>
         /// Processes the TurnSignal to be applied to the vehicle from the latest turnIndicatorsSignal and hazardLightsSignal values.
         /// Priority : HAZARD > LEFT/RIGHT > NONE
@@ -73,8 +77,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             var qos = qosSettings.GetQoSProfile();
             var positionQoS = positionQosInput.GetQoSProfile();
+            var actuationQoSSettings = _actuationQoSSettings.GetQoSProfile();
 
-            _controlModeReportSubscriber =
+            _controlModeSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
                     controlModeTopic,
                     msg => { _adapter.ControlModeInput = Ros2ToVPPUtilities.Ros2ToVPPControlMode(msg); }, qos);
@@ -101,17 +106,17 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 controlCommandTopic, msg =>
                 {
                     // longitudinal
-                    _adapter.VelocityInput = msg.Longitudinal.Velocity;
-                    _adapter.IsAccelerationDefinedInput = msg.Longitudinal.Is_defined_acceleration;
-                    _adapter.AccelerationInput = msg.Longitudinal.Acceleration;
-                    _adapter.IsJerkDefinedInput = msg.Longitudinal.Is_defined_jerk;
-                    _adapter.JerkInput = msg.Longitudinal.Jerk;
+                    // _adapter.VelocityInput = msg.Longitudinal.Velocity;
+                    // _adapter.IsAccelerationDefinedInput = msg.Longitudinal.Is_defined_acceleration;
+                    // _adapter.AccelerationInput = msg.Longitudinal.Acceleration;
+                    // _adapter.IsJerkDefinedInput = msg.Longitudinal.Is_defined_jerk;
+                    // _adapter.JerkInput = msg.Longitudinal.Jerk;
 
                     // lateral
                     _adapter.SteerAngleInput = -msg.Lateral.Steering_tire_angle * Mathf.Rad2Deg;
-                    _adapter.IsDefinedSteeringTireRotationRateInput =
-                        msg.Lateral.Is_defined_steering_tire_rotation_rate;
-                    _adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
+                    // _adapter.IsDefinedSteeringTireRotationRateInput =
+                    // msg.Lateral.Is_defined_steering_tire_rotation_rate;
+                    // _adapter.SteeringTireRotationRateInput = msg.Lateral.Steering_tire_rotation_rate;
                 }, qos);
 
             _gearCommandSubscriber = SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.GearCommand>(
@@ -139,12 +144,20 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     _adapter.RotationInput = ROS2Utility.RosToUnityRotation(rotationVector);
                     _adapter.WillUpdatePositionInput = true;
                 }, positionQoS);
+
+            _actuationCommandSubscriber = SimulatorROS2Node.CreateSubscription<tier4_vehicle_msgs.msg.ActuationCommandStamped>(
+                actuationCommandTopic, msg =>
+                {
+                    _adapter.ThrottleInput = msg.Actuation.Accel_cmd;
+                    _adapter.BrakeInput = msg.Actuation.Brake_cmd;
+                    // _adapter.SteerInput = msg.Steer_cmd;
+                }, actuationQoSSettings);
         }
 
         private void OnDestroy()
         {
             SimulatorROS2Node.RemoveSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
-                _controlModeReportSubscriber);
+                _controlModeSubscriber);
             SimulatorROS2Node.RemoveSubscription<autoware_vehicle_msgs.msg.TurnIndicatorsCommand>(
                 _turnIndicatorsCommandSubscriber);
             SimulatorROS2Node.RemoveSubscription<autoware_vehicle_msgs.msg.HazardLightsCommand>(
@@ -154,6 +167,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             SimulatorROS2Node.RemoveSubscription<tier4_vehicle_msgs.msg.VehicleEmergencyStamped>(
                 _vehicleEmergencyStampedSubscriber);
             SimulatorROS2Node.RemoveSubscription<geometry_msgs.msg.PoseWithCovarianceStamped>(_positionSubscriber);
+            SimulatorROS2Node.RemoveSubscription<tier4_vehicle_msgs.msg.ActuationCommandStamped>(_actuationCommandSubscriber);
         }
     }
 }
