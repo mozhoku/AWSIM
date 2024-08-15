@@ -174,10 +174,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             {
                 PedalCalibrationMode();
             }
-
-            // Control the vehicle based on the control mode
-            ControlVehicle(_controlModeInput);
-            Debug.Log("Control Mode: " + _controlModeInput);
+            else
+            {
+                // Control the vehicle based on the control mode
+                ControlVehicle(_controlModeInput);
+            }
 
             // Update the publisher values for VPPToRos2Publisher.cs
             ReportVehicleState();
