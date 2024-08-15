@@ -18,7 +18,6 @@ Added to prefab root:
 - `Camera Target` (Optional, you can use your own implementation)
 - `Telemetry Window` (Optional, used to display telemetry data)
 - `Visual Effects` (Optional, used to visualize the steering wheel)
-- `VP Vehicle Toolkit`
 
 !!! warning "Wheel Colliders"
     VPP uses its own implementation of the `Wheel Colliders`! For the wheel colliders, please add the `Wheel Colliders`
@@ -31,7 +30,6 @@ Added to prefab root:
 - `AutowareVPPAdapter.cs`: Used for applying the control inputs to the vehicle.
 - `Ros2ToVPPInput.cs`: Used for receiving the control inputs from the Autoware.
 - `VPPVehicleSignalHandler.cs`: Used for handling the signals from the vehicle.
-- `VehiclePedalMapLoader.cs`: Used for loading the pedal maps for the vehicle.
 
 To be able to report the vehicle state to the Autoware, you'll need this script in the URDF.
 _This script is added in the `VehicleStatusSensor` prefab by default._
@@ -59,15 +57,15 @@ As for the other components we've added to the vehicle, we have to give their ne
 
 ### AutowareVPPAdapter.cs
 
-| Variable                       | Description                                                                                                                                 |
-|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `Front Wheels`                 | Used for handling the steering input. Give front wheel colliders of the vehicle.                                                            |
-| `Simulate Steering`            | Simulate the steering instead of assigning wheel angles directly.                                                                           |
-| `Steer Wheel Input`            | Change applied to steering wheel when simulating steering. Applied every in fixed update as an input to the VPP steering. _(0-100)_         |
-| `Do Use Pedal Maps`            | Whether to use the pedal maps for the vehicle or not. If set to false the vehicle will use the PID Controller for the longitudinal control. |
-| `Emergency Brake Percent`      | The amount of brake pedal percent applied when the emergency is triggered. _(0-1)_                                                          |
-| `Update Position Offset Y`     | The height offset value for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_                     |
-| `Update Position Ray Origin Y` | The height of the raycast origin for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_            |
+| Variable                       | Description                                                                                                                         |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `Front Wheels`                 | Used for handling the steering input. Give front wheel colliders of the vehicle.                                                    |
+| `Simulate Steering`            | Simulate the steering instead of assigning wheel angles directly.                                                                   |
+| `Steer Wheel Input`            | Change applied to steering wheel when simulating steering. Applied every in fixed update as an input to the VPP steering. _(0-100)_ |
+| `Emergency Brake Percent`      | The amount of brake pedal percent applied when the emergency is triggered. _(0-1)_                                                  |
+| `Update Position Offset Y`     | The height offset value for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_             |
+| `Update Position Ray Origin Y` | The height of the raycast origin for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_    |
+| `Do Pedal Calibration`         | Mode for vehicle pedal calibration. If enabled the vehicle pedals can be set to certain percentages with Numbad(-,+,0) keys.        |
 
 ### Ros2ToVPPInput.cs
 
@@ -103,17 +101,6 @@ As for the other components we've added to the vehicle, we have to give their ne
 
 Rest of the signal related settings are same as `VehicleVisualEffect.cs`. These two scripts are basically same.
 
-### VehiclePedalMapLoader.cs
-
-| Variable        | Description                                                                                                   |
-|-----------------|---------------------------------------------------------------------------------------------------------------|
-| `Accel Map Csv` | The file reference of the acceleration pedal map. _(Drag the corresponding csv file from the Project Window)_ |
-| `Brake Map Csv` | The file reference of the brake pedal map. _(Drag the corresponding csv file from the Project Window)_        |
-
-!!! warning "Pedal Maps"
-    These pedal maps are loaded in runtime. The default location for the pedal maps is `Assets/Resources/Pedal Maps/...`.
-    You can find the Lexus's pedal maps in the same location.
-
 ### VPPToRos2Publisher.cs
 
 Same as `VehicleStatusSensor.cs` but the `Adapter` reference is the `AutowareVPPAdapter` script.
@@ -122,7 +109,7 @@ Same as `VehicleStatusSensor.cs` but the `Adapter` reference is the `AutowareVPP
 
 For the VPP to work correctly, you need to set up the child objects of the vehicle prefab.
 
-### Setting up reference for Ackermann Steering:
+### Setting up the reference for Ackermann Steering:
 
 1. Create an empty game object named `"Ackermann"` and set as the direct child of the prefab. Then assign reference in
    the `Vehicle Controller`.
@@ -144,6 +131,6 @@ VPP Reference: [Ackermann](https://vehiclephysics.com/blocks/steering/)
    components to this object:
     - `Aerodynamic Surface`
 
-Assign the references in the `Vehicle Controller`. For configuring these components, you can refer to the VPP.
+Assign the references in the `Vehicle Controller`. For configuring these components, you can refer to the VPP documentation.
 
 VPP Reference: [Dynamics](https://vehiclephysics.com/components/vehicle-dynamics/)
