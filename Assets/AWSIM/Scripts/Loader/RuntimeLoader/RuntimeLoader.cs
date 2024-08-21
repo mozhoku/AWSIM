@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,6 +5,14 @@ using UnityEngine.UI;
 
 namespace AWSIM.Scripts.Loader.RuntimeLoader
 {
+    // it initializes the prefab but gui doesnt have references
+    // should follow the following steps:
+    // 1. preLoadBundles
+    // 2. load main scene (GUI,clock etc.)
+    // 3. initiate prefabs
+    // 3.1. release bundles from memory
+    // 4. update GUI
+    // 5. when returning to launchpad, release unused assetrs from memory
     public class RuntimeLoader : MonoBehaviour
     {
         // input fields
@@ -27,6 +33,10 @@ namespace AWSIM.Scripts.Loader.RuntimeLoader
         // asset bundles
         private AssetBundle _egoBundle;
         private AssetBundle _environmentBundle;
+
+        // prefabs
+        private GameObject _egoPrefab;
+        private GameObject _environmentPrefab;
 
         // game objects
         private GameObject _egoVehicle;
@@ -55,22 +65,15 @@ namespace AWSIM.Scripts.Loader.RuntimeLoader
                 AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, _environmentBundlePath));
         }
 
-        private void GetAssetFromBundle()
-        {
-            _egoVehicle = _egoBundle.LoadAsset<GameObject>("nameofvehicle");
-            _environment = _environmentBundle.LoadAsset<GameObject>("nameofenv");
-        }
-
         private void LoadBundle(string path)
         {
-            var bundle = AssetBundle.LoadFromFile(path);
-
-            if (bundle != null)
+            _egoBundle = AssetBundle.LoadFromFile(path);
+            if (_egoBundle is not null)
             {
                 // Load the prefab from the AssetBundle
-                GameObject prefab = bundle.LoadAsset<GameObject>("Lexus RX450h 2015 Sample Sensor");
-                Instantiate(prefab);
-                // bundle.Unload(false);
+                _egoPrefab = _egoBundle.LoadAsset<GameObject>("Lexus RX450h 2015 Sample Sensor");
+                _egoVehicle = Instantiate(_egoPrefab);
+                // _egoBundle.Unload(false);
             }
             else
             {
