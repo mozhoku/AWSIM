@@ -1,4 +1,4 @@
-using AWSIM.Scripts.Loader.RuntimeLoader;
+using AWSIM.Scripts.Loader.BundleInitialization;
 using UnityEditor;
 using UnityEngine;
 

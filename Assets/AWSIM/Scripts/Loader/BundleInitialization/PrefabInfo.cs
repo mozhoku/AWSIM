@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AWSIM.Scripts.Loader.RuntimeLoader
+namespace AWSIM.Scripts.Loader.BundleInitialization
 {
     /// <summary>
     /// Used for tracking prefab name when building assetBundles.

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace AWSIM.Scripts.Loader.RuntimeLoader
+namespace AWSIM.Scripts.Loader.BundleInitialization
 {
     // It initializes the prefab but gui doesn't have references
     // Should follow the following steps:
@@ -15,7 +15,7 @@ namespace AWSIM.Scripts.Loader.RuntimeLoader
 
     // change the script name
     // Integrate with the existing loader
-    public class RuntimeLoader : MonoBehaviour
+    public class BundleInitialization : MonoBehaviour
     {
         // input fields
         [SerializeField] private InputField _userVehiclePathField;
