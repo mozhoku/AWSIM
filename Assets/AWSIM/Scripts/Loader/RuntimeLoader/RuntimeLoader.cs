@@ -1,18 +1,20 @@
-using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace AWSIM.Scripts.Loader.RuntimeLoader
 {
-    // it initializes the prefab but gui doesnt have references
-    // should follow the following steps:
+    // It initializes the prefab but gui doesn't have references
+    // Should follow the following steps:
     // 1. preLoadBundles
     // 2. load main scene (GUI,clock etc.)
     // 3. initiate prefabs
     // 3.1. release bundles from memory
-    // 4. update GUI
-    // 5. when returning to launchpad, release unused assetrs from memory
+    // 4. update GUI & prefs
+    // 5. when returning to launchpad, release unused assets from memory
+
+    // change the script name
+    // Integrate with the existing loader
     public class RuntimeLoader : MonoBehaviour
     {
         // input fields
@@ -30,26 +32,28 @@ namespace AWSIM.Scripts.Loader.RuntimeLoader
         private string _vehicleBundlePath;
         private string _environmentBundlePath;
 
-        // asset bundles
-        private AssetBundle _egoBundle;
-        private AssetBundle _environmentBundle;
-
-        // prefabs
-        private GameObject _egoPrefab;
-        private GameObject _environmentPrefab;
-
-        // game objects
-        private GameObject _egoVehicle;
-        private GameObject _environment;
-
-        // canvas
-        private Canvas _canvas;
+        // asset prefabs
+        public GameObject vehiclePrefab;
+        public GameObject environmentPrefab;
 
         private void Start()
         {
-            _canvas = GetComponent<Canvas>();
+            // Add listeners to input fields to update paths
             _userVehiclePathField.onValueChanged.AddListener(delegate { GetBundlePaths(); });
             _userEnvironmentPathField.onValueChanged.AddListener(delegate { GetBundlePaths(); });
+
+            // Add listener to start button
+            _startButton.onClick.AddListener(LaunchScenes);
+        }
+
+        public void LaunchScenes()
+        {
+            SceneManager.LoadScene("AutowareSimulation", LoadSceneMode.Additive);
+            vehiclePrefab = LoadPrefab(_vehicleBundlePath);
+            environmentPrefab = LoadPrefab(_environmentBundlePath);
+
+            AssetBundle.UnloadAllAssetBundles(true);
+            UpdateGUI();
         }
 
         private void GetBundlePaths()
@@ -58,34 +62,51 @@ namespace AWSIM.Scripts.Loader.RuntimeLoader
             _environmentBundlePath = _userEnvironmentPathField.text;
         }
 
-        private void LoadBundles()
+        private static GameObject LoadPrefab(string path)
         {
-            _egoBundle = AssetBundle.LoadFromFile(_vehicleBundlePath);
-            _environmentBundle =
-                AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, _environmentBundlePath));
+            var bundle = AssetBundle.LoadFromFile(path);
+            if (bundle == null)
+            {
+                Debug.LogWarning($"Failed to load AssetBundle from path: {path}");
+                return null;
+            }
+
+            // Load the PrefabInfo first to get the prefab name
+            var prefabInfo = bundle.LoadAsset<PrefabInfo>("PrefabInfo");
+            if (prefabInfo == null)
+            {
+                Debug.LogWarning("PrefabInfo not found in AssetBundle!");
+                bundle.Unload(true);
+                return null;
+            }
+
+            // Now load the prefab using the name from PrefabInfo
+            var prefab = bundle.LoadAsset<GameObject>(prefabInfo.prefabName);
+            bundle.Unload(true);
+
+            return prefab;
         }
 
-        private void LoadBundle(string path)
+        // Step 4: Update the GUI (example method)
+        private void UpdateGUI()
         {
-            _egoBundle = AssetBundle.LoadFromFile(path);
-            if (_egoBundle is not null)
+            // Update dropdowns or any other GUI elements based on loaded prefabs
+            if (vehiclePrefab != null)
             {
-                // Load the prefab from the AssetBundle
-                _egoPrefab = _egoBundle.LoadAsset<GameObject>("Lexus RX450h 2015 Sample Sensor");
-                _egoVehicle = Instantiate(_egoPrefab);
-                // _egoBundle.Unload(false);
+                _vehiclesDropdown.options.Add(new Dropdown.OptionData(vehiclePrefab.name));
             }
-            else
+
+            if (environmentPrefab != null)
             {
-                Debug.LogWarning("Failed to load AssetBundle!");
+                _environmentsDropdown.options.Add(new Dropdown.OptionData(environmentPrefab.name));
             }
         }
 
-        public void LaunchScenes()
+        // Step 5: When returning to the launchpad, release unused assets from memory
+        public void ReturnToLaunchpad()
         {
-            SceneManager.LoadScene("AutowareSimulation", LoadSceneMode.Additive);
-            LoadBundle(_vehicleBundlePath);
-            _canvas.GetComponent<Canvas>().gameObject.SetActive(false);
+            SceneManager.UnloadSceneAsync("AutowareSimulation");
+            Resources.UnloadUnusedAssets();
         }
     }
 }

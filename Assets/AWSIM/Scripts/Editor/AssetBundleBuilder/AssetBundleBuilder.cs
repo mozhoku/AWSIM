@@ -1,3 +1,4 @@
+using AWSIM.Scripts.Loader.RuntimeLoader;
 using UnityEditor;
 using UnityEngine;
 
@@ -117,6 +118,17 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
 
             EnsureDirectoryExists(bundleInfo.OutputPath);
 
+            // Create a PrefabInfo asset with the prefab name
+            var prefabInfo = ScriptableObject.CreateInstance<PrefabInfo>();
+            prefabInfo.prefabName = bundleInfo.Prefab.name;
+
+            // Save the PrefabInfo asset as part of the bundle
+            string prefabInfoPath = $"{bundleInfo.OutputPath}/{bundleInfo.Prefab.name}_PrefabInfo.asset";
+            AssetDatabase.CreateAsset(prefabInfo, prefabInfoPath);
+            AssetImporter prefabImporter = AssetImporter.GetAtPath(prefabInfoPath);
+            prefabImporter.assetBundleName = bundleInfo.AssetBundleName;
+
+            // Set the prefab itself to the asset bundle
             var importer = AssetImporter.GetAtPath(bundleInfo.AssetPath);
             if (importer == null)
             {
@@ -126,6 +138,7 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
 
             importer.assetBundleName = bundleInfo.AssetBundleName;
 
+            // Build the asset bundle
             var manifest = BuildPipeline.BuildAssetBundles(bundleInfo.OutputPath, options, target);
             if (manifest != null)
             {
@@ -137,6 +150,9 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
                 Debug.LogError(
                     $"Failed to build Asset Bundle '{bundleInfo.AssetBundleName}' at '{bundleInfo.OutputPath}'.");
             }
+
+            // Delete the temporary PrefabInfo asset after building
+            AssetDatabase.DeleteAsset(prefabInfoPath);
         }
 
         private static BundleInfo InitializeBundleInfo(string outputPath)
