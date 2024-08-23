@@ -1,8 +1,8 @@
+using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace AWSIM.Scripts.Loader.BundleInitialization
+namespace AWSIM.Scripts.Loader.SimulationLauncher
 {
     // It initializes the prefab but gui doesn't have references
     // Should follow the following steps:
@@ -15,7 +15,7 @@ namespace AWSIM.Scripts.Loader.BundleInitialization
 
     // change the script name
     // Integrate with the existing loader
-    public class BundleInitialization : MonoBehaviour
+    internal class BundleLoader : MonoBehaviour
     {
         // input fields
         [SerializeField] private InputField _userVehiclePathField;
@@ -33,8 +33,8 @@ namespace AWSIM.Scripts.Loader.BundleInitialization
         private string _environmentBundlePath;
 
         // asset prefabs
-        public GameObject vehiclePrefab;
-        public GameObject environmentPrefab;
+        [NonSerialized] public GameObject VehiclePrefab;
+        [NonSerialized] public GameObject EnvironmentPrefab;
 
         private void Start()
         {
@@ -48,10 +48,8 @@ namespace AWSIM.Scripts.Loader.BundleInitialization
 
         public void LaunchScenes()
         {
-            SceneManager.LoadScene("AutowareSimulation", LoadSceneMode.Additive);
-            vehiclePrefab = LoadPrefab(_vehicleBundlePath);
-            environmentPrefab = LoadPrefab(_environmentBundlePath);
-
+            VehiclePrefab = LoadPrefab(_vehicleBundlePath);
+            EnvironmentPrefab = LoadPrefab(_environmentBundlePath);
             AssetBundle.UnloadAllAssetBundles(true);
             UpdateGUI();
         }
@@ -91,22 +89,15 @@ namespace AWSIM.Scripts.Loader.BundleInitialization
         private void UpdateGUI()
         {
             // Update dropdowns or any other GUI elements based on loaded prefabs
-            if (vehiclePrefab != null)
+            if (VehiclePrefab != null)
             {
-                _vehiclesDropdown.options.Add(new Dropdown.OptionData(vehiclePrefab.name));
+                _vehiclesDropdown.options.Add(new Dropdown.OptionData(VehiclePrefab.name));
             }
 
-            if (environmentPrefab != null)
+            if (EnvironmentPrefab != null)
             {
-                _environmentsDropdown.options.Add(new Dropdown.OptionData(environmentPrefab.name));
+                _environmentsDropdown.options.Add(new Dropdown.OptionData(EnvironmentPrefab.name));
             }
-        }
-
-        // Step 5: When returning to the launchpad, release unused assets from memory
-        public void ReturnToLaunchpad()
-        {
-            SceneManager.UnloadSceneAsync("AutowareSimulation");
-            Resources.UnloadUnusedAssets();
         }
     }
 }

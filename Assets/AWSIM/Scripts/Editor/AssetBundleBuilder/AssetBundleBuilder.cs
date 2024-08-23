@@ -1,4 +1,4 @@
-using AWSIM.Scripts.Loader.BundleInitialization;
+using AWSIM.Scripts.Loader.SimulationLauncher;
 using UnityEditor;
 using UnityEngine;
 
@@ -102,7 +102,7 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
                 BuildAssetBundle(_environmentBundleInfo, selectedBuildOption, selectedBuildTarget);
         }
 
-        private void BuildAssetBundle(BundleInfo bundleInfo, BuildAssetBundleOptions options, BuildTarget target)
+        private static void BuildAssetBundle(BundleInfo bundleInfo, BuildAssetBundleOptions options, BuildTarget target)
         {
             if (string.IsNullOrEmpty(bundleInfo.OutputPath))
             {
@@ -119,7 +119,7 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
             EnsureDirectoryExists(bundleInfo.OutputPath);
 
             // Create a PrefabInfo asset with the prefab name
-            var prefabInfo = ScriptableObject.CreateInstance<PrefabInfo>();
+            var prefabInfo = CreateInstance<PrefabInfo>();
             prefabInfo.prefabName = bundleInfo.Prefab.name;
 
             // Save the PrefabInfo asset as part of the bundle
