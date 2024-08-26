@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace AWSIM.Scripts.Loader.SimulationLauncher
 {
-    internal class BundleLoader
+    public static class BundleLoader
     {
         /// <summary>
         /// Loads the prefabs from the given asset bundle path.

@@ -83,16 +83,19 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
 
         private void StartSim()
         {
+            // load prefabs for simulation
             _simulationActions.VehiclePrefab = LoadPrefab(_vehicleBundlePath);
             _simulationActions.EnvironmentPrefab = LoadPrefab(_environmentBundlePath);
+            // unload bundles
             AssetBundle.UnloadAllAssetBundles(true);
+            // save GUI state
             UpdateGUI();
             // launch simulation
             _simulationActions.Launch();
         }
 
+        #region config
 
-        // Step 4: Update the GUI (example method)
         private void UpdateGUI()
         {
             // Update dropdowns or any other GUI elements based on loaded prefabs
@@ -106,8 +109,6 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 _environmentsDropdown.options.Add(new Dropdown.OptionData(_simulationActions.EnvironmentPrefab.name));
             }
         }
-
-        #region config
 
         public void LoadSimConf()
         {
@@ -177,12 +178,22 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
 
         #endregion
 
+
         #region helpers
 
         private static string GetBundlePathFromField(InputField inputField)
         {
-            var bundlePath = inputField.text;
-            return bundlePath;
+            try
+            {
+                var bundlePath = inputField.text;
+                return bundlePath;
+            }
+            catch (Exception e)
+            {
+                e = new Exception($"Failed to get bundle path from input field: {inputField.text}", e);
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         #endregion
