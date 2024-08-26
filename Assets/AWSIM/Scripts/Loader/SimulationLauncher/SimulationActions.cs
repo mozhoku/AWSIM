@@ -9,9 +9,8 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         [SerializeField] private Canvas _launchpadCanvas;
         [SerializeField] private Canvas _transitionCanvas;
 
-        private BundleLoader _bundleLoader;
-        private GameObject _vehiclePrefab;
-        private GameObject _environmentPrefab;
+        public GameObject VehiclePrefab { get; internal set; }
+        public GameObject EnvironmentPrefab { get; internal set; }
 
         [SerializeField] private string LaunchpadSceneName = "Launchpad";
         [SerializeField] private string SimulationCoreSceneName = "AutowareSimulation";
@@ -37,9 +36,8 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             // Save loaded bundles for other sessions as options for the dropdowns.
 
             // Collect references for the simulation scene
-            _bundleLoader = GetComponent<BundleLoader>();
-            _vehiclePrefab = _bundleLoader.VehiclePrefab;
-            _environmentPrefab = _bundleLoader.EnvironmentPrefab;
+            VehiclePrefab = VehiclePrefab;
+            EnvironmentPrefab = EnvironmentPrefab;
 
             // Load the core simulation scene
             SceneManager.LoadScene(SimulationCoreSceneName, LoadSceneMode.Additive);
@@ -47,12 +45,12 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             // Load the vehicle scene
             SceneManager.LoadScene(VehicleSceneName, LoadSceneMode.Additive);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(VehicleSceneName));
-            var vehicle = Instantiate(_vehiclePrefab);
+            var vehicle = Instantiate(VehiclePrefab);
 
             // Load the environment scene
             SceneManager.LoadScene(EnvironmentSceneName, LoadSceneMode.Additive);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(EnvironmentSceneName));
-            var environment = Instantiate(_environmentPrefab);
+            var environment = Instantiate(EnvironmentPrefab);
 
             // Unload all asset bundles (since we have the prefabs now)
             AssetBundle.UnloadAllAssetBundles(true);
