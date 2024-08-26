@@ -44,6 +44,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         [SerializeField] private InputField _rotationFieldX;
         [SerializeField] private InputField _rotationFieldY;
         [SerializeField] private InputField _rotationFieldZ;
+        [SerializeField] private InputField _rotationFieldW;
 
         // Sim Params Block
 
@@ -57,6 +58,8 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         private SimulationActions _simulationActions;
         private string _vehicleBundlePath;
         private string _environmentBundlePath;
+        private GameObject _vehiclePrefab;
+        private GameObject _environmentPrefab;
 
         private void Start()
         {
@@ -84,31 +87,26 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         private void StartSim()
         {
             // load prefabs for simulation
-            _simulationActions.VehiclePrefab = LoadPrefab(_vehicleBundlePath);
-            _simulationActions.EnvironmentPrefab = LoadPrefab(_environmentBundlePath);
+            _vehiclePrefab = LoadPrefab(_vehicleBundlePath);
+            _environmentPrefab = LoadPrefab(_environmentBundlePath);
+
             // unload bundles
             AssetBundle.UnloadAllAssetBundles(true);
-            // save GUI state
-            UpdateGUI();
+
+            // save GUI
+            UpdateGUIFields();
+            StoreGUIFields();
+
+            // set spawn point
+            var spawnPoint = VehicleSpawnPoint(float.Parse(_positionFieldX.text), float.Parse(_positionFieldY.text),
+                float.Parse(_positionFieldZ.text), float.Parse(_rotationFieldX.text), float.Parse(_rotationFieldY.text),
+                float.Parse(_rotationFieldZ.text), float.Parse(_rotationFieldW.text), CoordSyss.Unity);
+
             // launch simulation
-            _simulationActions.Launch();
+            _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint);
         }
 
         #region config
-
-        private void UpdateGUI()
-        {
-            // Update dropdowns or any other GUI elements based on loaded prefabs
-            if (_simulationActions.VehiclePrefab != null)
-            {
-                _vehiclesDropdown.options.Add(new Dropdown.OptionData(_simulationActions.VehiclePrefab.name));
-            }
-
-            if (_simulationActions.EnvironmentPrefab != null)
-            {
-                _environmentsDropdown.options.Add(new Dropdown.OptionData(_simulationActions.EnvironmentPrefab.name));
-            }
-        }
 
         public void LoadSimConf()
         {
@@ -120,6 +118,25 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         {
             // save simulation configuration
             // pop up file selection dialog for saving the config file
+        }
+
+        private void UpdateGUIFields()
+        {
+            // Update dropdowns or any other GUI elements based on loaded prefabs
+            if (_vehiclePrefab != null)
+            {
+                _vehiclesDropdown.options.Add(new Dropdown.OptionData(_vehiclePrefab.name));
+            }
+
+            if (_environmentPrefab != null)
+            {
+                _environmentsDropdown.options.Add(new Dropdown.OptionData(_environmentPrefab.name));
+            }
+        }
+
+        private void StoreGUIFields()
+        {
+            // save simulation configuration to file
         }
 
         #endregion
@@ -141,7 +158,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         }
 
         // Handle unity coords for now
-        private void SetSpawnPointFromInput(GameObject vehicle, float posX, float posY, float posZ, float rotX,
+        private static Tuple<Vector3, Quaternion> VehicleSpawnPoint(float posX, float posY, float posZ, float rotX,
             float rotY, float rotZ, float rotW, CoordSyss coordSys)
         {
             Vector3 posVector = new();
@@ -168,7 +185,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                     throw new ArgumentOutOfRangeException(nameof(coordSys), coordSys, null);
             }
 
-            vehicle.transform.SetPositionAndRotation(posVector, rotQuaternion);
+            return new Tuple<Vector3, Quaternion>(posVector, rotQuaternion);
         }
 
         private void EnvironmentRender()

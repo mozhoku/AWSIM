@@ -667,7 +667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 446.5, y: -100}
+  m_AnchoredPosition: {x: 559.5, y: -100}
   m_SizeDelta: {x: 250, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &71024866
@@ -1569,7 +1569,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 626.5, y: -100}
+  m_AnchoredPosition: {x: 739.5, y: -100}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &182731659
@@ -1966,7 +1966,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 136.5, y: -100}
+  m_AnchoredPosition: {x: 249.5, y: -100}
   m_SizeDelta: {x: 150, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &289753960
@@ -8103,7 +8103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 266.5, y: -100}
+  m_AnchoredPosition: {x: 379.5, y: -100}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1487420627
@@ -8505,7 +8505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 731.5, y: -100}
+  m_AnchoredPosition: {x: 844.5, y: -100}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1565459949
@@ -8801,7 +8801,6 @@ GameObject:
   - component: {fileID: 1633101204}
   - component: {fileID: 1633101203}
   - component: {fileID: 1633101202}
-  - component: {fileID: 1633101207}
   - component: {fileID: 1633101206}
   m_Layer: 5
   m_Name: GUI
@@ -8912,23 +8911,6 @@ MonoBehaviour:
   SimulationCoreSceneName: AutowareSimulation
   VehicleSceneName: VehicleScene
   EnvironmentSceneName: EnvironmentScene
---- !u!114 &1633101207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1633101201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b951e445500fac0ccb2c75c383038ad8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _userVehiclePathField: {fileID: 0}
-  _userEnvironmentPathField: {fileID: 0}
-  _vehiclesDropdown: {fileID: 1534290254}
-  _environmentsDropdown: {fileID: 1908605729}
-  _startButton: {fileID: 569534314}
 --- !u!1 &1639985962
 GameObject:
   m_ObjectHideFlags: 0
