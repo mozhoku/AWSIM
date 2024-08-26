@@ -6,6 +6,15 @@ using UnityEngine.SceneManagement;
 
 namespace AWSIM.Scripts.Loader.SimulationLauncher
 {
+    public class
+    public class GraphicSettings
+    {
+        public bool useShadows;
+        public bool usePostProcessing;
+        public bool useAntiAliasing;
+        public bool useVSync;
+        public int targetFrameRate;
+    }
     public class SimulationActions : MonoBehaviour
     {
         [SerializeField] private Canvas _launchpadCanvas;
@@ -25,8 +34,9 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         // Get user input from GUI (latlon, mgrs, Unity xyz)
         // ATM WE DON'T HAVE SPAWN POINTS DEFINED IN THE SCENES
 
+        //add sensor config in the future
         public void Launch(GameObject vehiclePrefab, GameObject environmentPrefab,
-            Tuple<Vector3, Quaternion> spawnPoint)
+            Tuple<Vector3, Quaternion> spawnPoint, float simParams, float graphicSettings)
         {
             // turn off loader gui and transition into a waiting gui
             _launchpadCanvas = GetComponent<Canvas>();
@@ -53,8 +63,24 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             environment.transform.position = new Vector3(0, 0, 0);
             // environment will be 0 usually, might change for multi scene confs
 
-            var awsimConfiguration = new AWSIMConfiguration()
+            var awsimConfiguration = new AWSIMConfiguration
             {
+                mapConfiguration =
+                {
+                    mapName = "default",
+                    useShadows = true // this shouldn't be a param in mapconf. Graphics?
+                },
+                simulationConfiguration =
+                {
+                    useTraffic = true,
+                    timeScale = 1.0f
+                },
+                egoConfiguration =
+                {
+                    egoVehicleName = vehiclePrefab.name,
+                    egoPosition = spawnPoint.Item1,
+                    egoEulerAngles = spawnPoint.Item2.eulerAngles
+                }
             };
         }
 

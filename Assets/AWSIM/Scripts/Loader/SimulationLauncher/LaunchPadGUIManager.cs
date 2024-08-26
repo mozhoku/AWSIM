@@ -103,7 +103,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 float.Parse(_rotationFieldZ.text), float.Parse(_rotationFieldW.text), CoordSyss.Unity);
 
             // launch simulation
-            _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint);
+            _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, 0);
         }
 
         #region config
