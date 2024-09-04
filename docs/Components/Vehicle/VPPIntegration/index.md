@@ -93,6 +93,15 @@ As for the other components we've added to the vehicle, we have to give their ne
 | `History Policy`     | Keep Last |
 | `Depth`              | 1         |
 
+- `Actuation QoS Setttings`: QoS settings for the actuation topic:
+
+| Variable             | Value     |
+|----------------------|-----------|
+| `Reliability Policy` | Reliable  |
+| `Durability Policy`  | Volatile  |
+| `History Policy`     | Keep Last |
+| `Depth`              | 1         |
+
 ### VehicleSignalHandler.cs
 
 | Variable     | Description                                                                                             |

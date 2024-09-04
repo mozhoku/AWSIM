@@ -1655,7 +1655,7 @@ MonoBehaviour:
     Depth: 1
   _actuationQosSettings:
     ReliabilityPolicy: 1
-    DurabilityPolicy: 1
+    DurabilityPolicy: 2
     HistoryPolicy: 1
     Depth: 1
 --- !u!114 &1782664888259975789
