@@ -1,3 +1,4 @@
+using System.Collections;
 using ROS2;
 using UnityEngine;
 
@@ -43,11 +44,32 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private IPublisher<tier4_vehicle_msgs.msg.ActuationStatusStamped> _actuationStatusPublisher;
 
         private bool _isInitialized;
-        private float _timer;
 
         private void Start()
         {
-            // Create publisher
+            InitializePublishers();
+            InitializeMessages();
+            _isInitialized = true;
+            if (_isInitialized)
+            {
+                StartCoroutine(PublishRoutine());
+            }
+        }
+
+        private IEnumerator PublishRoutine()
+        {
+            var interval = 1.0f / _publishHz;
+            interval -= 0.00001f; // Allow for accuracy errors.
+            while (true)
+            {
+                UpdateMessages();
+                PublishMessages();
+                yield return new WaitForSeconds(interval);
+            }
+        }
+
+        private void InitializePublishers()
+        {
             var qos = _qosSettings.GetQoSProfile();
             _controlModeReportPublisher =
                 SimulatorROS2Node.CreatePublisher<autoware_vehicle_msgs.msg.ControlModeReport>(_controlModeReportTopic,
@@ -67,8 +89,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _actuationStatusPublisher =
                 SimulatorROS2Node.CreatePublisher<tier4_vehicle_msgs.msg.ActuationStatusStamped>(_ActuationStatusTopic,
                     qos);
+        }
 
-            // Create msg.
+        private void InitializeMessages()
+        {
             _controlModeReportMsg = new autoware_vehicle_msgs.msg.ControlModeReport();
             _gearReportMsg = new autoware_vehicle_msgs.msg.GearReport();
             _steeringReportMsg = new autoware_vehicle_msgs.msg.SteeringReport();
@@ -88,33 +112,18 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     Frame_id = _frameId,
                 }
             };
-
-            _isInitialized = true;
         }
 
-        private void FixedUpdate()
+        private void UpdateMessages()
         {
-            if (_isInitialized == false)
-                return;
-
-            // Update timer.
-            _timer += Time.fixedDeltaTime;
-
-            // Matching publish to hz.
-            var interval = 1.0f / _publishHz;
-            interval -= 0.00001f; // Allow for accuracy errors.
-            if (_timer < interval)
-                return;
-            _timer = 0;
-
             // ControlModeReport
-            _controlModeReportMsg.Mode = Ros2ToVPPUtilities.VPPToRos2ControlMode(_adapter.VPControlModeReport);
+            _controlModeReportMsg.Mode = Ros2ToVPPUtilities.VPPToRos2ControlMode(_adapter.VpControlModeReport);
 
             // GearReport
-            _gearReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Shift(_adapter.VPGearReport);
+            _gearReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Shift(_adapter.VpGearReport);
 
             // SteeringReport
-            _steeringReportMsg.Steering_tire_angle = -1 * _adapter.VPSteeringReport * Mathf.Deg2Rad;
+            _steeringReportMsg.Steering_tire_angle = -1 * _adapter.VpSteeringReport * Mathf.Deg2Rad;
 
             // TurnIndicatorsReport
             _turnIndicatorsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2TurnSignal(_adapter.VehicleSignalInput);
@@ -123,30 +132,33 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _hazardLightsReportMsg.Report = Ros2ToVPPUtilities.VPPToRos2Hazard(_adapter.VehicleSignalInput);
 
             // VelocityReport
-            var rosLinearVelocity = ROS2Utility.UnityToRosPosition(_adapter.VPVelocityReport);
-            var rosAngularVelocity = ROS2Utility.UnityToRosPosition(_adapter.VPAngularVelocityReport);
+            var rosLinearVelocity = ROS2Utility.UnityToRosPosition(_adapter.VpVelocityReport);
+            var rosAngularVelocity = ROS2Utility.UnityToRosPosition(_adapter.VpAngularVelocityReport);
             _velocityReportMsg.Longitudinal_velocity = rosLinearVelocity.x;
             _velocityReportMsg.Lateral_velocity = rosLinearVelocity.y;
             _velocityReportMsg.Heading_rate = rosAngularVelocity.z;
 
             // ActuationStatusReport
-            _actuationStatusReport.Status.Accel_status = _adapter.VPThrottleStatusReport;
-            _actuationStatusReport.Status.Brake_status = _adapter.VPBrakeStatusReport;
-            _actuationStatusReport.Status.Steer_status = _adapter.VPSteerStatusReport;
+            _actuationStatusReport.Status.Accel_status = _adapter.VpThrottleStatusReport;
+            _actuationStatusReport.Status.Brake_status = _adapter.VpBrakeStatusReport;
+            _actuationStatusReport.Status.Steer_status = _adapter.VpSteerStatusReport;
 
-            // Update Stamp
+            // Update timestamps
             var time = SimulatorROS2Node.GetCurrentRosTime();
             _controlModeReportMsg.Stamp = time;
             _gearReportMsg.Stamp = time;
             _steeringReportMsg.Stamp = time;
             _turnIndicatorsReportMsg.Stamp = time;
             _hazardLightsReportMsg.Stamp = time;
-            var velocityReportMsgHeader = _velocityReportMsg as MessageWithHeader;
-            SimulatorROS2Node.UpdateROSTimestamp(ref velocityReportMsgHeader);
-            var actuationStatusReportHeader = _actuationStatusReport as MessageWithHeader;
-            SimulatorROS2Node.UpdateROSTimestamp(ref actuationStatusReportHeader);
 
-            // publish
+            MessageWithHeader velocityReportMsgHeader = _velocityReportMsg;
+            SimulatorROS2Node.UpdateROSTimestamp(ref velocityReportMsgHeader);
+            MessageWithHeader actuationStatusReportHeader = _actuationStatusReport;
+            SimulatorROS2Node.UpdateROSTimestamp(ref actuationStatusReportHeader);
+        }
+
+        private void PublishMessages()
+        {
             _controlModeReportPublisher.Publish(_controlModeReportMsg);
             _gearReportPublisher.Publish(_gearReportMsg);
             _steeringReportPublisher.Publish(_steeringReportMsg);
@@ -158,6 +170,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private void OnDestroy()
         {
+            StopCoroutine(PublishRoutine());
+
             SimulatorROS2Node.RemovePublisher<autoware_vehicle_msgs.msg.ControlModeReport>(_controlModeReportPublisher);
             SimulatorROS2Node.RemovePublisher<autoware_vehicle_msgs.msg.GearReport>(_gearReportPublisher);
             SimulatorROS2Node.RemovePublisher<autoware_vehicle_msgs.msg.SteeringReport>(_steeringReportPublisher);

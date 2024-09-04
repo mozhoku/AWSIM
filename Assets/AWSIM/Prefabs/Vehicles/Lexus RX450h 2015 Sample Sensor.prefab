@@ -1648,16 +1648,16 @@ MonoBehaviour:
     DurabilityPolicy: 1
     HistoryPolicy: 1
     Depth: 1
-  positionQosInput:
+  positionQosSettings:
     ReliabilityPolicy: 1
     DurabilityPolicy: 2
     HistoryPolicy: 1
     Depth: 1
-  _actuationQoSSettings:
+  _actuationQosSettings:
     ReliabilityPolicy: 1
-    DurabilityPolicy: 0
+    DurabilityPolicy: 1
     HistoryPolicy: 1
-    Depth: 0
+    Depth: 1
 --- !u!114 &1782664888259975789
 MonoBehaviour:
   m_ObjectHideFlags: 0

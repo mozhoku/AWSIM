@@ -30,6 +30,7 @@ Added to prefab root:
 - `AutowareVPPAdapter.cs`: Used for applying the control inputs to the vehicle.
 - `Ros2ToVPPInput.cs`: Used for receiving the control inputs from the Autoware.
 - `VPPVehicleSignalHandler.cs`: Used for handling the signals from the vehicle.
+- `BirdEyeView.cs`: Used for providing top-down ortho view.
 
 To be able to report the vehicle state to the Autoware, you'll need this script in the URDF.
 _This script is added in the `VehicleStatusSensor` prefab by default._
@@ -57,15 +58,15 @@ As for the other components we've added to the vehicle, we have to give their ne
 
 ### AutowareVPPAdapter.cs
 
-| Variable                       | Description                                                                                                                         |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `Front Wheels`                 | Used for handling the steering input. Give front wheel colliders of the vehicle.                                                    |
-| `Simulate Steering`            | Simulate the steering instead of assigning wheel angles directly.                                                                   |
-| `Steer Wheel Input`            | Change applied to steering wheel when simulating steering. Applied every in fixed update as an input to the VPP steering. _(0-100)_ |
-| `Emergency Brake Percent`      | The amount of brake pedal percent applied when the emergency is triggered. _(0-1)_                                                  |
-| `Update Position Offset Y`     | The height offset value for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_             |
-| `Update Position Ray Origin Y` | The height of the raycast origin for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_    |
-| `Do Pedal Calibration`         | Mode for vehicle pedal calibration. If enabled the vehicle pedals can be set to certain percentages with Numbad(-,+,0) keys.        |
+| Variable                       | Description                                                                                                                                                  |
+|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Front Wheels`                 | Used for handling the steering input. Assign the front wheel colliders of the vehicle.                                                                       |
+| `Simulate Steering`            | Simulate the steering instead of assigning wheel angles directly.                                                                                            |
+| `Steer Wheel Input`            | Change applied to steering wheel when simulating steering. Applied every in fixed update as an input to the VPP steering. _(0-100)_                          |
+| `Emergency Brake Percent`      | The amount of brake pedal percent applied when the emergency is triggered. _(0-100)_                                                                         |
+| `Update Position Offset Y`     | The height offset value for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_                                      |
+| `Update Position Ray Origin Y` | The height of the raycast origin for the vehicle position when initializing position of the vehicle from the Rviz. _(In meters)_                             |
+| `Do Pedal Calibration`         | Mode for vehicle pedal calibration. If enabled the vehicle pedals can be set to certain percentages with Numpad(-,+,0) keys. Uses %10 increments by default. |
 
 ### Ros2ToVPPInput.cs
 
@@ -83,7 +84,7 @@ As for the other components we've added to the vehicle, we have to give their ne
 | `History Policy`     | Keep Last       |
 | `Depth`              | 1               |
 
-- `Position QoS Input`: QoS settings for the position topic:
+- `Position QoS Setttings`: QoS settings for the position topic:
 
 | Variable             | Value     |
 |----------------------|-----------|

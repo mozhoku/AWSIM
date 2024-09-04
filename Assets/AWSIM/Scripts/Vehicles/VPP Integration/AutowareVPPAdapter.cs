@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes;
 using UnityEngine;
 using VehiclePhysics;
-using Quaternion = UnityEngine.Quaternion;
-using Vector3 = UnityEngine.Vector3;
 
 namespace AWSIM.Scripts.Vehicles.VPP_Integration
 {
@@ -18,99 +15,73 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         /// </summary>
 
         // Initial Position inputs from Rviz
-        [NonSerialized] public bool WillUpdatePositionInput;
+        public bool WillUpdatePositionInput { get; set; }
 
-        [NonSerialized] public Vector3 PositionInput;
-        [NonSerialized] public Quaternion RotationInput;
+        public Vector3 PositionInput { get; set; }
+        public Quaternion RotationInput { get; set; }
 
         /// Control inputs from Autoware
+        public float SteerAngleInput { get; set; }
 
-        //longitudinal
-        [NonSerialized] public float VelocityInput;
-
-        [NonSerialized] public bool IsAccelerationDefinedInput;
-        [NonSerialized] public float AccelerationInput;
-        [NonSerialized] public bool IsJerkDefinedInput;
-        [NonSerialized] public float JerkInput;
-        private float _velocityInput => VelocityInput;
-        private bool _isAccelerationDefinedInput => IsAccelerationDefinedInput;
-        private float _accelerationInput => AccelerationInput;
-        private bool _isJerkDefinedInput => IsJerkDefinedInput;
-        private float _jerkInput => JerkInput;
-
-        //lateral
-        [NonSerialized] public float SteerAngleInput;
-        [NonSerialized] public bool IsDefinedSteeringTireRotationRateInput;
-        [NonSerialized] public float SteeringTireRotationRateInput;
-        private float _steerAngleInput => SteerAngleInput;
-        private bool _isDefinedSteeringTireRotationRateInput => IsDefinedSteeringTireRotationRateInput;
-        private float _steeringTireRotationRateInput => SteeringTireRotationRateInput;
+        public bool IsDefinedSteeringTireRotationRateInput { get; set; }
+        public float SteeringTireRotationRateInput { get; set; }
 
         // Gear input from Autoware
-        [NonSerialized] public Gearbox.AutomaticGear AutomaticShiftInput;
-        private Gearbox.AutomaticGear _automaticShiftInput => AutomaticShiftInput;
+        public Gearbox.AutomaticGear AutomaticShiftInput { get; set; }
 
         // Signal input from Autoware
-        [NonSerialized] public VPPSignal VehicleSignalInput;
-        private VPPSignal _vehicleSignalInput => VehicleSignalInput;
+        public VPPSignal VehicleSignalInput { get; set; }
 
         // Emergency input from Autoware
-        [NonSerialized] public bool IsEmergencyInput;
-        private bool _isEmergencyInput => IsEmergencyInput;
+        public bool IsEmergencyInput { get; set; }
 
         // Control mode input from Autoware
-        [NonSerialized] public VPPControlMode ControlModeInput;
-        private VPPControlMode _controlModeInput => ControlModeInput;
+        public VPPControlMode ControlModeInput { get; set; }
 
         // Actuation commands from Autoware
         public double SteerInput { get; set; }
-        private double _steerInput => SteerInput;
         public double BrakeInput { get; set; }
-        private double _brakeInput => BrakeInput;
         public double ThrottleInput { get; set; }
-        private double _throttleInput => ThrottleInput;
-
 
         // Outputs from Unity/VPP
-        [NonSerialized] public VPPControlMode VPControlModeReport;
-        [NonSerialized] public int VPGearReport;
-        [NonSerialized] public Vector3 VPVelocityReport;
-        [NonSerialized] public Vector3 VPAngularVelocityReport;
-        [NonSerialized] public float VPSteeringReport;
-        [NonSerialized] public VPPSignal VPTurnIndicatorReport;
-        [NonSerialized] public VPPSignal VPHazardLightsReport;
-        [NonSerialized] public double VPThrottleStatusReport;
-        [NonSerialized] public double VPBrakeStatusReport;
-        [NonSerialized] public double VPSteerStatusReport;
+        public VPPControlMode VpControlModeReport { get; private set; }
+        public int VpGearReport { get; private set; }
+        public Vector3 VpVelocityReport { get; private set; }
+        public Vector3 VpAngularVelocityReport { get; private set; }
+        public float VpSteeringReport { get; private set; }
+        public VPPSignal VpTurnIndicatorReport { get; private set; }
+        public VPPSignal VpHazardLightsReport { get; private set; }
+        public double VpThrottleStatusReport { get; private set; }
+        public double VpBrakeStatusReport { get; private set; }
+        public double VpSteerStatusReport { get; private set; }
 
         // VPP components
         private VPVehicleController _vehicleController;
 
-        [Header("Lateral")][SerializeField] private VPWheelCollider[] _frontWheels;
+        [SerializeField] private VPWheelCollider[] _frontWheels;
 
         private Rigidbody _rigidbody;
 
-        /// <summary>
-        /// Whether set wheel angle directly from Autoware or simulate with additive steering wheel input
-        /// </summary>
-        [SerializeField] private bool _simulateSteering;
 
-        /// <summary>
-        /// Change applied to steering wheel per fixed update
-        /// </summary>
-        [Range(0f, 100f)][SerializeField] private float _steerWheelInput = 5f;
+        [Tooltip("Whether set wheel angle directly from Autoware or simulate with additive steering wheel input")]
+        [SerializeField]
+        private bool _simulateSteering;
+
+        [Tooltip("Change applied to steering wheel per fixed update in degrees")]
+        [Range(0f, 100f)]
+        [SerializeField]
+        private float _steerWheelInput = 5f;
 
         private int _vppSteerFromLastFrame;
 
-        /// <summary>
-        /// Brake pedal percent on emergency brake
-        /// This value is mapped to [0, 10000] to match VPP input
-        /// </summary>
-        [Range(0f, 100f)][SerializeField] private float _emergencyBrakePercent = 100f;
+        [Tooltip("Brake pedal percent on emergency brake. This value is mapped to [0, 10000] to match VPP input")]
+        [Range(0f, 100f)]
+        [SerializeField]
+        private float _emergencyBrakePercent = 100f;
 
-        private float _currentSpeed;
+        public float CurrentSpeed { get; private set; }
+        public float CurrentJerk { get; private set; }
         private float _previousAcceleration;
-        private float _currentJerk;
 
         // Control mode variables
         private Dictionary<VPPControlMode, IVehicleControlMode> _controlModes;
@@ -123,43 +94,42 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         [SerializeField] private float _updatePositionRayOriginY = 1000f;
 
-        // Pedal calibration stuff
+        [Header("Calibration Mode")]
+        [Tooltip("Enable pedal calibration mode. Use Numpad(+,-,0) keys to set constant throttle/brake values for ease of calibration")]
+        [SerializeField]
+        private bool _doPedalCalibration;
+
         private int _brakeAmount;
         private int _throttleAmount;
-        [SerializeField] private bool _doPedalCalibration;
+
+        // Constants used for conversion between VPP and Autoware
+        private const float VPPToAutowareMultiplier = 0.0001f;
+        private const int AutowareToVPPMultiplier = 10000;
 
         private void Awake()
-        {   //TODO: Implement the control mode switch from simulator (mozzz)
+        {
+            //TODO: Implement the control mode switch from simulator (mozzz)
             // Initialize the control mode as Autonomous
             ControlModeInput = VPPControlMode.Autonomous;
         }
 
         private void Start()
         {
+            // get components
             _vehicleController = GetComponent<VPVehicleController>();
             _rigidbody = GetComponent<Rigidbody>();
 
-            // Initialize the control modes
-            _controlModes = new Dictionary<VPPControlMode, IVehicleControlMode>
-            {
-                { VPPControlMode.NoCommand, new ControlMode.NoCommand() },
-                { VPPControlMode.Autonomous, new ControlMode.Autonomous() },
-                { VPPControlMode.AutonomousSteerOnly, new ControlMode.AutonomousSteerOnly() },
-                { VPPControlMode.AutonomousVelocityOnly, new ControlMode.AutonomousVelocityOnly() },
-                { VPPControlMode.Manual, new ControlMode.Manual() },
-                { VPPControlMode.Disengaged, new ControlMode.Disengaged() },
-                { VPPControlMode.NotReady, new ControlMode.NotReady() }
-            };
+            InitializeControlModes();
 
-            // Set initial vehicle gear to Park to prevent sliding
+            // Set initial vehicle gear to Park to prevent movement
             _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)Gearbox.AutomaticGear.P;
         }
 
-        private void Update()
-        {
-            // TODO: Implement the control mode switch from simulator (mozzz)
-            UserSwitchControlMode();
-        }
+        // private void Update()
+        // {
+        //     // TODO: Implement the control mode switch from simulator (mozzz)
+        //     UserSwitchControlMode();
+        // }
 
         private void FixedUpdate()
         {
@@ -177,11 +147,25 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             else
             {
                 // Control the vehicle based on the control mode
-                ControlVehicle(_controlModeInput);
+                ControlVehicle(ControlModeInput);
             }
 
             // Update the publisher values for VPPToRos2Publisher.cs
             ReportVehicleState();
+        }
+
+        private void InitializeControlModes()
+        {
+            _controlModes = new Dictionary<VPPControlMode, IVehicleControlMode>
+            {
+                { VPPControlMode.NoCommand, new ControlMode.NoCommand() },
+                { VPPControlMode.Autonomous, new ControlMode.Autonomous() },
+                { VPPControlMode.AutonomousSteerOnly, new ControlMode.AutonomousSteerOnly() },
+                { VPPControlMode.AutonomousVelocityOnly, new ControlMode.AutonomousVelocityOnly() },
+                { VPPControlMode.Manual, new ControlMode.Manual() },
+                { VPPControlMode.Disengaged, new ControlMode.Disengaged() },
+                { VPPControlMode.NotReady, new ControlMode.NotReady() }
+            };
         }
 
         private void ControlVehicle(VPPControlMode controlMode)
@@ -214,54 +198,49 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             }
             else
             {
-                // set wheel angle directly
-                _vehicleController.wheelState[0].steerAngle = _steerAngleInput;
-                _vehicleController.wheelState[1].steerAngle = _steerAngleInput;
-                foreach (var wheel in _frontWheels)
-                {
-                    wheel.steerAngle = _steerAngleInput;
-                }
+                SetWheelSteerAngleDirectly(SteerAngleInput);
+            }
+        }
+
+        private void SetWheelSteerAngleDirectly(float angle)
+        {
+            foreach (var wheel in _frontWheels)
+            {
+                wheel.steerAngle = angle;
             }
         }
 
         private void SimulateSteeringWheelInput()
         {
-            // simulate steering wheel input
-            if (_steerAngleInput == 0)
-                return;
+            if (SteerAngleInput == 0) return;
 
-            if (_steerAngleInput > _vehicleController.wheelState[0].steerAngle)
-            {
-                _vehicleController.data.bus[Channel.Input][InputData.Steer] =
-                    _vppSteerFromLastFrame + (int)_steerWheelInput;
-            }
-            else if (_steerAngleInput < _vehicleController.wheelState[0].steerAngle)
-            {
-                _vehicleController.data.bus[Channel.Input][InputData.Steer] =
-                    _vppSteerFromLastFrame - (int)_steerWheelInput;
-            }
+            int steerAdjustment = SteerAngleInput > _vehicleController.wheelState[0].steerAngle
+                ? (int)_steerWheelInput
+                : -(int)_steerWheelInput;
 
+            _vehicleController.data.bus[Channel.Input][InputData.Steer] = _vppSteerFromLastFrame + steerAdjustment;
             _vppSteerFromLastFrame = _vehicleController.data.bus[Channel.Input][InputData.Steer];
         }
 
         public void HandleGear()
         {
-            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)_automaticShiftInput;
+            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)AutomaticShiftInput;
         }
 
         public void HandleAcceleration()
         {
             // Store current values
-            _currentSpeed = _vehicleController.speed;
-            if (_isJerkDefinedInput)
+            CurrentSpeed = _vehicleController.speed;
+
+            if (ThrottleInput > 0)
             {
-                float currentAcceleration = _vehicleController.localAcceleration.magnitude;
-                _currentJerk = (currentAcceleration - _previousAcceleration) / Time.fixedDeltaTime;
-                _previousAcceleration = currentAcceleration;
+                SetThrottle((int)(ThrottleInput * AutowareToVPPMultiplier));
             }
 
-            SetThrottle((int)(_throttleInput * 10000));
-            SetBrake((int)(_brakeInput * 10000));
+            if (BrakeInput > 0)
+            {
+                SetBrake((int)(BrakeInput * AutowareToVPPMultiplier));
+            }
         }
 
         /// <summary>
@@ -283,17 +262,18 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         // TODO: report jerk state (mozzz)
         private void ReportVehicleState()
         {
-            VPControlModeReport = _controlModeInput;
-            VPHazardLightsReport = _vehicleSignalInput;
-            VPTurnIndicatorReport = _vehicleSignalInput;
-            VPSteeringReport = _frontWheels[0].steerAngle;
-            VPGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
-            VPVelocityReport =
+            VpControlModeReport = ControlModeInput;
+            VpHazardLightsReport = VehicleSignalInput;
+            VpTurnIndicatorReport = VehicleSignalInput;
+            VpSteeringReport = _frontWheels[0].steerAngle;
+            VpGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
+            VpVelocityReport =
                 transform.InverseTransformDirection(_rigidbody.velocity.normalized * _vehicleController.speed);
-            VPAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
-            VPThrottleStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Throttle] * 0.0001f;
-            VPBrakeStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Brake] * 0.0001f;
-            VPSteerStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Steer] * 0.0001f;
+            VpAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
+            VpThrottleStatusReport =
+                _vehicleController.data.bus[Channel.Input][InputData.Throttle] * VPPToAutowareMultiplier;
+            VpBrakeStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Brake] * VPPToAutowareMultiplier;
+            VpSteerStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Steer] * VPPToAutowareMultiplier;
         }
 
         private void UpdateEgoPosition()
@@ -321,7 +301,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // TODO: Add UI and documentation for this method (mozzz)
         /// <summary>
-        /// Used to enable Numpad(+,-,0) keys to set constant throttle/brake values for ease of calibration
+        /// Used to enable Numpad(+,-,0) keys to set constant throttle/brake values for ease of calibration. %10 increments
         /// </summary>
         private void PedalCalibrationMode()
         {

@@ -105,8 +105,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private bool IsBrakeLight()
         {
-            return (_adapter.AutomaticShiftInput == Gearbox.AutomaticGear.D && _adapter.AccelerationInput < 0)
-                   || (_adapter.AutomaticShiftInput == Gearbox.AutomaticGear.R && _adapter.AccelerationInput < 0);
+            return (_adapter.AutomaticShiftInput == Gearbox.AutomaticGear.D && _adapter.CurrentSpeed < 0)
+                   || (_adapter.AutomaticShiftInput == Gearbox.AutomaticGear.R && _adapter.CurrentSpeed < 0);
         }
 
         private bool IsReverseLight()

@@ -24,8 +24,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private string actuationCommandTopic = "/control/command/actuation_cmd";
 
         [SerializeField] private QoSSettings qosSettings = new();
-        [SerializeField] private QoSSettings positionQosInput;
-        [SerializeField] private QoSSettings _actuationQoSSettings;
+        [SerializeField] private QoSSettings positionQosSettings;
 
         // subscribers
         private ISubscription<autoware_vehicle_msgs.msg.ControlModeReport> _controlModeSubscriber;
@@ -76,8 +75,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void Start()
         {
             var qos = qosSettings.GetQoSProfile();
-            var positionQoS = positionQosInput.GetQoSProfile();
-            var actuationQoSSettings = _actuationQoSSettings.GetQoSProfile();
+            var positionQoS = positionQosSettings.GetQoSProfile();
 
             _controlModeSubscriber =
                 SimulatorROS2Node.CreateSubscription<autoware_vehicle_msgs.msg.ControlModeReport>(
@@ -151,7 +149,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                     _adapter.ThrottleInput = msg.Actuation.Accel_cmd;
                     _adapter.BrakeInput = msg.Actuation.Brake_cmd;
                     // _adapter.SteerInput = msg.Steer_cmd;
-                }, actuationQoSSettings);
+                }, qos);
         }
 
         private void OnDestroy()
