@@ -6,14 +6,14 @@ using UnityEngine.SceneManagement;
 
 namespace AWSIM.Scripts.Loader.SimulationLauncher
 {
-    public class
     public class GraphicSettings
     {
-        public bool useShadows;
-        public bool usePostProcessing;
-        public bool useAntiAliasing;
-        public bool useVSync;
-        public int targetFrameRate;
+        public bool UseShadows;
+        public bool UsePostProcessing;
+        public bool UseAntiAliasing;
+        public bool UseVSync;
+        public int FrameRateLimit;
+        // TODO: Add more settings (mozzz)
     }
     public class SimulationActions : MonoBehaviour
     {
@@ -33,6 +33,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         // If user wants to give his own point:
         // Get user input from GUI (latlon, mgrs, Unity xyz)
         // ATM WE DON'T HAVE SPAWN POINTS DEFINED IN THE SCENES
+        // generate screenshots for the UI
 
         //add sensor config in the future
         public void Launch(GameObject vehiclePrefab, GameObject environmentPrefab,
