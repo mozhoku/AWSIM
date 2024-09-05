@@ -81,7 +81,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         public float CurrentSpeed { get; private set; }
         public float CurrentJerk { get; private set; }
-        private float _previousAcceleration;
+        // private float _previousAcceleration;
 
         // Control mode variables
         private Dictionary<VPPControlMode, IVehicleControlMode> _controlModes;
@@ -103,8 +103,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private int _throttleAmount;
 
         // Constants used for conversion between VPP and Autoware
-        private const float VPPToAutowareMultiplier = 0.0001f;
-        private const int AutowareToVPPMultiplier = 10000;
+        private const float VppToAutowareMultiplier = 0.0001f;
+        private const int AutowareToVppMultiplier = 10000;
 
         private void Awake()
         {
@@ -234,12 +234,12 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
             if (ThrottleInput > 0)
             {
-                SetThrottle((int)(ThrottleInput * AutowareToVPPMultiplier));
+                SetThrottle((int)(ThrottleInput * AutowareToVppMultiplier));
             }
 
             if (BrakeInput > 0)
             {
-                SetBrake((int)(BrakeInput * AutowareToVPPMultiplier));
+                SetBrake((int)(BrakeInput * AutowareToVppMultiplier));
             }
         }
 
@@ -271,9 +271,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
                 transform.InverseTransformDirection(_rigidbody.velocity.normalized * _vehicleController.speed);
             VpAngularVelocityReport = transform.InverseTransformDirection(_rigidbody.angularVelocity);
             VpThrottleStatusReport =
-                _vehicleController.data.bus[Channel.Input][InputData.Throttle] * VPPToAutowareMultiplier;
-            VpBrakeStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Brake] * VPPToAutowareMultiplier;
-            VpSteerStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Steer] * VPPToAutowareMultiplier;
+                _vehicleController.data.bus[Channel.Input][InputData.Throttle] * VppToAutowareMultiplier;
+            VpBrakeStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Brake] * VppToAutowareMultiplier;
+            VpSteerStatusReport = _vehicleController.data.bus[Channel.Input][InputData.Steer] * VppToAutowareMultiplier;
         }
 
         private void UpdateEgoPosition()
