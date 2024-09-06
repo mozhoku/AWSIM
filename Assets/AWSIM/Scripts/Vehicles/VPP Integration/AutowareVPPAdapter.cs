@@ -159,6 +159,9 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             }
             else
             {
+                // If keyboard enabled stop Autoware control.
+                if (_standardInput.enabled) return;
+
                 // Control the vehicle based on the control mode
                 ControlVehicle(ControlModeInput);
             }
@@ -205,9 +208,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         public void HandleSteer()
         {
-            //temp bypass for user control
-            if (_standardInput.enabled) return;
-
             if (_simulateSteering)
             {
                 SimulateSteeringWheelInput();
@@ -247,9 +247,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             // Store current values
             CurrentSpeed = _vehicleController.speed;
-
-            //temp bypass for user control
-            if (_standardInput.enabled) return;
 
             if (_throttleInput > 0)
             {
