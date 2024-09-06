@@ -1,0 +1,7 @@
+# Ignore everything except directories
+*
+!*/
+
+# But not these files...
+!.gitignore
+!/Editor/csc.rsp*
