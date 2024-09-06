@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes;
@@ -15,22 +16,25 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         /// </summary>
 
         // Initial Position inputs from Rviz
-        public bool WillUpdatePositionInput { get; set; }
+        [NonSerialized] public bool WillUpdatePositionInput;
 
-        public Vector3 PositionInput { get; set; }
-        public Quaternion RotationInput { get; set; }
+        [NonSerialized] public Vector3 PositionInput;
+        [NonSerialized] public Quaternion RotationInput;
 
         /// Control inputs from Autoware
-        public float SteerAngleInput { get; set; }
+        [NonSerialized] public float SteerAngleInput;
+        private float _steerAngleInput => SteerAngleInput;
 
         public bool IsDefinedSteeringTireRotationRateInput { get; set; }
         public float SteeringTireRotationRateInput { get; set; }
 
         // Gear input from Autoware
-        public Gearbox.AutomaticGear AutomaticShiftInput { get; set; }
+        [NonSerialized] public Gearbox.AutomaticGear AutomaticShiftInput;
+        private Gearbox.AutomaticGear _automaticShiftInput => AutomaticShiftInput;
 
         // Signal input from Autoware
-        public VPPSignal VehicleSignalInput { get; set; }
+        [NonSerialized] public VPPSignal VehicleSignalInput;
+        private VPPSignal _vehicleSignalInput => VehicleSignalInput;
 
         // Emergency input from Autoware
         public bool IsEmergencyInput { get; set; }
@@ -40,8 +44,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // Actuation commands from Autoware
         public double SteerInput { get; set; }
-        public double BrakeInput { get; set; }
-        public double ThrottleInput { get; set; }
+        [NonSerialized] public double BrakeInput;
+        private double _brakeInput => BrakeInput;
+        [NonSerialized] public double ThrottleInput;
+        private double _throttleInput => ThrottleInput;
 
         // Outputs from Unity/VPP
         public VPPControlMode VpControlModeReport { get; private set; }
@@ -154,10 +160,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             else
             {
                 // Control the vehicle based on the control mode
-                if (!_standardInput.enabled)
-                {
-                    ControlVehicle(ControlModeInput);
-                }
+                ControlVehicle(ControlModeInput);
             }
 
             // Update the publisher values for VPPToRos2Publisher.cs
@@ -202,13 +205,16 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         public void HandleSteer()
         {
+            //temp bypass for user control
+            if (_standardInput.enabled) return;
+
             if (_simulateSteering)
             {
                 SimulateSteeringWheelInput();
             }
             else
             {
-                SetWheelSteerAngleDirectly(SteerAngleInput);
+                SetWheelSteerAngleDirectly(_steerAngleInput);
             }
         }
 
@@ -234,7 +240,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         public void HandleGear()
         {
-            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)AutomaticShiftInput;
+            _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)_automaticShiftInput;
         }
 
         public void HandleAcceleration()
@@ -242,14 +248,17 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             // Store current values
             CurrentSpeed = _vehicleController.speed;
 
-            if (ThrottleInput > 0)
+            //temp bypass for user control
+            if (_standardInput.enabled) return;
+
+            if (_throttleInput > 0)
             {
-                SetThrottle((int)(ThrottleInput * AutowareToVppMultiplier));
+                SetThrottle((int)(_throttleInput * AutowareToVppMultiplier));
             }
 
-            if (BrakeInput > 0)
+            if (_brakeInput > 0)
             {
-                SetBrake((int)(BrakeInput * AutowareToVppMultiplier));
+                SetBrake((int)(_brakeInput * AutowareToVppMultiplier));
             }
         }
 
@@ -273,8 +282,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         private void ReportVehicleState()
         {
             VpControlModeReport = ControlModeInput;
-            VpHazardLightsReport = VehicleSignalInput;
-            VpTurnIndicatorReport = VehicleSignalInput;
+            VpHazardLightsReport = _vehicleSignalInput;
+            VpTurnIndicatorReport = _vehicleSignalInput;
             VpSteeringReport = _frontWheels[0].steerAngle;
             VpGearReport = _vehicleController.data.bus[Channel.Vehicle][VehicleData.GearboxMode];
             VpVelocityReport =
