@@ -57,11 +57,11 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         // VPP components
         private VPVehicleController _vehicleController;
+        private VPStandardInput _standardInput;
 
         [SerializeField] private VPWheelCollider[] _frontWheels;
 
         private Rigidbody _rigidbody;
-
 
         [Tooltip("Whether set wheel angle directly from Autoware or simulate with additive steering wheel input")]
         [SerializeField]
@@ -95,7 +95,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         [SerializeField] private float _updatePositionRayOriginY = 1000f;
 
         [Header("Calibration Mode")]
-        [Tooltip("Enable pedal calibration mode. Use Numpad(+,-,0) keys to set constant throttle/brake values for ease of calibration")]
+        [Tooltip(
+            "Enable pedal calibration mode. Use Numpad(+,-,0) keys to set constant throttle/brake values for ease of calibration")]
         [SerializeField]
         private bool _doPedalCalibration;
 
@@ -117,6 +118,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         {
             // get components
             _vehicleController = GetComponent<VPVehicleController>();
+            _standardInput = GetComponent<VPStandardInput>();
             _rigidbody = GetComponent<Rigidbody>();
 
             InitializeControlModes();
@@ -147,7 +149,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             else
             {
                 // Control the vehicle based on the control mode
-                ControlVehicle(ControlModeInput);
+                if (!_standardInput.enabled)
+                {
+                    ControlVehicle(ControlModeInput);
+                }
             }
 
             // Update the publisher values for VPPToRos2Publisher.cs
