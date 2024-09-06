@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using AWSIM.Loader;
 using UnityEngine;
@@ -44,50 +45,73 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             _launchpadCanvas.enabled = false;
             _transitionCanvas.enabled = true;
 
-            // Save loaded bundles for other sessions as options for the dropdowns.
+            // TODO: Save loaded bundles for other sessions as options for the dropdowns.
 
-            // Load the core simulation scene
-            SceneManager.LoadScene(SimulationCoreSceneName, LoadSceneMode.Additive);
-
-            // Load the vehicle scene
-            SceneManager.LoadScene(VehicleSceneName, LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(VehicleSceneName));
-            var vehicle = Instantiate(vehiclePrefab);
-
-            // Load the environment scene
-            SceneManager.LoadScene(EnvironmentSceneName, LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(EnvironmentSceneName));
-            var environment = Instantiate(environmentPrefab);
-
-            // set prefabs to their positions in the simulation scene
-            vehicle.transform.SetPositionAndRotation(spawnPoint.Item1, spawnPoint.Item2);
-            environment.transform.position = new Vector3(0, 0, 0);
-            // environment will be 0 usually, might change for multi scene confs
-
-            var awsimConfiguration = new AWSIMConfiguration
-            {
-                mapConfiguration =
-                {
-                    mapName = "default",
-                    useShadows = true // this shouldn't be a param in mapconf. Graphics?
-                },
-                simulationConfiguration =
-                {
-                    useTraffic = true,
-                    timeScale = 1.0f
-                },
-                egoConfiguration =
-                {
-                    egoVehicleName = vehiclePrefab.name,
-                    egoPosition = spawnPoint.Item1,
-                    egoEulerAngles = spawnPoint.Item2.eulerAngles
-                }
-            };
+            StartCoroutine(LoadSimulation(vehiclePrefab, environmentPrefab, spawnPoint));
+            
+            // var awsimConfiguration = new AWSIMConfiguration
+            // {
+            //     mapConfiguration =
+            //     {
+            //         mapName = "default",
+            //         useShadows = true // this shouldn't be a param in mapconf. Graphics?
+            //     },
+            //     simulationConfiguration =
+            //     {
+            //         useTraffic = true,
+            //         timeScale = 1.0f
+            //     },
+            //     egoConfiguration =
+            //     {
+            //         egoVehicleName = vehiclePrefab.name,
+            //         egoPosition = spawnPoint.Item1,
+            //         egoEulerAngles = spawnPoint.Item2.eulerAngles
+            //     }
+            // };
         }
 
         public void ReturnToLaunchpad()
         {
             SceneManager.LoadScene(LaunchpadSceneName, LoadSceneMode.Single);
+        }
+        
+        private IEnumerator LoadSimulation(GameObject vehiclePrefab, GameObject environmentPrefab, 
+            Tuple<Vector3, Quaternion> spawnPoint)
+        {
+            // Load the core simulation scene
+            yield return SceneManager.LoadSceneAsync(SimulationCoreSceneName, LoadSceneMode.Additive);
+
+            // Load vehicle and environment scenes asynchronously
+            yield return StartCoroutine(LoadScene(VehicleSceneName));
+            yield return StartCoroutine(LoadScene(EnvironmentSceneName));
+
+            // Setup VehicleScene
+            var vehicleScene = SceneManager.GetSceneByName(VehicleSceneName);
+            if (vehicleScene.isLoaded)
+            {
+                SceneManager.SetActiveScene(vehicleScene);
+                var vehicle = Instantiate(vehiclePrefab);
+                vehicle.transform.SetPositionAndRotation(spawnPoint.Item1, spawnPoint.Item2);
+            }
+
+            // Setup EnvironmentScene
+            var environmentScene = SceneManager.GetSceneByName(EnvironmentSceneName);
+            if (environmentScene.isLoaded)
+            {
+                SceneManager.SetActiveScene(environmentScene);
+                var environment = Instantiate(environmentPrefab);
+                environment.transform.position = new Vector3(0, 0, 0); // Default position
+            }
+        }
+
+        private static IEnumerator LoadScene(string sceneName)
+        {
+            var asyncLoadScene = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            while (!asyncLoadScene.isDone)
+            {
+                Debug.Log("Loading Scene: " + sceneName);
+                yield return null;
+            }
         }
     }
 }

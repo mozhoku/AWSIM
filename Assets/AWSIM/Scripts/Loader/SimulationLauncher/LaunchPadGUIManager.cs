@@ -1,5 +1,7 @@
 using System;
+using SFB;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using static AWSIM.Scripts.Loader.SimulationLauncher.BundleLoader;
 using Image = UnityEngine.UI.Image;
@@ -24,7 +26,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         // remember old loaded prefabs
 
         // Vehicle Block
-        [SerializeField] private InputField _vehiclePathField;
+        [FormerlySerializedAs("_vehiclePathButton")] [SerializeField] private Button _loadVehicleBundleButton;
         [SerializeField] private Dropdown _vehiclesDropdown;
         [SerializeField] private Image _vehicleVisualArea;
 
@@ -33,7 +35,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         [SerializeField] private Dropdown _sensorsDropdown;
 
         // Environment Block
-        [SerializeField] private InputField _environmentPathField;
+        [FormerlySerializedAs("_environmentPathButton")] [SerializeField] private Button _loadEnvironmentBundleButton;
         [SerializeField] private Dropdown _environmentsDropdown;
         [SerializeField] private Toggle _useCoordsToggle;
         [SerializeField] private Dropdown _spawnPointDropdown;
@@ -70,15 +72,9 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             // update gui when an assetbundle is selected
             // remember old loaded prefabs
 
-            // Add listeners to input fields to get paths
-            _vehiclePathField.onValueChanged.AddListener(delegate
-            {
-                _vehicleBundlePath = GetBundlePathFromField(_vehiclePathField);
-            });
-            _environmentPathField.onValueChanged.AddListener(delegate
-            {
-                _environmentBundlePath = GetBundlePathFromField(_environmentPathField);
-            });
+            // Add listeners to buttons
+            _loadVehicleBundleButton.onClick.AddListener(LoadVehicleBundleButtonOnClick);
+            _loadEnvironmentBundleButton.onClick.AddListener(LoadEnvironmentBundleButtonOnClick);
 
             // Add listener to start button
             _startSimButton.onClick.AddListener(StartSim);
@@ -91,16 +87,32 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             _environmentPrefab = LoadPrefab(_environmentBundlePath);
 
             // unload bundles
-            AssetBundle.UnloadAllAssetBundles(true);
+            // AssetBundle.UnloadAllAssetBundles(true);
 
             // save GUI
             UpdateGUIFields();
             StoreGUIFields();
 
             // set spawn point
-            var spawnPoint = VehicleSpawnPoint(float.Parse(_positionFieldX.text), float.Parse(_positionFieldY.text),
-                float.Parse(_positionFieldZ.text), float.Parse(_rotationFieldX.text), float.Parse(_rotationFieldY.text),
-                float.Parse(_rotationFieldZ.text), float.Parse(_rotationFieldW.text), CoordSyss.Unity);
+            // var spawnPoint = VehicleSpawnPoint(
+            //     float.Parse(_positionFieldX.text),
+            //     float.Parse(_positionFieldY.text),
+            //     float.Parse(_positionFieldZ.text),
+            //     float.Parse(_rotationFieldX.text),
+            //     float.Parse(_rotationFieldY.text),
+            //     float.Parse(_rotationFieldZ.text),
+            //     float.Parse(_rotationFieldW.text),
+            //     CoordSyss.Unity);
+            var spawnPoint = VehicleSpawnPoint(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                CoordSyss.Unity);
+
 
             // launch simulation
             _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, 0);
@@ -112,17 +124,39 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         {
             // load simulation configuration
             // pop up file selection dialog for selecting the config file
+            
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation Configuration", "", "json", false);
+            if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+            {
+                // Load the simulation configuration from the selected file
+            }
+            else
+            {
+                Debug.Log("File selection was canceled or no file selected.");
+            }
         }
 
         public void SaveSimConf()
         {
             // save simulation configuration
             // pop up file selection dialog for saving the config file
+            
+            var paths = StandaloneFileBrowser.SaveFilePanel("Save Simulation Configuration", "", "config", "json");
+            if (!string.IsNullOrEmpty(paths))
+            {
+                // Save the simulation configuration to the selected file
+            }
+            else
+            {
+                Debug.Log("File saving was canceled.");
+            }
         }
 
         private void UpdateGUIFields()
         {
             // Update dropdowns or any other GUI elements based on loaded prefabs
+            // Update visual area or other GUI elements related to the vehicle
+
             if (_vehiclePrefab != null)
             {
                 _vehiclesDropdown.options.Add(new Dropdown.OptionData(_vehiclePrefab.name));
@@ -195,6 +229,37 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
 
         #endregion
 
+        #region button functions
+
+        private void LoadVehicleBundleButtonOnClick()
+        {
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open Vehicle Asset Bundle", "", "", false);
+            if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+            {
+                _vehicleBundlePath = paths[0];
+                Debug.Log("vehicle bundle path:" + _vehicleBundlePath);
+            }
+            else
+            {
+                Debug.Log("File selection was canceled or no file selected.");
+            }
+        }
+        
+        private void LoadEnvironmentBundleButtonOnClick()
+        {
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open Vehicle Asset Bundle", "", "", false);
+            if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
+            {
+                _environmentBundlePath = paths[0];
+            }
+            else
+            {
+                Debug.Log("File selection was canceled or no file selected.");
+            }
+        }
+        
+
+        #endregion
 
         #region helpers
 

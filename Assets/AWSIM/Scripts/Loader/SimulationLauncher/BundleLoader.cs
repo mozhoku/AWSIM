@@ -27,8 +27,6 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
 
             // Now load the prefab using the name from PrefabInfo
             var prefab = bundle.LoadAsset<GameObject>(prefabInfo.prefabName);
-            bundle.Unload(true);
-
             return prefab;
         }
     }

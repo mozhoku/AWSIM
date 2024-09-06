@@ -1,6 +1,7 @@
 using AWSIM.Scripts.Loader.SimulationLauncher;
 using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 namespace AWSIM.Scripts.Editor.AssetBundleBuilder
 {
@@ -27,8 +28,18 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
         private int _selectedBuildTargetIndex;
 
         // Default locations to build the bundles
-        private const string VehicleOutputPath = "AssetBundles/Vehicles";
-        private const string EnvironmentOutputPath = "AssetBundles/Environments";
+        private static string VehicleOutputPath => GetPlatformSpecificPath("AssetBundles/Vehicles");
+        private static string EnvironmentOutputPath => GetPlatformSpecificPath("AssetBundles/Environments");
+
+        private static string GetPlatformSpecificPath(string relativePath)
+        {
+            var projectFolderPath = Path.GetDirectoryName(Application.dataPath);
+#if UNITY_EDITOR_WIN
+            return Path.Combine(projectFolderPath, relativePath.Replace("/", "\\"));
+#else
+    return Path.Combine(projectFolderPath, relativePath);
+#endif
+        }
 
         [MenuItem("AWSIMLabs/Bundle Build Menu")]
         private static void ShowWindow()
@@ -119,13 +130,22 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
             EnsureDirectoryExists(bundleInfo.OutputPath);
 
             // Create a PrefabInfo asset with the prefab name
+            // var combinedPrefabName = bundleInfo.Prefab.name.Replace(" ", "_");
             var prefabInfo = CreateInstance<PrefabInfo>();
+            
+            
+            Debug.Log("bundleinfo prefab name: "+ bundleInfo.Prefab.name);
+            Debug.Log("combined prefab name: "+ bundleInfo.Prefab.name);
+            
             prefabInfo.prefabName = bundleInfo.Prefab.name;
+            // bundleInfo.AssetBundleName = combinedPrefabName;
 
-            // Save the PrefabInfo asset as part of the bundle
-            string prefabInfoPath = $"{bundleInfo.OutputPath}/{bundleInfo.Prefab.name}_PrefabInfo.asset";
+            // Save the PrefabInfo asset temporarily in the 'Assets' folder
+            var prefabInfoPath = "Assets/PrefabInfo.asset";
             AssetDatabase.CreateAsset(prefabInfo, prefabInfoPath);
-            AssetImporter prefabImporter = AssetImporter.GetAtPath(prefabInfoPath);
+
+            // Set the asset bundle name for the PrefabInfo
+            var prefabImporter = AssetImporter.GetAtPath(prefabInfoPath);
             prefabImporter.assetBundleName = bundleInfo.AssetBundleName;
 
             // Set the prefab itself to the asset bundle
@@ -168,9 +188,9 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
 
         private static void EnsureDirectoryExists(string path)
         {
-            if (!System.IO.Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
-                System.IO.Directory.CreateDirectory(path);
+                Directory.CreateDirectory(path);
             }
         }
     }
