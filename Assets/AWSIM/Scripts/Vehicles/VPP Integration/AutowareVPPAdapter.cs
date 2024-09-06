@@ -58,6 +58,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
         // VPP components
         private VPVehicleController _vehicleController;
         private VPStandardInput _standardInput;
+        private VPCameraController _cameraController;
 
         [SerializeField] private VPWheelCollider[] _frontWheels;
 
@@ -120,6 +121,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _vehicleController = GetComponent<VPVehicleController>();
             _standardInput = GetComponent<VPStandardInput>();
             _rigidbody = GetComponent<Rigidbody>();
+            
+            // set camera target to this vehicle
+            _cameraController = FindObjectOfType<VPCameraController>();
+            _cameraController.target = transform;
 
             InitializeControlModes();
 
