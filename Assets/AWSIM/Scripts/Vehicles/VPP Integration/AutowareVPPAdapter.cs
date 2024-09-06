@@ -121,7 +121,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             _vehicleController = GetComponent<VPVehicleController>();
             _standardInput = GetComponent<VPStandardInput>();
             _rigidbody = GetComponent<Rigidbody>();
-            
+
             // set camera target to this vehicle
             _cameraController = FindObjectOfType<VPCameraController>();
             _cameraController.target = transform;
