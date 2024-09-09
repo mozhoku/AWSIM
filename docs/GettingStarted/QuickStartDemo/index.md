@@ -206,21 +206,20 @@ rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
 ```
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 ```
-8. Provide pedal maps to Autoware.\
-    Copy default Lexus pedal maps to the following location:\
-    Pedal Maps: [Google Drive Link](https://drive.google.com/drive/folders/1S0fcNHzkiF3F03hWqonQW8SYKPb2zQo-?usp=drive_link)\
+8. Provide pedal maps to Autoware.  
+    Copy default Lexus pedal maps to the following location:  
+    Pedal Maps: [Google Drive Link](https://drive.google.com/drive/folders/1S0fcNHzkiF3F03hWqonQW8SYKPb2zQo-?usp=drive_link)  
     Location: `.../autoware/install/autoware_raw_vehicle_cmd_converter/share/autoware_raw_vehicle_cmd_converter/data/default/`
-
 
 9. Launch Autoware.
 ```
 source install/setup.bash
-ros2 launch autoware_launch e2e_simulator.launch.xml vehicle_model:=awsim_labs_vehicle sensor_model:=awsim_labs_sensor_kit map_path:=<absolute path of map folder>
+ros2 launch autoware_launch e2e_simulator.launch.xml vehicle_model:=awsim_labs_vehicle sensor_model:=awsim_labs_sensor_kit map_path:=<absolute path of map folder> launch_vehicle_interface:=true
 
 # Use the absolute path for the map folder, don't use the ~ operator.
 
 # Example:
-ros2 launch autoware_launch e2e_simulator.launch.xml vehicle_model:=awsim_labs_vehicle sensor_model:=awsim_labs_sensor_kit map_path:=/home/your_username/autoware_map/nishishinjuku_autoware_map
+ros2 launch autoware_launch e2e_simulator.launch.xml vehicle_model:=awsim_labs_vehicle sensor_model:=awsim_labs_sensor_kit map_path:=/home/your_username/autoware_map/nishishinjuku_autoware_map launch_vehicle_interface:=true
 ```
 ![](Image_2.png)
 
