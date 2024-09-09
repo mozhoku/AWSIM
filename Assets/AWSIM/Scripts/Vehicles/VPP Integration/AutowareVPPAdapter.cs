@@ -160,7 +160,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             else
             {
                 // If keyboard enabled stop Autoware control.
-                if (_standardInput.enabled) return;
+                // if (_standardInput.enabled) return;
 
                 // Control the vehicle based on the control mode
                 ControlVehicle(ControlModeInput);
