@@ -1,7 +1,6 @@
 using System;
 using SFB;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using static AWSIM.Scripts.Loader.SimulationLauncher.BundleLoader;
 using Image = UnityEngine.UI.Image;
@@ -26,7 +25,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         // remember old loaded prefabs
 
         // Vehicle Block
-        [FormerlySerializedAs("_vehiclePathButton")] [SerializeField] private Button _loadVehicleBundleButton;
+        [SerializeField] private Button _loadVehicleBundleButton;
         [SerializeField] private Dropdown _vehiclesDropdown;
         [SerializeField] private Image _vehicleVisualArea;
 
@@ -35,7 +34,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         [SerializeField] private Dropdown _sensorsDropdown;
 
         // Environment Block
-        [FormerlySerializedAs("_environmentPathButton")] [SerializeField] private Button _loadEnvironmentBundleButton;
+        [SerializeField] private Button _loadEnvironmentBundleButton;
         [SerializeField] private Dropdown _environmentsDropdown;
         [SerializeField] private Toggle _useCoordsToggle;
         [SerializeField] private Dropdown _spawnPointDropdown;
