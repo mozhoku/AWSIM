@@ -1,20 +1,21 @@
+using AWSIM.Scripts.Vehicles.VPP_Integration;
+using AWSIM.Scripts.Vehicles.VPP_Integration.Enums;
 using UnityEngine;
-using VehiclePhysics;
 
 namespace AWSIM.Scripts.UI.Toggle
 {
     public class UIKeyboardControlToggle : MonoBehaviour
     {
         private GameObject _egoVehicle;
-        private VPStandardInput _vehicleKeyboardInput;
+        private AutowareVPPAdapter _adapter;
 
         private void Start()
         {
-            _egoVehicle = GameObject.FindGameObjectWithTag("Ego");
-            _vehicleKeyboardInput = _egoVehicle.GetComponent<VPStandardInput>();
+            _egoVehicle = GameObject.FindWithTag("Ego");
+            _adapter = _egoVehicle.GetComponent<AutowareVPPAdapter>();
 
-            // Set the toggle to the current state of the keyboard control
-            GetComponent<UnityEngine.UI.Toggle>().isOn = _vehicleKeyboardInput.enabled;
+            // Set the toggle to the current state of the keyboard control mode
+            GetComponent<UnityEngine.UI.Toggle>().isOn = _adapter.ControlModeInput != VPPControlMode.Autonomous;
         }
 
         public void Activate()
@@ -26,7 +27,9 @@ namespace AWSIM.Scripts.UI.Toggle
         // Toggle the keyboard control
         public void OnClick(bool isOn)
         {
-            _vehicleKeyboardInput.enabled = isOn;
+            _adapter.ControlModeInput = _adapter.ControlModeInput == VPPControlMode.Autonomous
+                ? VPPControlMode.Manual
+                : VPPControlMode.Autonomous;
         }
     }
 }

@@ -136,6 +136,10 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
             // Set initial vehicle gear to Park to prevent movement
             _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)Gearbox.AutomaticGear.P;
+
+            // reset vpp stuff for multi-scene loading (no idea why, but it works)
+            _vehicleController.enabled = false;
+            _vehicleController.enabled = true;
         }
 
         // private void Update()
@@ -226,6 +230,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             }
         }
 
+        // temp method to simulate steering wheel input with delay, also inaccurate (mozzz)
         private void SimulateSteeringWheelInput()
         {
             if (SteerAngleInput == 0) return;
