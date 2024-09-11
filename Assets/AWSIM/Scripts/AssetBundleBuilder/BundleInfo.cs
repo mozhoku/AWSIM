@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace AWSIM.Scripts.Editor.AssetBundleBuilder
+namespace AWSIM.Scripts.AssetBundleBuilder
 {
     /// <summary>
     /// The class containing bundle information for building asset bundles
     /// </summary>
-    internal class BundleInfo
+    public class BundleInfo
     {
         public string OutputPath;
         public GameObject Prefab;

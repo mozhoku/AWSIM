@@ -1,9 +1,9 @@
+using System.IO;
 using AWSIM.Scripts.Loader.SimulationLauncher;
 using UnityEditor;
 using UnityEngine;
-using System.IO;
 
-namespace AWSIM.Scripts.Editor.AssetBundleBuilder
+namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 {
     /// <summary>
     /// Custom editor window for building AssetBundles in Unity.
@@ -128,11 +128,32 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
             }
 
             EnsureDirectoryExists(bundleInfo.OutputPath);
+            
+            // Get the lightmaps for the scene/prefab
+            LightmapData[] lightmaps = LightmapSettings.lightmaps;
+            if (lightmaps != null && lightmaps.Length > 0)
+            {
+                foreach (var lightmapData in lightmaps)
+                {
+                    if (lightmapData.lightmapColor != null)
+                    {
+                        var lightmapPath = AssetDatabase.GetAssetPath(lightmapData.lightmapColor);
+                        var lightmapImporter = AssetImporter.GetAtPath(lightmapPath);
+                        lightmapImporter.assetBundleName = bundleInfo.AssetBundleName;
+                    }
+
+                    if (lightmapData.lightmapDir!=null)
+                    {
+                        var lightmapPath = AssetDatabase.GetAssetPath(lightmapData.lightmapDir);
+                        var lightmapImporter = AssetImporter.GetAtPath(lightmapPath);
+                        lightmapImporter.assetBundleName = bundleInfo.AssetBundleName;
+                    }
+                }
+            }
 
             // Create a PrefabInfo asset with the prefab name
             // var combinedPrefabName = bundleInfo.Prefab.name.Replace(" ", "_");
             var prefabInfo = CreateInstance<PrefabInfo>();
-            
             
             Debug.Log("bundleinfo prefab name: "+ bundleInfo.Prefab.name);
             Debug.Log("combined prefab name: "+ bundleInfo.Prefab.name);
@@ -171,8 +192,9 @@ namespace AWSIM.Scripts.Editor.AssetBundleBuilder
                     $"Failed to build Asset Bundle '{bundleInfo.AssetBundleName}' at '{bundleInfo.OutputPath}'.");
             }
 
-            // Delete the temporary PrefabInfo asset after building
+            // Cleanup temporary assets and assignments
             AssetDatabase.DeleteAsset(prefabInfoPath);
+            importer.assetBundleName = null;
         }
 
         private static BundleInfo InitializeBundleInfo(string outputPath)
