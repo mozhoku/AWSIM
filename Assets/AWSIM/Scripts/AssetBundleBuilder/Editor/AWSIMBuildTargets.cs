@@ -5,7 +5,7 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
     public static class AWSIMBuildTargets
     {
         /// <summary>
-        /// Build targets used for building the bundles for AWSIM Labs.
+        /// Build targets used for building the bundles for AWSIM Labs. Make sure these are in same order as TargetValues below.
         /// </summary>
         public enum SupportedBuildTargets
         {

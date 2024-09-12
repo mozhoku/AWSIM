@@ -20,9 +20,9 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             BuildAssetBundleOptions.None | BuildAssetBundleOptions.ForceRebuildAssetBundle;
 
         private readonly BuildTarget[] _buildTargetValues = AWSIMBuildTargets.TargetValues;
-        
+
         private string[] _buildTargetNames;
-        
+
         private int _selectedBuildTargetIndex;
 
         // Default locations to build the bundles
@@ -99,12 +99,31 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 
         private void Build()
         {
-             var selectedBuildTarget = _buildTargetValues[_selectedBuildTargetIndex];
+            var selectedBuildTarget = _buildTargetValues[_selectedBuildTargetIndex];
+            var isBuildVehicleBundleSuccessful = false;
+            var isBuildEnvironmentBundleSuccessful = false;
             
             if (_doBuildVehicle && _vehicleBundleInfo.Prefab != null)
+            {
                 BuildAssetBundle(_vehicleBundleInfo, BuildOption, selectedBuildTarget);
+                isBuildVehicleBundleSuccessful = true;
+            }
+
             if (_doBuildEnvironment && _environmentBundleInfo.Prefab != null)
+            {
                 BuildAssetBundle(_environmentBundleInfo, BuildOption, selectedBuildTarget);
+                isBuildEnvironmentBundleSuccessful = true;
+            }
+
+            if (isBuildVehicleBundleSuccessful)
+            {
+                OpenOutputDirectory(VehicleOutputPath);
+            }
+
+            if (isBuildEnvironmentBundleSuccessful)
+            {
+                OpenOutputDirectory(EnvironmentOutputPath);
+            }
         }
 
         private static void BuildAssetBundle(BundleInfo bundleInfo, BuildAssetBundleOptions options, BuildTarget target)
@@ -191,6 +210,22 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
         private BuildTarget GetBuildTarget(AWSIMBuildTargets.SupportedBuildTargets supportedBuildTargets)
         {
             return (BuildTarget)supportedBuildTargets;
+        }
+
+        private static void OpenOutputDirectory(string path)
+        {
+            if (Directory.Exists(path))
+            {
+#if UNITY_EDITOR_WIN
+                System.Diagnostics.Process.Start("explorer.exe", path);
+#elif UNITY_EDITOR_LINUX
+        System.Diagnostics.Process.Start("xdg-open", path);
+#endif
+            }
+            else
+            {
+                Debug.LogWarning($"Directory does not exist: {path}");
+            }
         }
     }
 }
