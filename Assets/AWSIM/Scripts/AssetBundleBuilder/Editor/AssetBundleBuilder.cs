@@ -207,11 +207,6 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             }
         }
 
-        private BuildTarget GetBuildTarget(AWSIMBuildTargets.SupportedBuildTargets supportedBuildTargets)
-        {
-            return (BuildTarget)supportedBuildTargets;
-        }
-
         private static void OpenOutputDirectory(string path)
         {
             if (Directory.Exists(path))
