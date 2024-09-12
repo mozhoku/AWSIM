@@ -16,15 +16,13 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
         private bool _doBuildVehicle;
         private bool _doBuildEnvironment;
 
-        private readonly BuildAssetBundleOptions[] _buildOptionsValues =
-            (BuildAssetBundleOptions[])System.Enum.GetValues(typeof(BuildAssetBundleOptions));
+        private const BuildAssetBundleOptions BuildOption =
+            BuildAssetBundleOptions.None | BuildAssetBundleOptions.ForceRebuildAssetBundle;
 
-        private readonly BuildTarget[] _buildTargetsValues = (BuildTarget[])System.Enum.GetValues(typeof(BuildTarget));
-
-        private string[] _buildOptionsNames;
-        private string[] _buildTargetsNames;
-
-        private int _selectedBuildOptionIndex;
+        private readonly BuildTarget[] _buildTargetValues = AWSIMBuildTargets.TargetValues;
+        
+        private string[] _buildTargetNames;
+        
         private int _selectedBuildTargetIndex;
 
         // Default locations to build the bundles
@@ -49,8 +47,7 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 
         private void OnEnable()
         {
-            _buildOptionsNames = System.Enum.GetNames(typeof(BuildAssetBundleOptions));
-            _buildTargetsNames = System.Enum.GetNames(typeof(BuildTarget));
+            _buildTargetNames = System.Enum.GetNames(typeof(AWSIMBuildTargets.SupportedBuildTargets));
 
             // Initialize bundles
             _vehicleBundleInfo = InitializeBundleInfo(VehicleOutputPath);
@@ -73,11 +70,9 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 
             GUILayout.Space(5);
 
-            // Shared options for bundles
-            _selectedBuildOptionIndex =
-                EditorGUILayout.Popup("Build Options", _selectedBuildOptionIndex, _buildOptionsNames);
+            // Build Target
             _selectedBuildTargetIndex =
-                EditorGUILayout.Popup("Build Target", _selectedBuildTargetIndex, _buildTargetsNames);
+                EditorGUILayout.Popup("Build Target", _selectedBuildTargetIndex, _buildTargetNames);
 
             GUILayout.Space(10);
 
@@ -104,13 +99,12 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 
         private void Build()
         {
-            var selectedBuildOption = _buildOptionsValues[_selectedBuildOptionIndex];
-            var selectedBuildTarget = _buildTargetsValues[_selectedBuildTargetIndex];
-
+             var selectedBuildTarget = _buildTargetValues[_selectedBuildTargetIndex];
+            
             if (_doBuildVehicle && _vehicleBundleInfo.Prefab != null)
-                BuildAssetBundle(_vehicleBundleInfo, selectedBuildOption, selectedBuildTarget);
+                BuildAssetBundle(_vehicleBundleInfo, BuildOption, selectedBuildTarget);
             if (_doBuildEnvironment && _environmentBundleInfo.Prefab != null)
-                BuildAssetBundle(_environmentBundleInfo, selectedBuildOption, selectedBuildTarget);
+                BuildAssetBundle(_environmentBundleInfo, BuildOption, selectedBuildTarget);
         }
 
         private static void BuildAssetBundle(BundleInfo bundleInfo, BuildAssetBundleOptions options, BuildTarget target)
@@ -128,36 +122,14 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             }
 
             EnsureDirectoryExists(bundleInfo.OutputPath);
-            
-            // Get the lightmaps for the scene/prefab
-            LightmapData[] lightmaps = LightmapSettings.lightmaps;
-            if (lightmaps != null && lightmaps.Length > 0)
-            {
-                foreach (var lightmapData in lightmaps)
-                {
-                    if (lightmapData.lightmapColor != null)
-                    {
-                        var lightmapPath = AssetDatabase.GetAssetPath(lightmapData.lightmapColor);
-                        var lightmapImporter = AssetImporter.GetAtPath(lightmapPath);
-                        lightmapImporter.assetBundleName = bundleInfo.AssetBundleName;
-                    }
-
-                    if (lightmapData.lightmapDir!=null)
-                    {
-                        var lightmapPath = AssetDatabase.GetAssetPath(lightmapData.lightmapDir);
-                        var lightmapImporter = AssetImporter.GetAtPath(lightmapPath);
-                        lightmapImporter.assetBundleName = bundleInfo.AssetBundleName;
-                    }
-                }
-            }
 
             // Create a PrefabInfo asset with the prefab name
             // var combinedPrefabName = bundleInfo.Prefab.name.Replace(" ", "_");
             var prefabInfo = CreateInstance<PrefabInfo>();
-            
-            Debug.Log("bundleinfo prefab name: "+ bundleInfo.Prefab.name);
-            Debug.Log("combined prefab name: "+ bundleInfo.Prefab.name);
-            
+
+            Debug.Log("bundleinfo prefab name: " + bundleInfo.Prefab.name);
+            Debug.Log("combined prefab name: " + bundleInfo.Prefab.name);
+
             prefabInfo.prefabName = bundleInfo.Prefab.name;
             // bundleInfo.AssetBundleName = combinedPrefabName;
 
@@ -214,6 +186,11 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             {
                 Directory.CreateDirectory(path);
             }
+        }
+
+        private BuildTarget GetBuildTarget(AWSIMBuildTargets.SupportedBuildTargets supportedBuildTargets)
+        {
+            return (BuildTarget)supportedBuildTargets;
         }
     }
 }
