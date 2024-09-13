@@ -23,6 +23,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         /// Control inputs from Autoware
         [NonSerialized] public float SteerAngleInput;
+
         private float _steerAngleInput => SteerAngleInput;
 
         public bool IsDefinedSteeringTireRotationRateInput { get; set; }
@@ -253,15 +254,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             // Store current values
             CurrentSpeed = _vehicleController.speed;
 
-            if (_throttleInput > 0)
-            {
-                SetThrottle((int)(_throttleInput * AutowareToVppMultiplier));
-            }
-
-            if (_brakeInput > 0)
-            {
-                SetBrake((int)(_brakeInput * AutowareToVppMultiplier));
-            }
+            SetThrottle((int)(_throttleInput * AutowareToVppMultiplier));
+            SetBrake((int)(_brakeInput * AutowareToVppMultiplier));
         }
 
         /// <summary>

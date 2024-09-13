@@ -9,7 +9,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes
         {
             public void ExecuteControlMode(AutowareVPPAdapter adapter)
             {
-                Debug.Log("Control mode: No command");
+                // Debug.Log("Control mode: No command");
             }
         }
 
@@ -51,7 +51,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes
         {
             public void ExecuteControlMode(AutowareVPPAdapter adapter)
             {
-                Debug.Log("Control mode: Manual");
+                // Debug.Log("Control mode: Manual");
             }
         }
 
@@ -59,7 +59,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes
         {
             public void ExecuteControlMode(AutowareVPPAdapter adapter)
             {
-                Debug.Log("Control mode: Disengaged");
+                // Debug.Log("Control mode: Disengaged");
             }
         }
 
@@ -67,7 +67,7 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration.IVehicleControlModes
         {
             public void ExecuteControlMode(AutowareVPPAdapter adapter)
             {
-                Debug.Log("Control mode: Not ready");
+                // Debug.Log("Control mode: Not ready");
             }
         }
     }
