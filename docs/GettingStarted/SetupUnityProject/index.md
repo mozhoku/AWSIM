@@ -142,6 +142,10 @@ To properly run and use AWSIM project in Unity it is required to download map pa
 
     The Externals directory is added to the `.gitignore` because the map has a large file size and should not be directly uploaded to the repository.
 
+## Import Vehicle Physics Pro Community Edition Asset
+
+Import Vehicle Physics Pro CE by following these instructions: [VPP CE Setup](../../DeveloperGuide/EditorSetup/VPPCommunityEdition/index.md)
+
 ## Import Graphy Asset
 
 Import Graphy by following these instructions: [Graphy Asset Setup](../../DeveloperGuide/EditorSetup/Graphy/index.md)
