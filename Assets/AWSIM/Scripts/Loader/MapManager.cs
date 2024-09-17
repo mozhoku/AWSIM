@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
-
 
 namespace AWSIM.Loader
 {
@@ -113,5 +111,4 @@ namespace AWSIM.Loader
             return true;
         }
     }
-
 }

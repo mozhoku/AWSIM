@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AWSIM.Scripts.UI;
+using AWSIM.Scripts.UI.Toggle;
+using AWSIM.TrafficSimulation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,16 +15,18 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         public bool UsePostProcessing;
         public bool UseAntiAliasing;
         public bool UseVSync;
+
         public int FrameRateLimit;
         // TODO: Add more settings (mozzz)
     }
+
     public class SimulationActions : MonoBehaviour
     {
         [SerializeField] private Canvas _launchpadCanvas;
         [SerializeField] private Canvas _transitionCanvas;
 
         [SerializeField] private string LaunchpadSceneName = "Launchpad";
-        [SerializeField] private string SimulationCoreSceneName = "AutowareSimulation";
+        [SerializeField] private string SimulationSceneName = "AWSIMSimulation";
         [SerializeField] private string VehicleSceneName = "VehicleScene";
         [SerializeField] private string EnvironmentSceneName = "EnvironmentScene";
 
@@ -47,7 +52,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             // TODO: Save loaded bundles for other sessions as options for the dropdowns.
 
             StartCoroutine(LoadSimulation(vehiclePrefab, environmentPrefab, spawnPoint));
-            
+
             // var awsimConfiguration = new AWSIMConfiguration
             // {
             //     mapConfiguration =
@@ -73,25 +78,14 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         {
             SceneManager.LoadScene(LaunchpadSceneName, LoadSceneMode.Single);
         }
-        
-        private IEnumerator LoadSimulation(GameObject vehiclePrefab, GameObject environmentPrefab, 
+
+        private IEnumerator LoadSimulation(GameObject vehiclePrefab, GameObject environmentPrefab,
             Tuple<Vector3, Quaternion> spawnPoint)
         {
-            // Load the core simulation scene
-            yield return SceneManager.LoadSceneAsync(SimulationCoreSceneName, LoadSceneMode.Additive);
-
-            // Load vehicle and environment scenes asynchronously
-            yield return StartCoroutine(LoadScene(VehicleSceneName));
+            // Load the scenes
+            yield return StartCoroutine(LoadScene(SimulationSceneName));
             yield return StartCoroutine(LoadScene(EnvironmentSceneName));
-
-            // Setup VehicleScene
-            var vehicleScene = SceneManager.GetSceneByName(VehicleSceneName);
-            if (vehicleScene.isLoaded)
-            {
-                SceneManager.SetActiveScene(vehicleScene);
-                var vehicle = Instantiate(vehiclePrefab);
-                vehicle.transform.SetPositionAndRotation(spawnPoint.Item1, spawnPoint.Item2);
-            }
+            yield return StartCoroutine(LoadScene(VehicleSceneName));
 
             // Setup EnvironmentScene
             var environmentScene = SceneManager.GetSceneByName(EnvironmentSceneName);
@@ -101,6 +95,18 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 var environment = Instantiate(environmentPrefab);
                 environment.transform.position = new Vector3(0, 0, 0); // Default position
             }
+
+            // Setup CoreSimulationScene
+            var vehicleScene = SceneManager.GetSceneByName(VehicleSceneName);
+            if (vehicleScene.isLoaded)
+            {
+                SceneManager.SetActiveScene(vehicleScene);
+                var vehicle = Instantiate(vehiclePrefab);
+                vehicle.transform.SetPositionAndRotation(spawnPoint.Item1, spawnPoint.Item2);
+            }
+
+            // Fix UI references
+            ReInitializeGUI();
         }
 
         private static IEnumerator LoadScene(string sceneName)
@@ -110,6 +116,64 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             {
                 Debug.Log("Loading Scene: " + sceneName);
                 yield return null;
+            }
+        }
+
+        private static void ReInitializeGUI()
+        {
+            // Set camera GUI
+            FollowCamera followCamera = FindObjectOfType<FollowCamera>();
+            FindObjectOfType<MainCameraViewUI>().SetFollowCamera(followCamera);
+
+            // // Set scene time scale
+            // DemoUI demoUi = GameObject.FindObjectOfType<DemoUI>();
+            // demoUi.SetTimeScale(simulationConfiguration.timeScale);
+            // demoUi.TimeScaleSlider.value = simulationConfiguration.timeScale;
+
+            TrafficControlManager trafficControlManager = FindObjectOfType<TrafficControlManager>();
+            trafficControlManager.TrafficManager = FindObjectOfType<TrafficManager>();
+            trafficControlManager.Activate();
+
+            UIKeyboardControlToggle uiKeyboardControlToggle = FindObjectOfType<UIKeyboardControlToggle>();
+            uiKeyboardControlToggle.Activate();
+
+            UITrafficControlVisibilityToggle uiTrafficControlVisibilityToggle =
+                FindObjectOfType<UITrafficControlVisibilityToggle>();
+            uiTrafficControlVisibilityToggle.Activate();
+
+            UITrafficControlPlayToggle uiTrafficControlPlayToggle = FindObjectOfType<UITrafficControlPlayToggle>();
+            uiTrafficControlPlayToggle.Activate();
+
+            UITrafficVehicleDensity uiTrafficVehicleDensity = FindObjectOfType<UITrafficVehicleDensity>();
+            uiTrafficVehicleDensity.Activate();
+
+            BirdEyeView birdEyeView = FindObjectOfType<BirdEyeView>();
+            birdEyeView.Activate();
+
+            GraphicsSettings graphicsSettings = FindObjectOfType<GraphicsSettings>();
+            graphicsSettings.Activate();
+
+            UISensorInteractionPanel uiSensorInteractionPanel = FindObjectOfType<UISensorInteractionPanel>();
+            uiSensorInteractionPanel.Activate();
+
+            UIMainCameraToggle uiMainCameraToggle = FindObjectOfType<UIMainCameraToggle>();
+            uiMainCameraToggle.Activate();
+
+            // Set traffic on/off
+            var trafficSims = FindObjectsOfType<TrafficManager>();
+            foreach (var trafficSim in trafficSims)
+            {
+                // trafficSim.gameObject.SetActive(simulationConfiguration.useTraffic);
+            }
+
+            // Turn shadows for directional light
+            var lights = FindObjectsOfType<Light>();
+            foreach (Light light in lights)
+            {
+                if (light.type == LightType.Directional)
+                {
+                    light.shadows = LightShadows.Soft;
+                }
             }
         }
     }
