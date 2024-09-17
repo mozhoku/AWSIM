@@ -1,25 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AWSIM.Loader.SimulationLauncher;
 using AWSIM.Scripts.UI;
 using AWSIM.Scripts.UI.Toggle;
 using AWSIM.TrafficSimulation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Application = UnityEngine.Application;
 
 namespace AWSIM.Scripts.Loader.SimulationLauncher
 {
-    public class GraphicSettings
-    {
-        public bool UseShadows;
-        public bool UsePostProcessing;
-        public bool UseAntiAliasing;
-        public bool UseVSync;
-
-        public int FrameRateLimit;
-        // TODO: Add more settings (mozzz)
-    }
-
     public class SimulationActions : MonoBehaviour
     {
         [SerializeField] private Canvas _launchpadCanvas;
@@ -39,39 +30,14 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         // Get user input from GUI (latlon, mgrs, Unity xyz)
         // ATM WE DON'T HAVE SPAWN POINTS DEFINED IN THE SCENES
         // generate screenshots for the UI
+        // add sensor config in the future
 
-        //add sensor config in the future
         public void Launch(GameObject vehiclePrefab, GameObject environmentPrefab,
-            Tuple<Vector3, Quaternion> spawnPoint, float simParams, float graphicSettings)
+            Tuple<Vector3, Quaternion> spawnPoint, float simParams, GraphicSettings graphicSettings)
         {
-            // turn off loader gui and transition into a waiting gui
-            _launchpadCanvas = GetComponent<Canvas>();
-            _launchpadCanvas.enabled = false;
-            _transitionCanvas.enabled = true;
-
-            // TODO: Save loaded bundles for other sessions as options for the dropdowns.
+            // Application.targetFrameRate = graphicSettings.FrameRateLimit;
 
             StartCoroutine(LoadSimulation(vehiclePrefab, environmentPrefab, spawnPoint));
-
-            // var awsimConfiguration = new AWSIMConfiguration
-            // {
-            //     mapConfiguration =
-            //     {
-            //         mapName = "default",
-            //         useShadows = true // this shouldn't be a param in mapconf. Graphics?
-            //     },
-            //     simulationConfiguration =
-            //     {
-            //         useTraffic = true,
-            //         timeScale = 1.0f
-            //     },
-            //     egoConfiguration =
-            //     {
-            //         egoVehicleName = vehiclePrefab.name,
-            //         egoPosition = spawnPoint.Item1,
-            //         egoEulerAngles = spawnPoint.Item2.eulerAngles
-            //     }
-            // };
         }
 
         public void ReturnToLaunchpad()
@@ -82,6 +48,11 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         private IEnumerator LoadSimulation(GameObject vehiclePrefab, GameObject environmentPrefab,
             Tuple<Vector3, Quaternion> spawnPoint)
         {
+            // turn off loader gui and transition into loading gui
+            _launchpadCanvas.enabled = false;
+            _transitionCanvas.enabled = true;
+            yield return new WaitForEndOfFrame();
+
             // Load the scenes
             yield return StartCoroutine(LoadScene(SimulationSceneName));
             yield return StartCoroutine(LoadScene(EnvironmentSceneName));
@@ -106,7 +77,10 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             }
 
             // Fix UI references
-            ReInitializeGUI();
+            ReInitializeScripts();
+
+            // Turn off transition canvas
+            _transitionCanvas.enabled = false;
         }
 
         private static IEnumerator LoadScene(string sceneName)
@@ -119,7 +93,8 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
             }
         }
 
-        private static void ReInitializeGUI()
+        // very ugly, need to fix this (mozzz)
+        private static void ReInitializeScripts()
         {
             // Set camera GUI
             FollowCamera followCamera = FindObjectOfType<FollowCamera>();

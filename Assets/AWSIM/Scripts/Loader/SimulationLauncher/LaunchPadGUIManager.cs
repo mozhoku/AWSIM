@@ -1,4 +1,5 @@
 using System;
+using AWSIM.Loader.SimulationLauncher;
 using SFB;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,11 +62,19 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         private string _environmentBundlePath;
         private GameObject _vehiclePrefab;
         private GameObject _environmentPrefab;
+        private GraphicSettings _graphicSettings;
 
         private void Start()
         {
             // get launch script
             _simulationActions = GetComponent<SimulationActions>();
+
+            // Initialize graphics settings
+            _graphicSettings = new GraphicSettings();
+            // Apply the loaded or default settings
+            // _graphicSettings.ApplySettings();
+            // Reset to defaults (if needed)
+            // settings.ResetToDefaults();
 
             // load initial gui
             // update gui when an assetbundle is selected
@@ -82,6 +91,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         private void StartSim()
         {
             // load prefabs for simulation
+            // MOVE THESE TO "SIMULATIONACTIONS" >>>
             _vehiclePrefab = LoadPrefab(_vehicleBundlePath);
             _environmentPrefab = LoadPrefab(_environmentBundlePath);
 
@@ -112,9 +122,8 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 0,
                 CoordSyss.Unity);
 
-
             // launch simulation
-            _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, 0);
+            _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, _graphicSettings);
         }
 
         #region config
@@ -123,7 +132,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         {
             // load simulation configuration
             // pop up file selection dialog for selecting the config file
-            
+
             var paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation Configuration", "", "json", false);
             if (paths.Length > 0 && !string.IsNullOrEmpty(paths[0]))
             {
@@ -139,7 +148,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
         {
             // save simulation configuration
             // pop up file selection dialog for saving the config file
-            
+
             var paths = StandaloneFileBrowser.SaveFilePanel("Save Simulation Configuration", "", "config", "json");
             if (!string.IsNullOrEmpty(paths))
             {
@@ -243,7 +252,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 Debug.Log("File selection was canceled or no file selected.");
             }
         }
-        
+
         private void LoadEnvironmentBundleButtonOnClick()
         {
             var paths = StandaloneFileBrowser.OpenFilePanel("Open Vehicle Asset Bundle", "", "", false);
@@ -256,7 +265,6 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 Debug.Log("File selection was canceled or no file selected.");
             }
         }
-        
 
         #endregion
 
