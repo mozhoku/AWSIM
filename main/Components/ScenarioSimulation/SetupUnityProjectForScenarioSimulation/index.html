@@ -2619,12 +2619,12 @@
 
 
 <div><h1 id="running-awsim-labs-from-unity-editor-with-scenario_simulator_v2">Running AWSIM Labs from Unity Editor with <code>scenario_simulator_v2</code><a class="headerlink" href="#running-awsim-labs-from-unity-editor-with-scenario_simulator_v2" title="Permanent link">#</a></h1>
-<p>Below you can find instructions on how to setup the scenario execution using <code>scenario_simulator_v2</code> with AWSIM Labs run from Unity Editor as a simulator
+<p>Below you can find instructions on how to set up the scenario execution using <code>scenario_simulator_v2</code> with AWSIM Labs run from Unity Editor as a simulator
 The instruction assumes using the Ubuntu OS.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Build Autoware by following <a href="https://autowarefoundation.github.io/AWSIM-Labs/main/GettingStarted/UsingOpenSCENARIO">"Build Autoware with <code>scenario_simulator_v2</code>" section from the scenario simulator and AWSIM Labs quick start guide</a></p>
+<p>Build Autoware by following <a href="https://autowarefoundation.github.io/AWSIM-Labs/main/GettingStarted/UsingOpenSCENARIO">Build Autoware with <code>scenario_simulator_v2</code></a> section from the scenario simulator and AWSIM Labs quick start guide.</p>
 </li>
 <li>
 <p>Follow <a href="../../../GettingStarted/SetupUnityProject/">Setup Unity Project tutorial</a></p>
@@ -2632,14 +2632,15 @@ The instruction assumes using the Ubuntu OS.</p>
 </ol>
 <h2 id="running-the-demo">Running the demo<a class="headerlink" href="#running-the-demo" title="Permanent link">#</a></h2>
 <ol>
-<li>Open AutowareSimulationScenarioSimulator.unity scene placed under <code>Assets/AWSIM/Scenes/Main</code> directory</li>
+<li>Open <code>LoaderScene.unity</code> scene placed under <code>Assets/AWSIM/Scenes/Composition</code> directory.</li>
 <li>Run the simulation by clicking <code>Play</code> button placed at the top section of Editor.</li>
+<li>In the play mode expand the dropdown on the top left, select the <code>AutowareSimulationScenarioSimulator</code> and click the <code>Load</code> button.</li>
 <li>Launch <code>scenario_test_runner</code>.
    <div class="highlight"><pre><span></span><code>source install/setup.bash
 ros2 launch scenario_test_runner scenario_test_runner.launch.py                        \
-architecture_type:=awf/universe/20240605  record:=false                                         \
+architecture_type:=awf/universe/20240605  record:=false                                \
 scenario:='$(find-pkg-share scenario_test_runner)/scenario/sample_awsim.yaml'          \
-sensor_model:=awsim_labs_sensor_kit  vehicle_model:=sample_vehicle                          \
+sensor_model:=awsim_labs_sensor_kit  vehicle_model:=awsim_labs_vehicle                 \
 launch_simple_sensor_simulator:=false autoware_launch_file:="e2e_simulator.launch.xml" \
 initialize_duration:=260 port:=8080
 </code></pre></div></li>
@@ -2648,18 +2649,18 @@ initialize_duration:=260 port:=8080
 <h3 id="conventional-traffic-lights-demo">Conventional traffic lights demo<a class="headerlink" href="#conventional-traffic-lights-demo" title="Permanent link">#</a></h3>
 <p>This scenario controls traffic signals in the scene based on OpenSCENARIO. It can be used to verify whether traffic light recognition pipeline works well in Autoware.</p>
 <div class="highlight"><pre><span></span><code>ros2 launch scenario_test_runner scenario_test_runner.launch.py                                           \
-architecture_type:=awf/universe/20240605  record:=false                                                            \
+architecture_type:=awf/universe/20240605  record:=false                                                   \
 scenario:='$(find-pkg-share scenario_test_runner)/scenario/sample_awsim_conventional_traffic_lights.yaml' \
-sensor_model:=awsim_labs_sensor_kit  vehicle_model:=sample_vehicle                                             \
+sensor_model:=awsim_labs_sensor_kit  vehicle_model:=awsim_labs_vehicle                                    \
 launch_simple_sensor_simulator:=false autoware_launch_file:="e2e_simulator.launch.xml"                    \
 initialize_duration:=260 port:=8080
 </code></pre></div>
 <h3 id="v2i-traffic-lights-demo">V2I traffic lights demo<a class="headerlink" href="#v2i-traffic-lights-demo" title="Permanent link">#</a></h3>
 <p>This scenario publishes V2I traffic signals information based on OpenSCENARIO. It can be used to verify Autoware responds to V2I traffic lights information correctly.</p>
 <div class="highlight"><pre><span></span><code>ros2 launch scenario_test_runner scenario_test_runner.launch.py                                  \
-architecture_type:=awf/universe/20240605  record:=false                                                   \
+architecture_type:=awf/universe/20240605  record:=false                                          \
 scenario:='$(find-pkg-share scenario_test_runner)/scenario/sample_awsim_v2i_traffic_lights.yaml' \
-sensor_model:=awsim_labs_sensor_kit  vehicle_model:=sample_vehicle                                    \
+sensor_model:=awsim_labs_sensor_kit  vehicle_model:=awsim_labs_vehicle                           \
 launch_simple_sensor_simulator:=false autoware_launch_file:="e2e_simulator.launch.xml"           \
 initialize_duration:=260 port:=8080
 </code></pre></div></div>

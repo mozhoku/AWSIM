@@ -2611,7 +2611,7 @@
 <p class="admonition-title">Warning</p>
 <p>Running AWSIM with scenario_simulator_v2 is still a prototype, so stable running is not guaranteed.</p>
 </div>
-<p>Below you can find instructions on how to setup the OpenSCENARIO execution using <a href="https://github.com/tier4/scenario_simulator_v2">scenario_simulator_v2</a> with AWSIM as a simulator
+<p>Below you can find instructions on how to set up the OpenSCENARIO execution using <a href="https://github.com/tier4/scenario_simulator_v2">scenario_simulator_v2</a> with AWSIM as a simulator
 The instruction assumes using the Ubuntu OS.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
 <ul>
@@ -2655,13 +2655,15 @@ rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
 </ol>
 <h2 id="running-the-demo">Running the demo<a class="headerlink" href="#running-the-demo" title="Permanent link">#</a></h2>
 <ol>
-<li>Download and run the latest version of awsim_labs_ss2. <a class="md-button md-button--primary" href="https://github.com/autowarefoundation/AWSIM-Labs/releases">archive</a></li>
+<li>Download and run the latest version of AWSIM Labs.<br>
+<a class="md-button md-button--primary" href="https://github.com/autowarefoundation/AWSIM-Labs/releases">Releases</a>  </li>
+<li>In the <code>Loader</code> menu, from the top left, select the <code>AutowareSimulationScenarioSimulator</code> and click the <code>Load</code> button.</li>
 <li>Launch <code>scenario_test_runner</code>.
    <div class="highlight"><pre><span></span><code>source install/setup.bash
 ros2 launch scenario_test_runner scenario_test_runner.launch.py                        \
-architecture_type:=awf/universe/20240605  record:=false                                         \
+architecture_type:=awf/universe/20240605  record:=false                                \
 scenario:='$(find-pkg-share scenario_test_runner)/scenario/sample_awsim.yaml'          \
-sensor_model:=awsim_labs_sensor_kit  vehicle_model:=sample_vehicle                          \
+sensor_model:=awsim_labs_sensor_kit  vehicle_model:=awsim_labs_vehicle                 \
 launch_simple_sensor_simulator:=false autoware_launch_file:="e2e_simulator.launch.xml" \
 initialize_duration:=260 port:=8080
 </code></pre></div></li>
