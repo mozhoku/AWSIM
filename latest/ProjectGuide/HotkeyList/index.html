@@ -635,18 +635,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vehiclekeyboardinputcs" class="md-nav__link">
+  <a href="#vehicle-controller" class="md-nav__link">
     <span class="md-ellipsis">
-      VehicleKeyboardInput.cs
+      Vehicle Controller
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#followcameracs" class="md-nav__link">
+  <a href="#vppvehiclesignalhandlercs" class="md-nav__link">
     <span class="md-ellipsis">
-      FollowCamera.cs
+      VPPVehicleSignalHandler.cs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camera-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Camera Controller
     </span>
   </a>
   
@@ -674,6 +683,15 @@
   <a href="#graphy-asset" class="md-nav__link">
     <span class="md-ellipsis">
       Graphy Asset
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loadercs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loader.cs
     </span>
   </a>
   
@@ -2544,18 +2562,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vehiclekeyboardinputcs" class="md-nav__link">
+  <a href="#vehicle-controller" class="md-nav__link">
     <span class="md-ellipsis">
-      VehicleKeyboardInput.cs
+      Vehicle Controller
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#followcameracs" class="md-nav__link">
+  <a href="#vppvehiclesignalhandlercs" class="md-nav__link">
     <span class="md-ellipsis">
-      FollowCamera.cs
+      VPPVehicleSignalHandler.cs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camera-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Camera Controller
     </span>
   </a>
   
@@ -2588,6 +2615,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#loadercs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loader.cs
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2607,7 +2643,7 @@
 
 
 <div><h1 id="hotkey-list">Hotkey List<a class="headerlink" href="#hotkey-list" title="Permanent link">#</a></h1>
-<h3 id="vehiclekeyboardinputcs"><a href="https://github.com/autowarefoundation/AWSIM-Labs/blob/main/Assets/AWSIM/Scripts/Vehicles/VehicleKeyboardInput.cs">VehicleKeyboardInput.cs</a><a class="headerlink" href="#vehiclekeyboardinputcs" title="Permanent link">#</a></h3>
+<h3 id="vehicle-controller">Vehicle Controller<a class="headerlink" href="#vehicle-controller" title="Permanent link">#</a></h3>
 <table>
 <thead>
 <tr>
@@ -2617,57 +2653,71 @@
 </thead>
 <tbody>
 <tr>
-<td align="left">D</td>
-<td align="left">Change drive gear.</td>
+<td align="left">W / Up Arrow</td>
+<td align="left">Throttle.</td>
 </tr>
 <tr>
-<td align="left">P</td>
-<td align="left">Parking gear.</td>
+<td align="left">S / Down Arrow</td>
+<td align="left">Brake.</td>
+</tr>
+<tr>
+<td align="left">A / Left Arrow</td>
+<td align="left">Steer Left.</td>
+</tr>
+<tr>
+<td align="left">D / Right Arrow</td>
+<td align="left">Steer Right.</td>
+</tr>
+<tr>
+<td align="left">Space</td>
+<td align="left">Handbrake.</td>
+</tr>
+<tr>
+<td align="left">Left Shift / Left Ctrl</td>
+<td align="left">Change Gear +/-.</td>
 </tr>
 <tr>
 <td align="left">R</td>
-<td align="left">Reverse gear.</td>
+<td align="left">Reverse Gear.</td>
 </tr>
 <tr>
 <td align="left">N</td>
-<td align="left">Neutral gear.</td>
+<td align="left">Neutral Gear.</td>
 </tr>
 <tr>
-<td align="left">1</td>
-<td align="left">Left turn signal.</td>
-</tr>
-<tr>
-<td align="left">2</td>
-<td align="left">Right turn signal.</td>
-</tr>
-<tr>
-<td align="left">3</td>
-<td align="left">Hazard.</td>
-</tr>
-<tr>
-<td align="left">4</td>
-<td align="left">Turn signal off.</td>
-</tr>
-<tr>
-<td align="left">Up arrow</td>
-<td align="left">Accelerate.</td>
-</tr>
-<tr>
-<td align="left">Left arrow</td>
-<td align="left">Steering (Left).</td>
-</tr>
-<tr>
-<td align="left">Right arrow</td>
-<td align="left">Steering (Right).</td>
-</tr>
-<tr>
-<td align="left">Down arrow</td>
-<td align="left">Breaking.</td>
+<td align="left">Left Alt</td>
+<td align="left">Change Gear Mode.</td>
 </tr>
 </tbody>
 </table>
-<p>W,A,S,D keys can also be used to control the vehicle, similar to the arrow keys.</p>
-<h3 id="followcameracs"><a href="https://github.com/autowarefoundation/AWSIM-Labs/blob/main/Assets/AWSIM/Scripts/FollowCamera.cs">FollowCamera.cs</a><a class="headerlink" href="#followcameracs" title="Permanent link">#</a></h3>
+<h3 id="vppvehiclesignalhandlercs"><a href="https://github.com/autowarefoundation/AWSIM-Labs/blob/main/Assets/AWSIM/Scripts/Vehicles/VPP%20Integration/VPPVehicleSignalHandler.cs">VPPVehicleSignalHandler.cs</a><a class="headerlink" href="#vppvehiclesignalhandlercs" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Key</th>
+<th align="left">Feature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">1</td>
+<td align="left">Signal: Left.</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">Signal: Right.</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">Signal: Hazard.</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">Signal: Off.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="camera-controller">Camera Controller<a class="headerlink" href="#camera-controller" title="Permanent link">#</a></h3>
 <table>
 <thead>
 <tr>
@@ -2678,15 +2728,31 @@
 <tbody>
 <tr>
 <td align="left">C</td>
-<td align="left">Camera rotation on/off toggle.</td>
+<td align="left">Toggle camera mode.</td>
 </tr>
 <tr>
-<td align="left">Mouse drag</td>
-<td align="left">Rotate Camera angle.</td>
+<td align="left">Mouse Drag</td>
+<td align="left">Camera rotation (in certain modes).</td>
 </tr>
 <tr>
-<td align="left">Mouse wheel</td>
-<td align="left">Zoom in/out of camera.</td>
+<td align="left">Mouse Wheel +/-</td>
+<td align="left">Camera zoom (in certain modes)</td>
+</tr>
+<tr>
+<td align="left">F1</td>
+<td align="left">Camera Mode: Driver View.</td>
+</tr>
+<tr>
+<td align="left">F2</td>
+<td align="left">Camera Mode: Smooth Follow.</td>
+</tr>
+<tr>
+<td align="left">F3</td>
+<td align="left">Camera Mode: Orbit.</td>
+</tr>
+<tr>
+<td align="left">F4</td>
+<td align="left">Camera Mode: Look At.</td>
 </tr>
 </tbody>
 </table>
@@ -2760,6 +2826,21 @@
 <tr>
 <td align="left">F3</td>
 <td align="left">Toggle Graphy Visualizer</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loadercs"><a href="https://github.com/autowarefoundation/AWSIM-Labs/blob/main/Assets/AWSIM/Scripts/Loader/Loader.cs">Loader.cs</a><a class="headerlink" href="#loadercs" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Key</th>
+<th align="left">Feature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">F12</td>
+<td align="left">Go back to load scene / Reload.</td>
 </tr>
 </tbody>
 </table></div>
