@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.36">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.35f28582.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.06209087.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -2908,14 +2908,10 @@ vcs import src &lt; autoware.repos
 rosdep update
 rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
 </code></pre></div></li>
-<li>Build the workspace.
-<div class="highlight"><pre><span></span><code>colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
-</code></pre></div></li>
 <li>
-<p>Provide pedal maps to Autoware.<br>
-    Copy default Lexus pedal maps to the following location:<br>
-    Pedal Maps: <a href="https://drive.google.com/drive/folders/1S0fcNHzkiF3F03hWqonQW8SYKPb2zQo-?usp=drive_link">Google Drive Link</a><br>
-    Location: <code>.../autoware/install/autoware_raw_vehicle_cmd_converter/share/autoware_raw_vehicle_cmd_converter/data/default/</code></p>
+<p>Build the workspace.
+</p><div class="highlight"><pre><span></span><code>colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+</code></pre></div>
 </li>
 <li>
 <p>Launch Autoware.
