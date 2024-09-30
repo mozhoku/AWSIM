@@ -1,15 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using AWSIM.Loader.SimulationLauncher;
+using AWSIM.Loader.SimulationCore;
 using AWSIM.Scripts.UI;
 using AWSIM.Scripts.UI.Toggle;
 using AWSIM.TrafficSimulation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Application = UnityEngine.Application;
 
-namespace AWSIM.Scripts.Loader.SimulationLauncher
+namespace AWSIM.Scripts.Loader.SimulationCore
 {
     public class SimulationActions : MonoBehaviour
     {

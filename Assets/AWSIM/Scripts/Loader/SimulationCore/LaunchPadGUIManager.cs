@@ -1,12 +1,12 @@
 using System;
-using AWSIM.Loader.SimulationLauncher;
+using AWSIM.Loader.SimulationCore;
 using SFB;
 using UnityEngine;
 using UnityEngine.UI;
-using static AWSIM.Scripts.Loader.SimulationLauncher.BundleLoader;
+using static AWSIM.Scripts.Loader.SimulationCore.BundleLoader;
 using Image = UnityEngine.UI.Image;
 
-namespace AWSIM.Scripts.Loader.SimulationLauncher
+namespace AWSIM.Scripts.Loader.SimulationCore
 {
     /// <summary>
     /// Coordinate systems for handling the spawn point input:
@@ -123,7 +123,7 @@ namespace AWSIM.Scripts.Loader.SimulationLauncher
                 CoordSyss.Unity);
 
             // launch simulation
-            _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, _graphicSettings);
+           // _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, _graphicSettings);
         }
 
         #region config

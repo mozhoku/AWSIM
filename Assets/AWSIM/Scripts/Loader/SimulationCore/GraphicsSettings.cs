@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace AWSIM.Loader.SimulationLauncher
+namespace AWSIM.Loader.SimulationCore
 {
     public enum ShadowQuality
     {

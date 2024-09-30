@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/AWSIM/Scenes/Launchpad/Launchpad.unity
+    path: Assets/AWSIM/Scenes/SimulationCore/Simulation Core.unity
     guid: 14bca9d7b220c5e5a8b45b703c423298
   - enabled: 0
     path: Assets/AWSIM/Scenes/Composition/LoaderScene.unity
@@ -24,9 +24,9 @@ EditorBuildSettings:
     path: Assets/AWSIM/Scenes/Main/AutowareSimulation.unity
     guid: 9a19a6429a390f1428320cff9d4e1f10
   - enabled: 1
-    path: Assets/AWSIM/Scenes/Launchpad/EnvironmentScene.unity
+    path: Assets/AWSIM/Scenes/SimulationCore/EnvironmentScene.unity
     guid: 976664536a161db41bcdacb4cf49b856
   - enabled: 1
-    path: Assets/AWSIM/Scenes/Launchpad/VehicleScene.unity
+    path: Assets/AWSIM/Scenes/SimulationCore/VehicleScene.unity
     guid: 01f3375c9967ab5428c659a97470fbc0
   m_configObjects: {}

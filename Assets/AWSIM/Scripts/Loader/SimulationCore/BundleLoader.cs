@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AWSIM.Scripts.Loader.SimulationLauncher
+namespace AWSIM.Scripts.Loader.SimulationCore
 {
     public static class BundleLoader
     {
