@@ -8,33 +8,23 @@ using Image = UnityEngine.UI.Image;
 
 namespace AWSIM.Scripts.Loader.SimulationCore
 {
-    /// <summary>
-    /// Coordinate systems for handling the spawn point input:
-    /// Unity = 0 | LatLong = 1 | Mgrs = 2
-    /// </summary>
-    internal enum CoordSyss
-    {
-        Unity = 0,
-        LatLong = 1,
-        Mgrs = 2
-    }
-
-    public class LaunchPadGUIManager : MonoBehaviour
+    public class SimulationCoreGUIManager : MonoBehaviour
     {
         // load initial gui
         // update gui when an assetbundle is selected
         // remember old loaded prefabs
 
-        // Vehicle Block
+        #region gui elements
+        [Header("Vehicle")]
         [SerializeField] private Button _loadVehicleBundleButton;
         [SerializeField] private Dropdown _vehiclesDropdown;
         [SerializeField] private Image _vehicleVisualArea;
 
-        // Sensor Block
+        [Header("URDF")]
         [SerializeField] private InputField _sensorPathField;
         [SerializeField] private Dropdown _sensorsDropdown;
 
-        // Environment Block
+        [Header("Environment")]
         [SerializeField] private Button _loadEnvironmentBundleButton;
         [SerializeField] private Dropdown _environmentsDropdown;
         [SerializeField] private Toggle _useCoordsToggle;
@@ -48,14 +38,32 @@ namespace AWSIM.Scripts.Loader.SimulationCore
         [SerializeField] private InputField _rotationFieldZ;
         [SerializeField] private InputField _rotationFieldW;
 
-        // Sim Params Block
+        [Header("Simulation Parameters")]
+        [SerializeField] private InputField _timeScale;
 
-        // Graphics Block
+        [Header("Graphics")]
+        [SerializeField] private Dropdown _shadowQualityDropdown;
+        [SerializeField] private Dropdown _textureQualityDropdown;
+        [SerializeField] private Dropdown _antiAliasingModeDropdown;
+        [SerializeField] private Dropdown _antiAliasingQualityDropdown;
+        [SerializeField] private Dropdown _anisotropicFilteringDropdown;
+        [SerializeField] private Dropdown _postProcessingLevelDropdown;
+        [SerializeField] private Dropdown _viewDistanceDropdown;
+        [SerializeField] private Toggle _useShadowsToggle;
+        [SerializeField] private Toggle _ambientOcclusionToggle;
+        [SerializeField] private Toggle _useAntiAliasingToggle;
+        [SerializeField] private Toggle _usePostProcessingToggle;
+        [SerializeField] private Toggle _windowedModeToggle;
+        [SerializeField] private Toggle _vSyncToggle;
+        [SerializeField] private Toggle _motionBlurToggle;
+        [SerializeField] private Toggle _depthOfFieldToggle;
+        [SerializeField] private InputField _frameRateLimitField;
 
-        // Config Block
+        [Header("Configuration")]
         [SerializeField] private Button _loadSimConfButton;
         [SerializeField] private Button _saveSimConfButton;
         [SerializeField] private Button _startSimButton;
+        #endregion
 
         private SimulationActions _simulationActions;
         private string _vehicleBundlePath;
@@ -120,14 +128,13 @@ namespace AWSIM.Scripts.Loader.SimulationCore
                 0,
                 0,
                 0,
-                CoordSyss.Unity);
+                CoordinateSystem.UnityXYZ);
 
             // launch simulation
-           // _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, _graphicSettings);
+            // _simulationActions.Launch(_vehiclePrefab, _environmentPrefab, spawnPoint, 0, _graphicSettings);
         }
 
         #region config
-
         public void LoadSimConf()
         {
             // load simulation configuration
@@ -180,7 +187,6 @@ namespace AWSIM.Scripts.Loader.SimulationCore
         {
             // save simulation configuration to file
         }
-
         #endregion
 
         #region vehicle
@@ -201,14 +207,14 @@ namespace AWSIM.Scripts.Loader.SimulationCore
 
         // Handle unity coords for now
         private static Tuple<Vector3, Quaternion> VehicleSpawnPoint(float posX, float posY, float posZ, float rotX,
-            float rotY, float rotZ, float rotW, CoordSyss coordSys)
+            float rotY, float rotZ, float rotW, CoordinateSystem coordinateSys)
         {
             Vector3 posVector = new();
             Quaternion rotQuaternion = new();
 
-            switch (coordSys)
+            switch (coordinateSys)
             {
-                case CoordSyss.Unity:
+                case CoordinateSystem.UnityXYZ:
                     posVector.x = posX;
                     posVector.y = posY;
                     posVector.z = posZ;
@@ -217,14 +223,14 @@ namespace AWSIM.Scripts.Loader.SimulationCore
                     rotQuaternion.z = rotZ;
                     rotQuaternion.w = rotW;
                     break;
-                case CoordSyss.LatLong:
+                case CoordinateSystem.LatLong:
                     // convert latlong to unity
                     break;
-                case CoordSyss.Mgrs:
+                case CoordinateSystem.Mgrs:
                     // convert mgrs to unity
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(coordSys), coordSys, null);
+                    throw new ArgumentOutOfRangeException(nameof(coordinateSys), coordinateSys, null);
             }
 
             return new Tuple<Vector3, Quaternion>(posVector, rotQuaternion);
