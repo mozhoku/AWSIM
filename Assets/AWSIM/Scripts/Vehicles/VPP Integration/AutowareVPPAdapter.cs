@@ -173,10 +173,6 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
             // Set initial vehicle gear to Park to prevent movement
             _vehicleController.data.bus[Channel.Input][InputData.AutomaticGear] = (int)Gearbox.AutomaticGear.P;
 
-            // reset vpp stuff for multi-scene loading (no idea why, but it works)
-            _vehicleController.enabled = false;
-            _vehicleController.enabled = true;
-
             // Subscribe to events
             _egoVehiclePositionManager = FindObjectOfType<EgoVehiclePositionManager>();
             if (_egoVehiclePositionManager != null)
@@ -268,10 +264,8 @@ namespace AWSIM.Scripts.Vehicles.VPP_Integration
 
         private void SetWheelSteerAngleDirectly(float angle)
         {
-            foreach (var wheel in _frontWheels)
-            {
-                wheel.steerAngle = angle;
-            }
+            _vehicleController.wheelState[1].steerAngle = angle;
+            _vehicleController.wheelState[0].steerAngle = angle;
         }
 
         // temp method to simulate steering wheel input with delay, also inaccurate (mozzz)
