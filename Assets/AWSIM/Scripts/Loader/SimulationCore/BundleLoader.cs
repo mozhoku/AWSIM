@@ -17,7 +17,7 @@ namespace AWSIM.Scripts.Loader.SimulationCore
             }
 
             // Load the PrefabInfo first to get the prefab name
-            var prefabInfo = bundle.LoadAsset<PrefabInfo>("PrefabInfo");
+            var prefabInfo = bundle.LoadAsset<BundleInfo>("PrefabInfo");
             if (prefabInfo == null)
             {
                 Debug.LogWarning("PrefabInfo not found in AssetBundle!");
@@ -26,7 +26,7 @@ namespace AWSIM.Scripts.Loader.SimulationCore
             }
 
             // Now load the prefab using the name from PrefabInfo
-            var prefab = bundle.LoadAsset<GameObject>(prefabInfo.prefabName);
+            var prefab = bundle.LoadAsset<GameObject>(prefabInfo.Name);
             return prefab;
         }
     }

@@ -10,12 +10,9 @@ namespace AWSIM.Scripts.Loader.SimulationCore
         private static Dictionary<string, string> bundlePathDictionary = new();
 
         // Define locations for different bundle types
-        private static readonly string vehicleFolder = Path.Combine(Application.persistentDataPath, "Bundles/Vehicles");
-
-        private static readonly string environmentFolder =
-            Path.Combine(Application.persistentDataPath, "Bundles/Environments");
-
-        private static readonly string unknownFolder = Path.Combine(Application.persistentDataPath, "Bundles/Sensors");
+        private static readonly string VehicleFolder = Path.Combine(Application.persistentDataPath, "Bundles/Vehicles");
+        private static readonly string EnvironmentFolder = Path.Combine(Application.persistentDataPath, "Bundles/Environments");
+        private static readonly string UnknownFolder = Path.Combine(Application.persistentDataPath, "Bundles/Sensors");
 
         /// <summary>
         /// Imports the bundle to the target directory based on the type specified in PrefabInfo.
@@ -30,7 +27,7 @@ namespace AWSIM.Scripts.Loader.SimulationCore
             }
 
             // Load the PrefabInfo to determine bundle type
-            var prefabInfo = bundle.LoadAsset<PrefabInfo>("PrefabInfo");
+            var prefabInfo = bundle.LoadAsset<BundleInfo>("PrefabInfo");
             if (prefabInfo == null)
             {
                 Debug.LogWarning("PrefabInfo not found in AssetBundle!");
@@ -39,7 +36,7 @@ namespace AWSIM.Scripts.Loader.SimulationCore
             }
 
             // Determine the target directory based on the bundle type
-            string targetDirectory = GetTargetDirectory(prefabInfo.bundleType);
+            string targetDirectory = GetTargetDirectory(prefabInfo.Type);
 
             if (string.IsNullOrEmpty(targetDirectory))
             {
@@ -49,12 +46,12 @@ namespace AWSIM.Scripts.Loader.SimulationCore
             }
 
             // Move the bundle to the correct directory
-            string destinationPath = MoveBundle(bundlePath, targetDirectory);
+            string destinationPath = CopyBundleToInternalFolder(bundlePath, targetDirectory);
 
             if (!string.IsNullOrEmpty(destinationPath))
             {
                 // Add the bundle name and internal path to the dictionary
-                bundlePathDictionary[prefabInfo.prefabName] = destinationPath;
+                bundlePathDictionary[prefabInfo.Name] = destinationPath;
             }
 
             bundle.Unload(true);
@@ -94,9 +91,9 @@ namespace AWSIM.Scripts.Loader.SimulationCore
         {
             return bundleType switch
             {
-                BundleType.Vehicle => vehicleFolder,
-                BundleType.Environment => environmentFolder,
-                BundleType.Unknown => unknownFolder,
+                BundleType.Vehicle => VehicleFolder,
+                BundleType.Environment => EnvironmentFolder,
+                BundleType.Unknown => UnknownFolder,
                 _ => null
             };
         }
@@ -104,7 +101,7 @@ namespace AWSIM.Scripts.Loader.SimulationCore
         /// <summary>
         /// Moves the bundle file to the target directory and returns the destination path.
         /// </summary>
-        private static string MoveBundle(string bundlePath, string targetDirectory)
+        private static string CopyBundleToInternalFolder(string bundlePath, string targetDirectory)
         {
             if (!Directory.Exists(targetDirectory))
             {
@@ -126,7 +123,7 @@ namespace AWSIM.Scripts.Loader.SimulationCore
         }
 
         /// <summary>
-        /// Gets the path of the imported bundle by its name.
+        /// Gets the path of the imported bundle by its name from the dictionary.
         /// </summary>
         public static string GetBundlePath(string prefabName)
         {

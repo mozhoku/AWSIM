@@ -2,7 +2,9 @@ using System.IO;
 using AWSIM.Scripts.Loader.SimulationCore;
 using UnityEditor;
 using UnityEngine;
+using static AWSIM.Scripts.AssetBundleBuilder.HashGenerator;
 
+//TODO: Add a button for opening bundle directory (mozzz)
 namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 {
     /// <summary>
@@ -10,8 +12,8 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
     /// </summary>
     public class AssetBundleBuilder : EditorWindow
     {
-        private BundleInfo _vehicleBundleInfo;
-        private BundleInfo _environmentBundleInfo;
+        private BundleBuildInfo _vehicleBundleBuildInfo;
+        private BundleBuildInfo _environmentBundleBuildInfo;
 
         private bool _doBuildVehicle;
         private bool _doBuildEnvironment;
@@ -26,6 +28,7 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
         private int _selectedBuildTargetIndex;
 
         // Default locations to build the bundles
+        // private static string BundleOutputPath => GetPlatformSpecificPath("AssetBundles");
         private static string VehicleOutputPath => GetPlatformSpecificPath("AssetBundles/Vehicles");
         private static string EnvironmentOutputPath => GetPlatformSpecificPath("AssetBundles/Environments");
 
@@ -35,7 +38,7 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 #if UNITY_EDITOR_WIN
             return Path.Combine(projectFolderPath, relativePath.Replace("/", "\\"));
 #else
-    return Path.Combine(projectFolderPath, relativePath);
+            return Path.Combine(projectFolderPath, relativePath);
 #endif
         }
 
@@ -50,8 +53,8 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             _buildTargetNames = System.Enum.GetNames(typeof(AWSIMBuildTargets.SupportedBuildTargets));
 
             // Initialize bundles
-            _vehicleBundleInfo = InitializeBundleInfo(VehicleOutputPath);
-            _environmentBundleInfo = InitializeBundleInfo(EnvironmentOutputPath);
+            _vehicleBundleBuildInfo = InitializeBundleInfo(VehicleOutputPath);
+            _environmentBundleBuildInfo = InitializeBundleInfo(EnvironmentOutputPath);
         }
 
         private void OnGUI()
@@ -60,13 +63,19 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
 
             // Vehicle field
             _doBuildVehicle = EditorGUILayout.Toggle("Build Vehicle Bundle", _doBuildVehicle);
-            if (_doBuildVehicle) DrawBundleSettings(_vehicleBundleInfo, "Vehicle");
+            if (_doBuildVehicle)
+            {
+                DrawBundleSettings(_vehicleBundleBuildInfo, "Vehicle");
+            }
 
             GUILayout.Space(5);
 
             // Environment field
             _doBuildEnvironment = EditorGUILayout.Toggle("Build Environment Bundle", _doBuildEnvironment);
-            if (_doBuildEnvironment) DrawBundleSettings(_environmentBundleInfo, "Environment");
+            if (_doBuildEnvironment)
+            {
+                DrawBundleSettings(_environmentBundleBuildInfo, "Environment");
+            }
 
             GUILayout.Space(5);
 
@@ -79,21 +88,28 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             if (GUILayout.Button("Build")) Build();
         }
 
-        private static void DrawBundleSettings(BundleInfo bundleInfo, string label)
+        private static void DrawBundleSettings(BundleBuildInfo bundleBuildInfo, string label)
         {
             GUILayout.Space(5);
             GUILayout.Label($"{label} Bundle Settings", EditorStyles.boldLabel);
-            bundleInfo.Prefab =
-                (GameObject)EditorGUILayout.ObjectField($"{label} Prefab", bundleInfo.Prefab, typeof(GameObject),
-                    false);
 
-            if (bundleInfo.Prefab)
+            bundleBuildInfo.Prefab =
+                (GameObject)EditorGUILayout.ObjectField($"{label} Prefab", bundleBuildInfo.Prefab, typeof(GameObject),
+                    false);
+            bundleBuildInfo.BundleHashSeed = EditorGUILayout.TextField("Bundle Hash Seed", bundleBuildInfo.BundleHashSeed);
+            bundleBuildInfo.BundleCreator = EditorGUILayout.TextField("Bundle Creator", bundleBuildInfo.BundleCreator);
+            bundleBuildInfo.BundleVersion = EditorGUILayout.TextField("Bundle Version", bundleBuildInfo.BundleVersion);
+            // TODO: Make description field TextArea (mozzz)
+            bundleBuildInfo.BundleDescription =
+                EditorGUILayout.TextField("Bundle Description", bundleBuildInfo.BundleDescription, GUILayout.Height(50));
+
+            if (bundleBuildInfo.Prefab)
             {
-                bundleInfo.AssetPath = AssetDatabase.GetAssetPath(bundleInfo.Prefab);
-                bundleInfo.AssetBundleName = bundleInfo.Prefab.name;
+                bundleBuildInfo.AssetPath = AssetDatabase.GetAssetPath(bundleBuildInfo.Prefab);
+                bundleBuildInfo.AssetBundleName = bundleBuildInfo.Prefab.name;
             }
 
-            bundleInfo.OutputPath = EditorGUILayout.TextField("Output Path", bundleInfo.OutputPath);
+            bundleBuildInfo.OutputPath = EditorGUILayout.TextField("Output Path", bundleBuildInfo.OutputPath);
             GUILayout.Space(10);
         }
 
@@ -102,16 +118,16 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             var selectedBuildTarget = _buildTargetValues[_selectedBuildTargetIndex];
             var isBuildVehicleBundleSuccessful = false;
             var isBuildEnvironmentBundleSuccessful = false;
-            
-            if (_doBuildVehicle && _vehicleBundleInfo.Prefab != null)
+
+            if (_doBuildVehicle && _vehicleBundleBuildInfo.Prefab != null)
             {
-                BuildAssetBundle(_vehicleBundleInfo, BuildOption, selectedBuildTarget);
+                BuildAssetBundle(_vehicleBundleBuildInfo, BuildOption, selectedBuildTarget);
                 isBuildVehicleBundleSuccessful = true;
             }
 
-            if (_doBuildEnvironment && _environmentBundleInfo.Prefab != null)
+            if (_doBuildEnvironment && _environmentBundleBuildInfo.Prefab != null)
             {
-                BuildAssetBundle(_environmentBundleInfo, BuildOption, selectedBuildTarget);
+                BuildAssetBundle(_environmentBundleBuildInfo, BuildOption, selectedBuildTarget);
                 isBuildEnvironmentBundleSuccessful = true;
             }
 
@@ -126,76 +142,86 @@ namespace AWSIM.Scripts.AssetBundleBuilder.Editor
             }
         }
 
-        private static void BuildAssetBundle(BundleInfo bundleInfo, BuildAssetBundleOptions options, BuildTarget target)
+        private static void BuildAssetBundle(BundleBuildInfo bundleBuildInfo, BuildAssetBundleOptions options, BuildTarget target)
         {
-            if (string.IsNullOrEmpty(bundleInfo.OutputPath))
+            if (string.IsNullOrEmpty(bundleBuildInfo.OutputPath))
             {
                 Debug.LogError("Output path is not set!");
                 return;
             }
 
-            if (bundleInfo.Prefab == null)
+            if (bundleBuildInfo.Prefab == null)
             {
                 Debug.LogError("Target prefab is not set!");
                 return;
             }
 
-            EnsureDirectoryExists(bundleInfo.OutputPath);
+            EnsureDirectoryExists(bundleBuildInfo.OutputPath);
 
             // Create a PrefabInfo asset with the prefab name
             // var combinedPrefabName = bundleInfo.Prefab.name.Replace(" ", "_");
-            var prefabInfo = CreateInstance<PrefabInfo>();
+            var bundleInfo = CreateInstance<BundleInfo>();
 
-            Debug.Log("bundleinfo prefab name: " + bundleInfo.Prefab.name);
-            Debug.Log("combined prefab name: " + bundleInfo.Prefab.name);
+            // Debug.Log("bundleBuildInfo prefab name: " + bundleBuildInfo.Prefab.name);
+            // Debug.Log("combined prefab name: " + bundleBuildInfo.Prefab.name);
 
-            prefabInfo.prefabName = bundleInfo.Prefab.name;
+            bundleInfo.Hash = GenerateMD5Hash(bundleBuildInfo.BundleHashSeed);
+            bundleInfo.Name = bundleBuildInfo.Prefab.name;
+            bundleInfo.Creator = bundleBuildInfo.BundleCreator;
+            bundleInfo.CreationDate = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            bundleInfo.BundleVersion = bundleBuildInfo.BundleVersion;
+            bundleInfo.Description = bundleBuildInfo.BundleDescription;
+
             // bundleInfo.AssetBundleName = combinedPrefabName;
 
             // Save the PrefabInfo asset temporarily in the 'Assets' folder
-            var prefabInfoPath = "Assets/PrefabInfo.asset";
-            AssetDatabase.CreateAsset(prefabInfo, prefabInfoPath);
+            var bundleInfoPath = "Assets/BundleInfo.asset";
+            AssetDatabase.CreateAsset(bundleInfo, bundleInfoPath);
 
             // Set the asset bundle name for the PrefabInfo
-            var prefabImporter = AssetImporter.GetAtPath(prefabInfoPath);
-            prefabImporter.assetBundleName = bundleInfo.AssetBundleName;
+            var prefabImporter = AssetImporter.GetAtPath(bundleInfoPath);
+            prefabImporter.assetBundleName = bundleBuildInfo.AssetBundleName;
 
             // Set the prefab itself to the asset bundle
-            var importer = AssetImporter.GetAtPath(bundleInfo.AssetPath);
+            var importer = AssetImporter.GetAtPath(bundleBuildInfo.AssetPath);
             if (importer == null)
             {
-                Debug.LogError($"Asset importer could not be found for {bundleInfo.AssetPath}!");
+                Debug.LogError($"Asset importer could not be found for {bundleBuildInfo.AssetPath}!");
                 return;
             }
 
-            importer.assetBundleName = bundleInfo.AssetBundleName;
+            importer.assetBundleName = bundleBuildInfo.AssetBundleName;
 
             // Build the asset bundle
-            var manifest = BuildPipeline.BuildAssetBundles(bundleInfo.OutputPath, options, target);
+            var manifest = BuildPipeline.BuildAssetBundles(bundleBuildInfo.OutputPath, options, target);
             if (manifest != null)
             {
                 Debug.Log(
-                    $"Asset Bundle '{bundleInfo.AssetBundleName}' built successfully at '{bundleInfo.OutputPath}'.");
+                    $"Asset Bundle '{bundleBuildInfo.AssetBundleName}' built successfully at '{bundleBuildInfo.OutputPath}'.");
             }
             else
             {
                 Debug.LogError(
-                    $"Failed to build Asset Bundle '{bundleInfo.AssetBundleName}' at '{bundleInfo.OutputPath}'.");
+                    $"Failed to build Asset Bundle '{bundleBuildInfo.AssetBundleName}' at '{bundleBuildInfo.OutputPath}'.");
             }
 
             // Cleanup temporary assets and assignments
-            AssetDatabase.DeleteAsset(prefabInfoPath);
+            AssetDatabase.DeleteAsset(bundleInfoPath);
             importer.assetBundleName = null;
         }
 
-        private static BundleInfo InitializeBundleInfo(string outputPath)
+        private static BundleBuildInfo InitializeBundleInfo(string outputPath)
         {
-            return new BundleInfo
+            return new BundleBuildInfo
             {
+                BundleHashSeed = null,
                 OutputPath = outputPath,
                 Prefab = null,
                 AssetBundleName = null,
-                AssetPath = null
+                AssetPath = null,
+                BundleCreator = null,
+                BundleVersion = null,
+                BundleDescription = null
             };
         }
 
